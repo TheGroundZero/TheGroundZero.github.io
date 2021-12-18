@@ -1,0 +1,1176 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=author content="DezeStijn">
+<meta name=description content="Getting started with MQTT, having the correct config is the hardest part. Here I&amp;rsquo;m sharing my MQTT configs for Shelly devices.">
+<meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Home Automation,Home Assistant,MQTT,Shelly,templates,shellies-discovery,HACS">
+<meta name=robots content="noodp">
+<meta name=theme-color content="#252627">
+<link rel=canonical href=https://sequr.be/blog/2020/10/mqtt-templates-for-shelly-devices/>
+<title>
+MQTT templates for Shelly devices :: Sequr
+</title>
+<link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css>
+<link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css>
+<link rel=stylesheet type=text/css href=https://sequr.be/css/table.css>
+<link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css>
+<link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png>
+<link rel=manifest href=https://sequr.be/site.webmanifest>
+<link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101>
+<link rel="shortcut icon" href=https://sequr.be/favicon.ico>
+<meta name=msapplication-TileColor content="#e68101">
+<meta name=theme-color content="#e68101">
+<meta itemprop=name content="MQTT templates for Shelly devices">
+<meta itemprop=description content="Getting started with MQTT, having the correct config is the hardest part. Here I&rsquo;m sharing my MQTT configs for Shelly devices."><meta itemprop=datePublished content="2020-10-26T00:00:00+00:00">
+<meta itemprop=dateModified content="2021-08-30T00:00:00+00:00">
+<meta itemprop=wordCount content="2530"><meta itemprop=image content="https://sequr.be/blog/2020/10/mqtt-templates-for-shelly-devices/cover.svg">
+<meta itemprop=keywords content="Home Automation,Home Assistant,MQTT,Shelly,templates,shellies-discovery,HACS,">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://sequr.be/blog/2020/10/mqtt-templates-for-shelly-devices/cover.svg">
+<meta name=twitter:title content="MQTT templates for Shelly devices">
+<meta name=twitter:description content="Getting started with MQTT, having the correct config is the hardest part. Here I&rsquo;m sharing my MQTT configs for Shelly devices.">
+<meta property="article:section" content="Home Automation">
+<meta property="article:published_time" content="2020-10-26 00:00:00 +0000 UTC">
+</head>
+<body>
+<div class=container>
+<header class=header>
+<span class=header__inner>
+<a href=https://sequr.be style=text-decoration:none>
+<div class=logo>
+<span class=logo__mark>$</span>
+<span class=logo__text>nc sequr.be 1337</span>
+<span class=logo__cursor style=background-color:#e68101>
+</span>
+</div>
+</a>
+<span class=header__right>
+<nav class=menu>
+<ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li>
+</ul>
+</nav>
+<span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</span>
+<span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span>
+</span>
+</span>
+</header>
+<div class=content>
+<main class=post>
+<div class=post-info>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+12 minutes
+</p>
+</div>
+<article>
+<h1 class=post-title>
+<a href=https://sequr.be/blog/2020/10/mqtt-templates-for-shelly-devices/>MQTT templates for Shelly devices</a>
+</h1>
+<hr>
+<aside id=toc>
+<div class=toc-title>Table of Contents</div>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#shellies-discovery>shellies-discovery</a></li>
+<li><a href=#shelly-gen-1-and-shelly-gen-2>Shelly Gen 1 and Shelly Gen 2</a></li>
+<li><a href=#configuration-file-structure>Configuration file structure</a></li>
+<li><a href=#mqtt-templates>MQTT Templates</a>
+<ul>
+<li><a href=#platform-light-switch-cover->Platform: light, switch, cover, &mldr;</a></li>
+</ul>
+</li>
+<li><a href=#shelly-relays-1-1pm-1l-25>Shelly relays (1, 1PM, 1L, 2.5)</a>
+<ul>
+<li><a href=#light-vs-switch-setup>Light vs Switch setup</a></li>
+<li><a href=#binary-sensors>Binary sensors</a></li>
+<li><a href=#sensors>Sensors</a></li>
+<li><a href=#external-sensors>External sensors</a>
+<ul>
+<li><a href=#temperature>Temperature</a></li>
+<li><a href=#humidity>Humidity</a></li>
+<li><a href=#combined-sensor-output>Combined sensor output</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href=#shelly-25>Shelly 2.5</a>
+<ul>
+<li><a href=#relay-mode>Relay Mode</a></li>
+<li><a href=#roller-mode>Roller Mode</a></li>
+</ul>
+</li>
+<li><a href=#shelly-i3>Shelly i3</a>
+<ul>
+<li><a href=#sensors-1>Sensors</a></li>
+<li><a href=#binary-sensors-1>Binary Sensors</a></li>
+</ul>
+</li>
+<li><a href=#shelly-plug-s>Shelly Plug (S)</a>
+<ul>
+<li><a href=#light-vs-switch-setup-1>Light vs Switch setup</a></li>
+<li><a href=#binary-sensors-2>Binary Sensors</a></li>
+<li><a href=#sensors-2>Sensors</a></li>
+</ul>
+</li>
+<li><a href=#shelly-dw2>Shelly DW2</a>
+<ul>
+<li><a href=#sensors-3>Sensors</a></li>
+<li><a href=#binary-sensors-3>Binary Sensors</a></li>
+</ul>
+</li>
+<li><a href=#shelly-em>Shelly EM</a>
+<ul>
+<li><a href=#sensors-4>Sensors</a></li>
+<li><a href=#binary-sensors-4>Binary Sensors</a></li>
+<li><a href=#switches>Switches</a></li>
+</ul>
+</li>
+<li><a href=#shelly-3em>Shelly 3EM</a>
+<ul>
+<li><a href=#sensors-5>Sensors</a></li>
+<li><a href=#binary-sensors-5>Binary Sensors</a></li>
+<li><a href=#switches-1>Switches</a></li>
+</ul>
+</li>
+<li><a href=#shelly-4pro>Shelly 4Pro</a>
+<ul>
+<li><a href=#sensors-6>Sensors</a></li>
+<li><a href=#binary-sensors-6>Binary Sensors</a></li>
+<li><a href=#switches-2>Switches</a></li>
+</ul>
+</li>
+<li><a href=#groups>Groups</a></li>
+<li><a href=#customisations>Customisations</a>
+<ul>
+<li><a href=#icons>Icons</a></li>
+</ul>
+</li>
+<li><a href=#changelog>Changelog</a></li>
+</ul>
+</nav>
+</aside>
+<hr>
+<div class=post-content>
+<p>When you&rsquo;re working with MQTT in Home Assistant, you&rsquo;ll know that it does require some manual configuration.<br>
+Often you&rsquo;re copy/pasting the configs from other devices and adapting them to fit the new devices.</p>
+<p>Below I&rsquo;ve copy/pasted and template-ized the configs I&rsquo;m using.</p>
+<p>If you have an idea for any improvements, hit me up on <a href=https://twitter.com/DezeStijn title="@DezeStijn on Twitter" target=_blank rel=noopener>Twitter</a>!</p>
+<p>For an introduction on MQTT for Shelly devices, see my blog post: <a href=https://sequr.be/blog/2020/10/home-automation-getting-started-with-mqtt-and-home-assistant-and-shelly/ title="Getting started with MQTT and Home Assistant (and Shelly)">Getting started with MQTT and Home Assistant (and Shelly)</a>.</p>
+<h2 id=shellies-discovery>shellies-discovery <a href=#shellies-discovery>¶</a></h2><p>Some time ago I switched from manually adding Shelly devices via MQTT configurations to an automated script: <a href=https://github.com/bieniu/ha-shellies-discovery title="bieniu/ha-shellies-discovery on GitHub" target=_blank rel=noopener>ha-shellies-discovery</a>.
+It automatically recognizes new Shelly devices talking to the MQTT broker (after the Shelly&rsquo;s been configured to use MQTT) and creates devices and entities for each of them.
+So you no longer need to add a new config for each device you added and all entities are nicely grouped per device from the start.</p>
+<p>This script can easily be installed in Home Assistant using <a href=https://hacs.xyz/ title="Home Assistant Community Store - HACS" target=_blank rel=noopener>HACS</a>.
+I won&rsquo;t write a tutorial on doing this, as all required information can be found in the <a href=https://github.com/bieniu/ha-shellies-discovery title="bieniu/ha-shellies-discovery on GitHub" target=_blank rel=noopener>ha-shellies-discovery</a> documentation.</p>
+<p>Using the configurations examples below to manually add Shelly devices via MQTT is still a valid option.
+Espcially if you&rsquo;re wanting to do &lsquo;non-default&rsquo; integrations (e.g. use some templating to modify values).<br>
+But for regular installs, I&rsquo;d move to the automated option.
+We&rsquo;re all using Home Assistant to automate our lives, why not use it to automate device integration?</p>
+<h2 id=shelly-gen-1-and-shelly-gen-2>Shelly Gen 1 and Shelly Gen 2 <a href=#shelly-gen-1-and-shelly-gen-2>¶</a></h2><p>With the introduction of the Shelly 4Pro PM also came the introduction of a new generation of devices.
+This new generation also brings in changes in the communication methods, including MQTT.</p>
+<p>The content of this blog posts discusses the Gen 1 devices.
+Once the Gen 2 become more readily available, and I get my hands on one or more of them, I may make a new post about the changes.</p>
+<h2 id=configuration-file-structure>Configuration file structure <a href=#configuration-file-structure>¶</a></h2><p>First of all, an important factor in keeping everyting readable and manageable, working with the directory structure is a must!</p>
+<p>The king of <em>configuration splitting</em> (as it&rsquo;s called) is Frenck.<br>
+Check out <a href="https://www.youtube.com/watch?v=FfjSA2o_0KA" title="Understanding YAML as it's used in Home Assistant Config files" target=_blank rel=noopener>these</a> <a href="https://www.youtube.com/watch?v=Wge9FDHoZDs" title="Finally Organizing my Home Assistant Config w/ Franck" target=_blank rel=noopener>videos</a> of him and DrZzs and <a href=https://gist.github.com/frenck/20a3236cf64bf5bbcb907ecc7cf665cd title="Frenck's notes on Home Assistant" target=_blank rel=noopener>Frenck&rsquo;s notes</a> to learn more about the different options.</p>
+<p>I generally group configurations for devices by their type/use (e.g. lights).<br>
+This does mean that some configs that are more related to the device (e.g. device temp) are grouped with that light.</p>
+<p>My current configuration filetree looks as follows.<br>
+Note that I skipped files/folders not relevant to this post.</p>
+<pre tabindex=0><code>.
++-- automations.yaml
++-- configuration.yaml
++-- groups.yaml
++-- scripts.yaml
++-- binsensors
+|   +-- room_x
+|   |   +-- lamps.yaml
+|   +-- etc.
++-- customisations
+|   +-- customize_domain.yaml
+|   +-- customize_glob.yaml
+|   +-- customize.yaml
++-- lights
+|   +-- room_x
+|   |   +-- lamps.yaml
+|   +-- etc.
++-- sensors
+|   +-- room_x
+|   |   +-- lamps.yaml
+|   |   +-- shelly_ht.yaml
+|   +-- room_y
+|   |   +-- lamps.yaml
+|   |   +-- shelly_dw2.yaml
+|   +-- etc.
++-- switches
+|   +-- room_x
+|   |   +-- floorlamp.yaml
+</code></pre><p>To get this to work, I added the following lines to <code>configuration.yaml</code>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=nt>homeassistant</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>customize_domain</span><span class=p>:</span><span class=w> </span>!<span class=l>include customisations/customize_domain.yaml</span><span class=w>
+</span><span class=w>  </span><span class=nt>customize_glob</span><span class=p>:</span><span class=w> </span>!<span class=l>include customisations/customize_glob.yaml</span><span class=w>
+</span><span class=w>  </span><span class=nt>customize</span><span class=p>:</span><span class=w> </span>!<span class=l>include customisations/customize.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=nt>automation</span><span class=p>:</span><span class=w> </span>!<span class=l>include automations.yaml</span><span class=w>
+</span><span class=w></span><span class=nt>group</span><span class=p>:</span><span class=w> </span>!<span class=l>include group.yaml</span><span class=w>
+</span><span class=w></span><span class=nt>script</span><span class=p>:</span><span class=w> </span>!<span class=l>include scripts.yaml</span><span class=w>
+</span><span class=w></span><span class=nt>binary_sensor</span><span class=p>:</span><span class=w> </span>!<span class=l>include_dir_merge_list binsensors/</span><span class=w>
+</span><span class=w></span><span class=nt>light</span><span class=p>:</span><span class=w> </span><span class=l>include_dir_merge_list lights/</span><span class=w>
+</span><span class=w></span><span class=nt>sensor</span><span class=p>:</span><span class=w> </span><span class=l>include_dir_merge_list sensors/</span><span class=w>
+</span><span class=w></span><span class=nt>switch</span><span class=p>:</span><span class=w> </span><span class=l>include_dir_merge_list switchess/</span><span class=w>
+</span></code></pre></div><h2 id=mqtt-templates>MQTT Templates <a href=#mqtt-templates>¶</a></h2><p>Note that I&rsquo;m only sharing the configs of devices I already own.<br>
+If you want me to check out another device, I can either try to make up the configs based on the <a href=https://shelly-api-docs.shelly.cloud/#mqtt-support title="Shelly docs - MQTT support" target=_blank rel=noopener>Docs</a> or you can send me one and I&rsquo;ll have a go at it (hit me up on <a href=https://twitter.com/DezeStijn title="@DezeStijn on Twitter" target=_blank rel=noopener>Twitter</a>).</p>
+<h3 id=platform-light-switch-cover->Platform: light, switch, cover, &mldr; <a href=#platform-light-switch-cover->¶</a></h3><p>While the Shelly devices like 1/1L/1PM/2.5/Plug/Plug_S are in fact &ldquo;just&rdquo; relays, the installation posibilities are endless.<br>
+Most commonly, they&rsquo;re used to control lights or wall sockets.</p>
+<p>In Home Assistant, devices can be configured as a <code>switch</code>, which gives you simple on/off capabilities.<br>
+But you can also configure a device as <code>light</code>, which will also give you control over brightness and colour temp, if the device supports it.<br>
+Configuring a device as <code>cover</code> allows you to control things like blinds, curtains, shades, shutters, garage doors, &mldr;</p>
+<p>All of my Shelly devices are currently configured as lights.<br>
+However, it&rsquo;s just a matter of setting the correct platform and/or adding the config in the right file for your Shelly to be configured as switch, cover, &mldr;</p>
+<h2 id=shelly-relays-1-1pm-1l-25>Shelly relays (1, 1PM, 1L, 2.5) <a href=#shelly-relays-1-1pm-1l-25>¶</a></h2><p>The Shelly relays allow you to toggle one or more channels on/off, give you the switch state and may give you info on power consumption and device temperature.</p>
+<p>Some devices, like the Shelly2.5 have multiple switch inputs and outputs. These need to be added individually.</p>
+<h3 id=light-vs-switch-setup>Light vs Switch setup <a href=#light-vs-switch-setup>¶</a></h3><p>The examples below assume the Shelly relay was connected to a lamp.
+However, you can use the relay to toggle a wall socket, heater, swimming pool pump, garden watering system, &mldr;</p>
+<p>Since a Shelly relay (e.g. Shelly 1 or 2.5) only supports on/off toggling, so it doesn&rsquo;t <em>really</em> matter whether it&rsquo;s configured as a light or a switch.</p>
+<p>If you want Home Assistant to recognise the Shelly purely as an on-off switch, move the config below to <code>switches/room_x/fan.yaml</code> (for example).</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /lights/room_x/lamps.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Lamp room X - Shelly 1PM</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;on&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;off&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/relay/0</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/relay/0/command</span><span class=w>
+</span><span class=w>  </span><span class=nt>json_attributes_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/info</span><span class=w>
+</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c>## /lights/room_y/lamps.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Lamp room Ya - Shelly 2.5</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room Y - lamp A</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;on&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;off&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-[SHELLY ID]/relay/0</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-[SHELLY ID]/relay/0/command</span><span class=w>
+</span><span class=w>  </span><span class=nt>json_attributes_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-[SHELLY ID]/info</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Lamp room Yb - Shelly 2.5</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room Y - lamp B</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;on&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;off&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-[SHELLY ID]/relay/1</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-[SHELLY ID]/relay/1/command</span><span class=w>
+</span><span class=w>  </span><span class=nt>json_attributes_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-[SHELLY ID]/info</span><span class=w>
+</span></code></pre></div><h3 id=binary-sensors>Binary sensors <a href=#binary-sensors>¶</a></h3><p>These binary sensors allow you to create automations for a long-push on the connected button, but also give you some insights on the device state.</p>
+<p>Again, repeat add extra relays if needed by copying the relevant sections and changing the relay number.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c># /binsensors/room_x/lamps.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Longpush</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - longpush</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/longpush/0</span><span class=w>
+</span><span class=w></span><span class=c># Switch state</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - switch</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/input/0</span><span class=w>
+</span><span class=w></span><span class=c># Over temp</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - overtemp</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/overtemperature</span><span class=w>
+</span><span class=w></span><span class=c># Firmware upgrade</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - firmware</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/announce</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value_json.new_fw }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></code></pre></div><h3 id=sensors>Sensors <a href=#sensors>¶</a></h3><p>The <code>input_event</code> sensor again allows you to build automations based on the actions of the connected switch.
+The remaining sensors give you insights on the device status.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/room_x/lamp.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Input type</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - input</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/input_event/0</span><span class=w>
+</span><span class=w></span><span class=c># Device temperature °C</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;°C&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:temperature-celcius</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/temperature</span><span class=w>
+</span><span class=w></span><span class=c># Device temperature °F</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - temperature F</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;°F&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:temperature-fahrenheit</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/temperature_f</span><span class=w>
+</span><span class=w></span><span class=c># Power consumption (live)</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - power</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;W&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:lightning-bolt-outline</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/relay/0/power</span><span class=w>
+</span><span class=w></span><span class=c># Power consumption (since reboot)</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;Wh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value | float / 60 }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:lightning-bolt</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/relay/0/energy</span><span class=w>
+</span><span class=w></span><span class=c># Overpower</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - overpower</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;W&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:flash-alert</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/overpower_value</span><span class=w>
+</span></code></pre></div><h3 id=external-sensors>External sensors <a href=#external-sensors>¶</a></h3><p>If you have external temperature or humidity sensors connected to the Shelly 1PM, you can also read their values over MQTT.</p>
+<h4 id=temperature>Temperature <a href=#temperature>¶</a></h4><p>Up to 3 DS1820 sensors can be added to the Shelly 1PM.<br>
+You can read their values from the sensor IDs 0, 1, 2.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/room_x/lamp.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Temp sensor 0 °C</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - temperature 0</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;°C&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:home-thermometer-outline</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/ext_temperature/0</span><span class=w>
+</span><span class=w></span><span class=c># Temp sensor 0 °F</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - temperature 0 F</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;°F&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:home-thermometer-outline</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/ext_temperature_f/0</span><span class=w>
+</span></code></pre></div><h4 id=humidity>Humidity <a href=#humidity>¶</a></h4><p>If a DHT22 sensor is added, it&rsquo;ll also report on humdity.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/room_x/lamp.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Humidity sensor 0 %</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - humidity 0</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>humidity</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;%&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:water-percent</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/ext_humidity/0</span><span class=w>
+</span></code></pre></div><h4 id=combined-sensor-output>Combined sensor output <a href=#combined-sensor-output>¶</a></h4><p>Returns the output of the attached sensors along with their hardware ID in one JSON payload.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/room_x/lamp.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># External tmp sensors °C</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - temperatures</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;°C&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:home-thermometer-outline</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/ext_temperatures</span><span class=w>
+</span><span class=w>  </span><span class=nt>json_attributes_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/ext_temperatures</span><span class=w>
+</span><span class=w></span><span class=c># External tmp sensors °F</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - temperatures F</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;°F&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:home-thermometer-outline</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/ext_temperatures_f</span><span class=w>
+</span><span class=w>  </span><span class=nt>json_attributes_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/ext_temperatures_f</span><span class=w>
+</span><span class=w></span><span class=c># External humidity sensors</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - humidities</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>humidity</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;%&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:water-percent</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/ext_humidities</span><span class=w>
+</span><span class=w>  </span><span class=nt>json_attributes_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shelly1pm-[SHELLY ID]/ext_humidities</span><span class=w>
+</span></code></pre></div><h2 id=shelly-25>Shelly 2.5 <a href=#shelly-25>¶</a></h2><p>The Shelly 2.5 has 2 switch inputs and 2 relays.
+These relays can be used to control 2 different loads (e.g. 2 lamps in a room) or to control the up/down motion of rolling shutters.<br>
+Make sure to set the device in the correct mode!</p>
+<h3 id=relay-mode>Relay Mode <a href=#relay-mode>¶</a></h3><p>The Shelly 2.5 works similar as the 1PM while in Relay Mode.<br>
+Just note that the 2.5 has 2 switch inputs and 2 relay outputs, so you&rsquo;d need to duplicate configs specific to those, one linked to input/relay <code>0</code> and to other to input/relay <code>1</code>.</p>
+<p>Controlling the 2 relays:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /switches/room_abc/shelly_25.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Shelly 2.5 - relay 1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;on&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;off&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/relay/0</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/relay/0/command</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Shelly 2.5 - relay 2</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;on&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;off&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/relay/1</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/relay/1/command</span><span class=w>
+</span></code></pre></div><p>Read inputs on the 2 switch inputs:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/room_abc/shelly_25.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Shelly 2.5 - input 1</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/input_event/0</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Shelly 2.5 - input 2</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/input_event/1</span><span class=w>
+</span></code></pre></div><p>Longpush detection on the 2 switch inputs:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /binsensors/room_abc/shelly_25.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Shelly 2.5 - longpush 1</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/longpush/0</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Shelly 2.5 - longpush 2</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/longpush/1</span><span class=w>
+</span></code></pre></div><h3 id=roller-mode>Roller Mode <a href=#roller-mode>¶</a></h3><p>Home Assistant has the <code>cover</code> integration, which we can use to integrate our Shelly 2.5 in Roller Mode.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=nt>cover</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters</span><span class=w>
+</span><span class=w>    </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/roller/0/command</span><span class=w> </span><span class=c># rc, open, close and stop</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/roller/0</span><span class=w> </span><span class=c># open, close, stop</span><span class=w>
+</span><span class=w>    </span><span class=nt>position_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/roller/0/pos</span><span class=w>
+</span><span class=w>    </span><span class=nt>set_position_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/roller/0/command/pos</span><span class=w>
+</span><span class=w>    </span><span class=nt>availability_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/online</span><span class=w>
+</span><span class=w>    </span><span class=nt>json_attributes_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/info</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_open</span><span class=p>:</span><span class=w> </span><span class=l>open</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_close</span><span class=p>:</span><span class=w> </span><span class=l>close</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_stop</span><span class=p>:</span><span class=w> </span><span class=l>stop</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_opening</span><span class=p>:</span><span class=w> </span><span class=l>open</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_closing</span><span class=p>:</span><span class=w> </span><span class=l>close</span><span class=w>
+</span><span class=w>    </span><span class=nt>position_open</span><span class=p>:</span><span class=w> </span><span class=m>100</span><span class=w>
+</span><span class=w>    </span><span class=nt>position_closed</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_available</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_not_available</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span><span class=w>    </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=nt>switch</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters - Calibrate</span><span class=w>
+</span><span class=w>    </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/roller/0/command</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=l>rc</span><span class=w>
+</span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters - FW upgrade</span><span class=w>
+</span><span class=w>    </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/command</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=l>update_fw</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=nt>binary_sensor</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters - switch open</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/input/0</span><span class=w>
+</span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters - switch close</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/input/1</span><span class=w>
+</span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters - overtemperature</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/overtemperature</span><span class=w>
+</span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters - firmware available</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>    </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span><span class=w>    </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value_json.new_fw }}&#34;</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/announce</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=nt>sensor</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters - temperature</span><span class=w>
+</span><span class=w>    </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
+</span><span class=w>    </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;°C&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/temperature</span><span class=w>
+</span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters - power consumption</span><span class=w>
+</span><span class=w>    </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>    </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;W&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/roller/0/power</span><span class=w>
+</span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters - energy consumption since last reboot</span><span class=w>
+</span><span class=w>    </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>    </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;Wh&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value | float / 60 }}&#34;</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/roller/0/energy</span><span class=w>
+</span></code></pre></div><h2 id=shelly-i3>Shelly i3 <a href=#shelly-i3>¶</a></h2><h3 id=sensors-1>Sensors <a href=#sensors-1>¶</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/room_z/switch.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Shelly i3 - Input 1</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room Z - switch - input 1&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyix3-[SHELLY ID]/input_event/0&#34;</span><span class=w>
+</span><span class=w></span><span class=c># Shelly i3 - Input 2</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room Z - switch - input 2&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyix3-[SHELLY ID]/input_event/1&#34;</span><span class=w>
+</span><span class=w></span><span class=c># Shelly i3 - Input 3</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room Z - switch - input 3&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyix3-[SHELLY ID]/input_event/2&#34;</span><span class=w>
+</span></code></pre></div><h3 id=binary-sensors-1>Binary Sensors <a href=#binary-sensors-1>¶</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /binsensors/room_z/switch.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Online</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room Z - switch&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyix3-[SHELLY ID]/online&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>json_attributes_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyix3-[SHELLY ID]/info&#34;</span><span class=w>
+</span><span class=w></span><span class=c># Switch 1</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room Z - switch - switch 1&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyix3-[SHELLY ID]/input/0&#34;</span><span class=w>
+</span><span class=w></span><span class=c># Switch 2</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room Z - switch - switch 2&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyix3-[SHELLY ID]/input/1&#34;</span><span class=w>
+</span><span class=w></span><span class=c># Switch 3</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room Z - switch - switch 3&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyix3-[SHELLY ID]/input/2&#34;</span><span class=w>
+</span><span class=w></span><span class=c># Firmware upgrade</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room Z - switch - firmware&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyix3-[SHELLY ID]/announce&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value_json.new_fw }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></code></pre></div><h2 id=shelly-plug-s>Shelly Plug (S) <a href=#shelly-plug-s>¶</a></h2><p>The Shelly Plug S added a temperature sensor and overtemperature warning, which the Shelly Plug doesn&rsquo;t.</p>
+<p>Also note the small difference in the model naming when entering the MQTT topic for the Shelly Plug and Shelly Plugs S (<code>shellyplug</code> / <code>shellyplug-s</code>).</p>
+<h3 id=light-vs-switch-setup-1>Light vs Switch setup <a href=#light-vs-switch-setup-1>¶</a></h3><p>Again, the template below is for configuring the entity to show up as a lamp in HA.
+E.g. when a floorlamp is connected to the Shelly Plug (S).</p>
+<p>If the Plug (S) controls something different, like a fan, you may want to add the config below to a file in the <code>switches</code> folder.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /lights/room_x/floorlamp.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - floorlamp</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;on&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;off&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyplug-s-[SHELLY ID]/relay/0&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyplug-s-[SHELLY ID]/relay/0/command&#34;</span><span class=w>
+</span></code></pre></div><h3 id=binary-sensors-2>Binary Sensors <a href=#binary-sensors-2>¶</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /binsensors/room_x/floorlamp.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Online</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room X - floorlamp&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyplug-s-[SHELLY ID]/online&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>json_attributes_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyplug-s-[SHELLY ID]/info&#34;</span><span class=w>
+</span><span class=w></span><span class=c># Switch</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room X - floorlamp - switch&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;on&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;off&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyplug-s-[SHELLY ID]/relay/0&#34;</span><span class=w>
+</span><span class=w></span><span class=c># Overtemp (Shelly Plug S only)</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Room X - floorlamp - overtemperature&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyplug-s-[SHELLY ID]/overtemperature&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span></code></pre></div><h3 id=sensors-2>Sensors <a href=#sensors-2>¶</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/room_x/floorlamp.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Power consumption</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - floorlamp - power</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;W&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:lightning-bolt-outline</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyplug-s-[SHELLY ID]/relay/0/power</span><span class=w>
+</span><span class=w></span><span class=c># Energy consumption</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - floorlamp - energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;Wh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value | float / 60 }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:lightning-bolt-outline</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyplug-s-[SHELLY ID]/relay/0/energy</span><span class=w>
+</span><span class=w></span><span class=c># Overpower value</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - floorlamp - overpower</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;W&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:flash-alert-outline</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyplug-s-[SHELLY ID]/overpower_value</span><span class=w>
+</span><span class=w></span><span class=c># Temperature °C (Shelly Plug S only)</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - floorlamp - temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;°C&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:temperature-celsius</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyplug-s-[SHELLY ID]/temperature</span><span class=w>
+</span><span class=w></span><span class=c># Temperature °F (Shelly Plug S only)</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - floorlamp - temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;°F&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:temperature-fahrenheit</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyplug-s-[SHELLY ID]/temperature_f</span><span class=w>
+</span></code></pre></div><h2 id=shelly-dw2>Shelly DW2 <a href=#shelly-dw2>¶</a></h2><p>Shelly&rsquo;s Door/Window sensor.</p>
+<h3 id=sensors-3>Sensors <a href=#sensors-3>¶</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/doors/frontdoor.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Front door - lux&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;lm&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>illuminance</span><span class=w>
+</span><span class=w>  </span><span class=c>#icon: mdi:theme-light-dark</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellydw2-[SHELLY ID]/sensor/lux&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Front door - tilt&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;°&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:format-rotate-90</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellydw2-[SHELLY ID]/sensor/tilt&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Front door - batterij&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;%&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>battery</span><span class=w>
+</span><span class=w>  </span><span class=c>#icon: mdi:battery</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellydw2-[SHELLY ID]/sensor/battery&#34;</span><span class=w>
+</span></code></pre></div><h3 id=binary-sensors-3>Binary Sensors <a href=#binary-sensors-3>¶</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /binsensors/doors/frontdoor.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Front door - Status&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>door</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;open&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;close&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellydw2-[SHELLY ID]/sensor/state&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Front door - Vibration&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>vibration</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellydw2-[SHELLY ID]/sensor/vibration&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Front door - Firmware&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellydw2-[SHELLY ID]/announce&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value_json.new_fw }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></code></pre></div><h2 id=shelly-em>Shelly EM <a href=#shelly-em>¶</a></h2><p>Shelly Energy Meter</p>
+<h3 id=sensors-4>Sensors <a href=#sensors-4>¶</a></h3><p>The EM has 2 probes.
+The config below is for the 1st probe.
+Copy the all parts in the config for <em>Phase A</em> and replace <code>emeter/0</code> with <code>emeter/1</code> for <em>Phase B</em>.</p>
+<p>The &lsquo;current&rsquo; counters reset on device reboot.<br>
+The &lsquo;total&rsquo; counters are stored in the non-volatile memory.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/energy/shelly_em.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Phase A - Energy&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value|float / 60000 }}&#34;</span><span class=w> </span><span class=c># Wm to kWh</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/energy&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Phase A - Returned Energy&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value|float / 60000 }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/returned_energy&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Phase A - Total Energy&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value|float / 60000 }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/total_energy&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Phase A - Total Returned Energy&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value|float / 60000 }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/total_returned&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Phase A - Power&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;W&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/power&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Phase A - Reactive Power&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;W&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/reactive_power&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Phase A - Voltage&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;V&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>voltage</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/voltage&#34;</span><span class=w>
+</span></code></pre></div><h3 id=binary-sensors-4>Binary Sensors <a href=#binary-sensors-4>¶</a></h3><p>Note: this part is untested.<br>
+If this doesn&rsquo;t work, and you know how to fix it, reach out to me on <a href=https://twitter.com/DezeStijn title="@DezeStijn on Twitter" target=_blank rel=noopener>Twitter</a>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /binsensors/energy/shelly_em.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Relay Overpower&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/relay/0&#34;</span><span class=w> </span><span class=c># on, off, or overpower</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span>{{<span class=w> </span><span class=s1>&#39;on&#39;</span><span class=w> </span><span class=l>if value == &#39;overpower&#39; else &#39;off&#39; }}</span><span class=w>
+</span></code></pre></div><h3 id=switches>Switches <a href=#switches>¶</a></h3><p>Note: the value template part is untested.<br>
+If this doesn&rsquo;t work, and you know how to fix it, reach out to me on <a href=https://twitter.com/DezeStijn title="@DezeStijn on Twitter" target=_blank rel=noopener>Twitter</a>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /switches/energy/shelly_em.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Relay&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/relay/0/command&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/relay/0&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span>{{<span class=w> </span><span class=s1>&#39;on&#39;</span><span class=w> </span><span class=l>if value == &#39;on&#39; else &#39;off&#39; }}</span><span class=w> </span><span class=c># Test for capturing &#39;overpower&#39; state</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Phase A - Reset Totals&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>optimistic</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;reset_totals&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/command&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;EM - Reset Device Data&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>optimistic</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;reset_data&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/command&#34;</span><span class=w>
+</span></code></pre></div><h2 id=shelly-3em>Shelly 3EM <a href=#shelly-3em>¶</a></h2><p>Shelly 3-phase Energy Meter</p>
+<h3 id=sensors-5>Sensors <a href=#sensors-5>¶</a></h3><p>The 3EM has 3 probes.
+The config below is for the 1st probe.
+Copy the all parts in the config for <em>Phase A</em> and replace <code>emeter/0</code> with <code>emeter/1</code> or <code>emeter/2</code> for <em>Phase B</em> and <em>Phase C</em> respectively.</p>
+<p>The &lsquo;current&rsquo; counters reset on device reboot.<br>
+The &lsquo;total&rsquo; counters are stored in the non-volatile memory.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/energy/shelly_3em.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Phase A - Energy&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value|float / 60000 }}&#34;</span><span class=w> </span><span class=c># Wm to kWh</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/energy&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Phase A - Returned Energy&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value|float / 60000 }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/returned_energy&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Phase A - Total Energy&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value|float / 60000 }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/total_energy&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Phase A - Total Returned Energy&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value|float / 60000 }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/total_returned&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Phase A - Power&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;W&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/power&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Phase A - Voltage&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;V&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>voltage</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/voltage&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Phase A - Current&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;A&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>current</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/current&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Phase A - Power Factor&#34;</span><span class=w>
+</span><span class=w>  </span><span class=c># If the PF is returned as a value between 0.0 and 1.0</span><span class=w>
+</span><span class=w>  </span><span class=c># instead of a % value between 0 and 100</span><span class=w>
+</span><span class=w>  </span><span class=c># uncomment the line below</span><span class=w>
+</span><span class=w>  </span><span class=c>#value_template: &#34;{{ value|float * 100 }}&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;%&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power_factor</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/pf&#34;</span><span class=w>
+</span></code></pre></div><h3 id=binary-sensors-5>Binary Sensors <a href=#binary-sensors-5>¶</a></h3><p>Note: this part is untested.<br>
+If this doesn&rsquo;t work, and you know how to fix it, reach out to me on <a href=https://twitter.com/DezeStijn title="@DezeStijn on Twitter" target=_blank rel=noopener>Twitter</a>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /binsensors/energy/shelly_3em.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Relay Overpower&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/relay/0&#34;</span><span class=w> </span><span class=c># on, off, or overpower</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span>{{<span class=w> </span><span class=s1>&#39;on&#39;</span><span class=w> </span><span class=l>if value == &#39;overpower&#39; else &#39;off&#39; }}</span><span class=w>
+</span></code></pre></div><h3 id=switches-1>Switches <a href=#switches-1>¶</a></h3><p>Note: the value template part is untested.<br>
+If this doesn&rsquo;t work, and you know how to fix it, reach out to me on <a href=https://twitter.com/DezeStijn title="@DezeStijn on Twitter" target=_blank rel=noopener>Twitter</a>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /switches/energy/shelly_3em.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Relay&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/relay/0/command&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/relay/0&#34;</span><span class=w>
+</span><span class=w>  </span><span class=c># Remove the line below if the value_template doesn&#39;t function properly</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span>{{<span class=w> </span><span class=s1>&#39;on&#39;</span><span class=w> </span><span class=l>if value == &#39;on&#39; else &#39;off&#39; }}</span><span class=w> </span><span class=c># Test for capturing &#39;overpower&#39; state</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Phase A - Reset Totals&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>optimistic</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;reset_totals&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/command&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3EM - Reset Device Data&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>optimistic</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;reset_data&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/command&#34;</span><span class=w>
+</span></code></pre></div><h2 id=shelly-4pro>Shelly 4Pro <a href=#shelly-4pro>¶</a></h2><p>Shelly 4-channel DIN mountable relay</p>
+<h3 id=sensors-6>Sensors <a href=#sensors-6>¶</a></h3><p>The 4Pro has 4 channels.
+The config below is for the 1st channel.
+Copy the all parts in the config for <em>Channel 1</em>
+and replace <code>input/0</code> and <code>relay/0</code> with <code>input/1</code> and <code>relay/1</code>, up to <code>input/3</code> and <code>relay/3</code> for channels 2 to 4 respectively.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /sensors/din/shelly_4pro.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;4Pro - Channel 1 - Power&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;W&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shelly4pro-&lt;deviceid&gt;/relay/0/power&#34;</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;4Pro - Channel 1 - Energy&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value|float / 60000 }}&#34;</span><span class=w> </span><span class=c># Wm to kWh</span><span class=w>
+</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shelly4pro-&lt;deviceid&gt;/relay/0/energy&#34;</span><span class=w>
+</span></code></pre></div><h3 id=binary-sensors-6>Binary Sensors <a href=#binary-sensors-6>¶</a></h3><p>Note: this part is untested.<br>
+If this doesn&rsquo;t work, and you know how to fix it, reach out to me on <a href=https://twitter.com/DezeStijn title="@DezeStijn on Twitter" target=_blank rel=noopener>Twitter</a>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /binsensors/din/shelly_4pro.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;4Pro - Channel 1 Overpower&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shelly4pro-&lt;deviceid&gt;/relay/0&#34;</span><span class=w> </span><span class=c># on, off, or overpower</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span>{{<span class=w> </span><span class=s1>&#39;on&#39;</span><span class=w> </span><span class=l>if value == &#39;overpower&#39; else &#39;off&#39; }}</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;4Pro - Channel 1 Input&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shelly4pro-&lt;deviceid&gt;/input/0&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span></code></pre></div><h3 id=switches-2>Switches <a href=#switches-2>¶</a></h3><p>Note: the value template part is untested.<br>
+If this doesn&rsquo;t work, and you know how to fix it, reach out to me on <a href=https://twitter.com/DezeStijn title="@DezeStijn on Twitter" target=_blank rel=noopener>Twitter</a>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /switches/din/shelly_4pro.yaml</span><span class=w>
+</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;4Pro - Channel 1&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>604800</span><span class=w>
+</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span><span class=w>  </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shelly4pro-&lt;deviceid&gt;/relay/0/command&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;on&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;off&#34;</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shelly4pro-&lt;deviceid&gt;/relay/0&#34;</span><span class=w>
+</span><span class=w>  </span><span class=c># Remove the line below if the value_template doesn&#39;t function properly</span><span class=w>
+</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span>{{<span class=w> </span><span class=s1>&#39;on&#39;</span><span class=w> </span><span class=l>if value == &#39;on&#39; else &#39;off&#39; }}</span><span class=w> </span><span class=c># Test for capturing &#39;overpower&#39; state</span><span class=w>
+</span></code></pre></div><h2 id=groups>Groups <a href=#groups>¶</a></h2><p>I like grouping all entities together for a quick overview</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c>## /groups.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Room X</span><span class=w>
+</span><span class=w></span><span class=c>## Shelly 1PM</span><span class=w>
+</span><span class=w></span><span class=nt>shelly_room_x_lamp</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Shelly Room X lamp</span><span class=w>
+</span><span class=w>  </span><span class=nt>entities</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span>- <span class=l>light.room_x_lamp</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_input</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_temperature</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_temperature_f</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_power</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_energy</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_overpower</span><span class=w>
+</span><span class=w>  </span>- <span class=l>binary_sensor.room_x_lamp_longpush</span><span class=w>
+</span><span class=w>  </span>- <span class=l>binary_sensor.room_x_lamp_switch</span><span class=w>
+</span><span class=w>  </span>- <span class=l>binary_sensor.room_x_lamp_overtemp</span><span class=w>
+</span><span class=w>  </span>- <span class=l>binary_sensor.room_x_lamp_firmware</span><span class=w>
+</span><span class=w>  </span><span class=c># External sensors</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_temperature_0</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_temperature_0_f</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_humidity_0</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_temperatures</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_temperatures_f</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_x_lamp_humidities</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Room Z</span><span class=w>
+</span><span class=w></span><span class=c>## Shelly i3</span><span class=w>
+</span><span class=w></span><span class=nt>shelly_room_z_switch</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Shelly Room Z i3</span><span class=w>
+</span><span class=w>  </span><span class=nt>entities</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_z_switch_input_1</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_z_switch_input_2</span><span class=w>
+</span><span class=w>  </span>- <span class=l>sensor.room_z_switch_input_3</span><span class=w>
+</span><span class=w>  </span>- <span class=l>binary_sensor.room_z_switch</span><span class=w>
+</span><span class=w>  </span>- <span class=l>binary_sensor.room_z_switch_switch_1</span><span class=w>
+</span><span class=w>  </span>- <span class=l>binary_sensor.room_z_switch_switch_2</span><span class=w>
+</span><span class=w>  </span>- <span class=l>binary_sensor.room_z_switch_switch_3</span><span class=w>
+</span><span class=w>  </span>- <span class=l>binary_sensor.room_z_switch_firmware</span><span class=w>
+</span></code></pre></div><h2 id=customisations>Customisations <a href=#customisations>¶</a></h2><h3 id=icons>Icons <a href=#icons>¶</a></h3><p>Setting icons for platforms that don&rsquo;t support it out-of-the-box</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=c># /customisations/customize_glob.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Longpush</span><span class=w>
+</span><span class=w></span><span class=s2>&#34;binary_sensor.*_longpush&#34;</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:gesture-tap-hold</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Switch state</span><span class=w>
+</span><span class=w></span><span class=s2>&#34;binary_sensor.*_switch&#34;</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:light-switch</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Over temperature</span><span class=w>
+</span><span class=w></span><span class=s2>&#34;binary_sensor.*_overtemperature&#34;</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:thermometer-alert</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Firmware upgrade</span><span class=w>
+</span><span class=w></span><span class=s2>&#34;binary_sensor.*_firmware&#34;</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:upload</span><span class=w>
+</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># /customisations/customize.yaml</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=c># Lights</span><span class=w>
+</span><span class=w></span><span class=nt>light.all_lights</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:lightbulb-group</span><span class=w>
+</span><span class=w>
+</span></code></pre></div><h2 id=changelog>Changelog <a href=#changelog>¶</a></h2><p><strong>2021-08-30</strong></p>
+<ul>
+<li>Note on Shelly Gen 2 devices</li>
+</ul>
+<p><strong>2021-04-26</strong></p>
+<ul>
+<li>Added reference to <a href=https://github.com/bieniu/ha-shellies-discovery title="bieniu/ha-shellies-discovery on GitHub" target=_blank rel=noopener>ha-shellies-discovery</a></li>
+</ul>
+<p><strong>2021-03-21</strong></p>
+<ul>
+<li>Added template for Shelly EM</li>
+<li>Added template for Shelly 3EM</li>
+<li>Added template for Shelly 4Pro</li>
+</ul>
+<p><strong>2020-11-09</strong></p>
+<ul>
+<li>Added template for Shelly i3</li>
+<li>Added template for Shelly Plug S</li>
+</ul>
+</div>
+</article>
+<hr>
+<div class=post-info>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
+<span class=tag><a href=https://sequr.be/tags/home-automation/>Home Automation</a></span>
+<span class=tag><a href=https://sequr.be/tags/home-assistant/>Home Assistant</a></span>
+<span class=tag><a href=https://sequr.be/tags/mqtt/>MQTT</a></span>
+<span class=tag><a href=https://sequr.be/tags/shelly/>Shelly</a></span>
+<span class=tag><a href=https://sequr.be/tags/templates/>templates</a></span>
+<span class=tag><a href=https://sequr.be/tags/shellies-discovery/>shellies-discovery</a></span>
+<span class=tag><a href=https://sequr.be/tags/hacs/>HACS</a></span>
+</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+<span class=tag><a href=https://sequr.be/categories/home-automation/>Home Automation</a></span>
+</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+2530 Words
+</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+2020-10-26
+(Last updated: 2021-08-30)
+</p>
+</div>
+<hr>
+<div class=sharing-buttons>
+<a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2020%2f10%2fmqtt-templates-for-shelly-devices%2f" target=_blank rel=noopener aria-label title="Share on facebook">
+<div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f10%2fmqtt-templates-for-shelly-devices%2f" target=_blank rel=noopener aria-label title="Share on twitter">
+<div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+<div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f10%2fmqtt-templates-for-shelly-devices%2f&resubmit=true&title=MQTT%20templates%20for%20Shelly%20devices" target=_blank rel=noopener aria-label title="Share on reddit">
+<div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="whatsapp://send?text=MQTT%20templates%20for%20Shelly%20devices%20https%3a%2f%2fsequr.be%2fblog%2f2020%2f10%2fmqtt-templates-for-shelly-devices%2f" target=_blank rel=noopener aria-label title="Share on whatsapp">
+<div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg>
+</div>
+</div>
+</a>
+</div>
+<div class=pagination>
+<div class=pagination__title>
+<span class=pagination__title-h></span>
+<hr>
+</div>
+<div class=pagination__buttons>
+<span class="button previous">
+<a href=https://sequr.be/blog/2020/11/adding-xiaomi-aqara-door-and-window-sensor-to-ha-via-deconz-conbee-ii/>
+<span class=button__icon>←</span>
+<span class=button__text>Adding Xiaomi Aqara Door and Window Sensor to HA via deCONZ (ConBee II)</span>
+</a>
+</span>
+<span class="button next">
+<a href=https://sequr.be/blog/2020/10/getting-started-with-mqtt-and-home-assistant-and-shelly/>
+<span class=button__text>Getting started with MQTT and Home Assistant (and Shelly)</span>
+<span class=button__icon>→</span>
+</a>
+</span>
+</div>
+</div>
+</main>
+</div>
+<footer class=footer>
+<div class=footer__inner>
+<div class=footer__content>
+<span>&copy; 2019-2021</span>
+<span><a href=https://sequr.be>DezeStijn</a></span>
+<span>
+<a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
+</a>
+</span>
+</div>
+</div>
+<div class=footer__inner>
+<div class=footer__content>
+<small>
+<span>Powered by <a href='\"http://gohugo.io\"'>Hugo</a>.</span>
+<span>Made with &#10084; by <a href='\"https://github.com/rhazdon\"'>Djordje Atlialp</a></span>
+</small>
+</div>
+</div>
+</footer>
+</div>
+<script type=text/javascript src=https://sequr.be/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
+</body>
+</html>

