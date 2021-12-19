@@ -8,29 +8,29 @@
 <meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Challenge,felli0t,HackTheBox.eu,Misc">
 <meta name=robots content="noodp">
 <meta name=theme-color content="#252627">
-<link rel=canonical href=https://blog.sequr.be/blog/2019/09/longbottoms-locker/>
+<link rel=canonical href=https://sequr.be/blog/2019/09/longbottoms-locker/>
 <title>
 Longbottom’s Locker :: Sequr
 </title>
 <link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css>
-<link rel=stylesheet href=https://blog.sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css>
-<link rel=stylesheet type=text/css href=https://blog.sequr.be/css/table.css>
-<link rel=stylesheet type=text/css href=https://blog.sequr.be/css/menu.css>
-<link rel=apple-touch-icon sizes=180x180 href=https://blog.sequr.be/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=https://blog.sequr.be/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=https://blog.sequr.be/favicon-16x16.png>
-<link rel=manifest href=https://blog.sequr.be/site.webmanifest>
-<link rel=mask-icon href=https://blog.sequr.be/safari-pinned-tab.svg color=#e68101>
-<link rel="shortcut icon" href=https://blog.sequr.be/favicon.ico>
+<link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css>
+<link rel=stylesheet type=text/css href=https://sequr.be/css/table.css>
+<link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css>
+<link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png>
+<link rel=manifest href=https://sequr.be/site.webmanifest>
+<link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101>
+<link rel="shortcut icon" href=https://sequr.be/favicon.ico>
 <meta name=msapplication-TileColor content="#e68101">
 <meta name=theme-color content="#e68101">
 <meta itemprop=name content="Longbottom’s Locker">
 <meta itemprop=description content="Write-up of the Longbottom&rsquo;s Locker misc challenge by felli0t on HackTheBox.eu. Break into Longbottom&rsquo;s vault and steal his secrets."><meta itemprop=datePublished content="2019-09-04T15:18:38+00:00">
 <meta itemprop=dateModified content="2019-09-04T15:18:38+00:00">
-<meta itemprop=wordCount content="726"><meta itemprop=image content="https://blog.sequr.be/img/htb-felli0t.png">
+<meta itemprop=wordCount content="726"><meta itemprop=image content="https://sequr.be/img/htb-felli0t.png">
 <meta itemprop=keywords content="Challenge,felli0t,HackTheBox.eu,Misc,">
 <meta name=twitter:card content="summary_large_image">
-<meta name=twitter:image content="https://blog.sequr.be/img/htb-felli0t.png">
+<meta name=twitter:image content="https://sequr.be/img/htb-felli0t.png">
 <meta name=twitter:title content="Longbottom’s Locker">
 <meta name=twitter:description content="Write-up of the Longbottom&rsquo;s Locker misc challenge by felli0t on HackTheBox.eu. Break into Longbottom&rsquo;s vault and steal his secrets.">
 <meta property="article:section" content="Hack The Box">
@@ -41,7 +41,7 @@ Longbottom’s Locker :: Sequr
 <div class=container>
 <header class=header>
 <span class=header__inner>
-<a href=https://blog.sequr.be style=text-decoration:none>
+<a href=https://sequr.be style=text-decoration:none>
 <div class=logo>
 <span class=logo__mark>$</span>
 <span class=logo__text>nc sequr.be 1337</span>
@@ -51,7 +51,7 @@ Longbottom’s Locker :: Sequr
 </a>
 <span class=header__right>
 <nav class=menu>
-<ul class=menu__inner><li><a href=https://blog.sequr.be/blog/>Blog</a></li><li><a href=https://blog.sequr.be/about/>About</a></li><li><a href=https://blog.sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://blog.sequr.be/privacy/>Privacy</a></li>
+<ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li>
 </ul>
 </nav>
 <span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
@@ -69,7 +69,7 @@ Longbottom’s Locker :: Sequr
 </div>
 <article>
 <h1 class=post-title>
-<a href=https://blog.sequr.be/blog/2019/09/longbottoms-locker/>Longbottom’s Locker</a>
+<a href=https://sequr.be/blog/2019/09/longbottoms-locker/>Longbottom’s Locker</a>
 </h1>
 <div class=post-content>
 <p><strong>Note to fellow-HTBers:</strong> Only write-ups of retired HTB machines or challenges are allowed.</p>
@@ -87,7 +87,7 @@ Archive:  Longbottom<span class=s1>&#39;s_Locker.zip
   inflating: socute.jpg
 </code></pre></div><p>Let&rsquo;s open the index.html in the browser to see what it contains.</p>
 <figure class=center>
-<img src=https://blog.sequr.be/img/htb-longbottom-img1.png>
+<img src=https://sequr.be/img/htb-longbottom-img1.png>
 <figcaption class=center>Longbottom&rsquo;s Locker requires a password</figcaption>
 </figure>
 <p>It looks like we need to find a password.</p>
@@ -124,7 +124,7 @@ Archive:  Longbottom<span class=s1>&#39;s_Locker.zip
 </code></pre></div><p>Let&rsquo;s go back a bit and check what the zip-file contains.</p>
 <p>Note that there&rsquo;s another image file in the zip file, which isn&rsquo;t used in the web application (it&rsquo;s there but commented out).</p>
 <figure class=center>
-<img src=https://blog.sequr.be/img/htb-longbottom-img2.jpg>
+<img src=https://sequr.be/img/htb-longbottom-img2.jpg>
 <figcaption class=center>socute.jpg</figcaption>
 </figure>
 <p>Running strings on the image returns something interesting, it appears there&rsquo;s some data hidden in the image.</p>
@@ -174,14 +174,14 @@ Y88b  d88P Y88b <span class=m>888</span>   <span class=m>888</span>  Y88b <span 
 </span><span class=s2>                                                                    
 </span></code></pre></div>
 <figure class=center>
-<img src=https://blog.sequr.be/img/htb-longbottom-img3.png>
+<img src=https://sequr.be/img/htb-longbottom-img3.png>
 <figcaption class=center>A screenshot of the terminal output</figcaption>
 </figure>
 <h2 id=getting-the-flag>Getting the flag <a href=#getting-the-flag>¶</a></h2><p>We go back to the web application and enter this text as the passphrase. Pay attention to o / O / 0.</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>Gu1d0-v4N-R055Um
 </code></pre></div><p>This passphrase is accepted and we get an alert containing the flag :)</p>
 <figure class=center>
-<img src=https://blog.sequr.be/img/htb-longbottom-img4.png>
+<img src=https://sequr.be/img/htb-longbottom-img4.png>
 <figcaption class=center>Longbottom&rsquo;s Locker - Alert</figcaption>
 </figure>
 <pre tabindex=0><code>HTB{n3v1LL3_Da_burM3s3-pyth0n_sL4y3r}
@@ -191,14 +191,14 @@ Y88b  d88P Y88b <span class=m>888</span>   <span class=m>888</span>  Y88b <span 
 <hr>
 <div class=post-info>
 <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
-<span class=tag><a href=https://blog.sequr.be/tags/challenge/>Challenge</a></span>
-<span class=tag><a href=https://blog.sequr.be/tags/felli0t/>felli0t</a></span>
-<span class=tag><a href=https://blog.sequr.be/tags/hackthebox.eu/>HackTheBox.eu</a></span>
-<span class=tag><a href=https://blog.sequr.be/tags/misc/>Misc</a></span>
+<span class=tag><a href=https://sequr.be/tags/challenge/>Challenge</a></span>
+<span class=tag><a href=https://sequr.be/tags/felli0t/>felli0t</a></span>
+<span class=tag><a href=https://sequr.be/tags/hackthebox.eu/>HackTheBox.eu</a></span>
+<span class=tag><a href=https://sequr.be/tags/misc/>Misc</a></span>
 </p>
 <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-<span class=tag><a href=https://blog.sequr.be/categories/hack-the-box/>Hack The Box</a></span>
-<span class=tag><a href=https://blog.sequr.be/categories/writeup/>Writeup</a></span>
+<span class=tag><a href=https://sequr.be/categories/hack-the-box/>Hack The Box</a></span>
+<span class=tag><a href=https://sequr.be/categories/writeup/>Writeup</a></span>
 </p>
 <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
 726 Words
@@ -209,23 +209,23 @@ Y88b  d88P Y88b <span class=m>888</span>   <span class=m>888</span>  Y88b <span 
 </div>
 <hr>
 <div class=sharing-buttons>
-<a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fblog.sequr.be%2fblog%2f2019%2f09%2flongbottoms-locker%2f" target=_blank rel=noopener aria-label title="Share on facebook">
+<a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2flongbottoms-locker%2f" target=_blank rel=noopener aria-label title="Share on facebook">
 <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
 </div>
 </div>
 </a>
-<a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fblog.sequr.be%2fblog%2f2019%2f09%2flongbottoms-locker%2f" target=_blank rel=noopener aria-label title="Share on twitter">
+<a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2flongbottoms-locker%2f" target=_blank rel=noopener aria-label title="Share on twitter">
 <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
 <div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg>
 </div>
 </div>
 </a>
-<a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fblog.sequr.be%2fblog%2f2019%2f09%2flongbottoms-locker%2f&resubmit=true&title=Longbottom%e2%80%99s%20Locker" target=_blank rel=noopener aria-label title="Share on reddit">
+<a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2flongbottoms-locker%2f&resubmit=true&title=Longbottom%e2%80%99s%20Locker" target=_blank rel=noopener aria-label title="Share on reddit">
 <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg>
 </div>
 </div>
 </a>
-<a class=resp-sharing-button__link href="whatsapp://send?text=Longbottom%e2%80%99s%20Locker%20https%3a%2f%2fblog.sequr.be%2fblog%2f2019%2f09%2flongbottoms-locker%2f" target=_blank rel=noopener aria-label title="Share on whatsapp">
+<a class=resp-sharing-button__link href="whatsapp://send?text=Longbottom%e2%80%99s%20Locker%20https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2flongbottoms-locker%2f" target=_blank rel=noopener aria-label title="Share on whatsapp">
 <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg>
 </div>
 </div>
@@ -238,13 +238,13 @@ Y88b  d88P Y88b <span class=m>888</span>   <span class=m>888</span>  Y88b <span 
 </div>
 <div class=pagination__buttons>
 <span class="button previous">
-<a href=https://blog.sequr.be/blog/2019/09/blackhole/>
+<a href=https://sequr.be/blog/2019/09/blackhole/>
 <span class=button__icon>←</span>
 <span class=button__text>Blackhole</span>
 </a>
 </span>
 <span class="button next">
-<a href=https://blog.sequr.be/blog/2019/09/eternal-loop/>
+<a href=https://sequr.be/blog/2019/09/eternal-loop/>
 <span class=button__text>Eternal Loop</span>
 <span class=button__icon>→</span>
 </a>
@@ -257,9 +257,9 @@ Y88b  d88P Y88b <span class=m>888</span>   <span class=m>888</span>  Y88b <span 
 <div class=footer__inner>
 <div class=footer__content>
 <span>&copy; 2019-2021</span>
-<span><a href=https://blog.sequr.be>DezeStijn</a></span>
+<span><a href=https://sequr.be>DezeStijn</a></span>
 <span>
-<a href=https://blog.sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
+<a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
 </a>
 </span>
 </div>
@@ -274,6 +274,6 @@ Y88b  d88P Y88b <span class=m>888</span>   <span class=m>888</span>  Y88b <span 
 </div>
 </footer>
 </div>
-<script type=text/javascript src=https://blog.sequr.be/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
+<script type=text/javascript src=https://sequr.be/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
 </body>
 </html>
