@@ -26,7 +26,7 @@ MQTT templates for Shelly devices :: Sequr
 <meta name=theme-color content="#e68101">
 <meta itemprop=name content="MQTT templates for Shelly devices">
 <meta itemprop=description content="Getting started with MQTT, having the correct config is the hardest part. Here I&rsquo;m sharing my MQTT configs for Shelly devices."><meta itemprop=datePublished content="2020-10-26T00:00:00+00:00">
-<meta itemprop=dateModified content="2021-08-30T00:00:00+00:00">
+<meta itemprop=dateModified content="2022-01-13T00:00:00+00:00">
 <meta itemprop=wordCount content="2530"><meta itemprop=image content="https://sequr.be/blog/2020/10/mqtt-templates-for-shelly-devices/cover.svg">
 <meta itemprop=keywords content="Home Automation,Home Assistant,MQTT,Shelly,templates,shellies-discovery,HACS,">
 <meta name=twitter:card content="summary_large_image">
@@ -347,7 +347,8 @@ The remaining sensors give you insights on the device status.</p>
 </span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - lamp - energy</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;Wh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value | float / 60 }}&#34;</span><span class=w>
 </span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:lightning-bolt</span><span class=w>
@@ -547,6 +548,7 @@ Just note that the 2.5 has 2 switch inputs and 2 relay outputs, so you&rsquo;d n
 </span><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
 </span><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Rolling Shutters - energy consumption since last reboot</span><span class=w>
 </span><span class=w>    </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>    </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>    </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;Wh&#39;</span><span class=w>
 </span><span class=w>    </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value | float / 60 }}&#34;</span><span class=w>
 </span><span class=w>    </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>shellies/shellyswitch25-&lt;deviceid&gt;/roller/0/energy</span><span class=w>
@@ -663,7 +665,8 @@ E.g. when a floorlamp is connected to the Shelly Plug (S).</p>
 </span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Room X - floorlamp - energy</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;Wh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value | float / 60 }}&#34;</span><span class=w>
 </span><span class=w>  </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:lightning-bolt-outline</span><span class=w>
@@ -756,6 +759,7 @@ The &lsquo;total&rsquo; counters are stored in the non-volatile memory.</p>
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
 </span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
 </span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/energy&#34;</span><span class=w>
 </span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
@@ -764,6 +768,7 @@ The &lsquo;total&rsquo; counters are stored in the non-volatile memory.</p>
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
 </span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
 </span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/returned_energy&#34;</span><span class=w>
 </span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
@@ -772,6 +777,7 @@ The &lsquo;total&rsquo; counters are stored in the non-volatile memory.</p>
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
 </span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
 </span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/total_energy&#34;</span><span class=w>
 </span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
@@ -780,6 +786,7 @@ The &lsquo;total&rsquo; counters are stored in the non-volatile memory.</p>
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
 </span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
 </span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem-&lt;deviceid&gt;/emeter/0/total_returned&#34;</span><span class=w>
 </span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
@@ -851,6 +858,7 @@ The &lsquo;total&rsquo; counters are stored in the non-volatile memory.</p>
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
 </span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
 </span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/energy&#34;</span><span class=w>
 </span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
@@ -859,6 +867,7 @@ The &lsquo;total&rsquo; counters are stored in the non-volatile memory.</p>
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
 </span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
 </span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/returned_energy&#34;</span><span class=w>
 </span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
@@ -867,6 +876,7 @@ The &lsquo;total&rsquo; counters are stored in the non-volatile memory.</p>
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
 </span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
 </span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/total_energy&#34;</span><span class=w>
 </span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
@@ -875,6 +885,7 @@ The &lsquo;total&rsquo; counters are stored in the non-volatile memory.</p>
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
 </span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
 </span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shellyem3-&lt;deviceid&gt;/emeter/0/total_returned&#34;</span><span class=w>
 </span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
@@ -964,6 +975,7 @@ and replace <code>input/0</code> and <code>relay/0</code> with <code>input/1</co
 </span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;kWh&#39;</span><span class=w>
 </span><span class=w>  </span><span class=nt>expire_after</span><span class=p>:</span><span class=w> </span><span class=m>86400</span><span class=w>
 </span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
 </span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
 </span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;shellies/shelly4pro-&lt;deviceid&gt;/relay/0/energy&#34;</span><span class=w>
 </span></code></pre></div><h3 id=binary-sensors-6>Binary Sensors <a href=#binary-sensors-6>¶</a></h3><p>Note: this part is untested.<br>
@@ -1101,7 +1113,7 @@ If this doesn&rsquo;t work, and you know how to fix it, reach out to me on <a hr
 </p>
 <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
 2020-10-26
-(Last updated: 2021-08-30)
+(Last updated: 2022-01-13)
 </p>
 </div>
 <hr>
