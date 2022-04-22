@@ -1,612 +1,373 @@
-<!doctype html><html lang=en>
-<head>
-<meta charset=utf-8>
-<meta http-equiv=x-ua-compatible content="ie=edge">
-<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-<meta name=author content="DezeStijn">
-<meta name=description content="Write-up of level 20 to 30 of the Bandit challenge on OverTheWire.org">
-<meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Bandit,Over The Wire,OverTheWire">
-<meta name=robots content="noodp">
-<meta name=theme-color content="#252627">
-<link rel=canonical href=https://sequr.be/blog/2020/01/bandit-20-30/>
-<title>
-Bandit (20 -> 30) :: Sequr
-</title>
-<link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css>
-<link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css>
-<link rel=stylesheet type=text/css href=https://sequr.be/css/table.css>
-<link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css>
-<link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png>
-<link rel=manifest href=https://sequr.be/site.webmanifest>
-<link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101>
-<link rel="shortcut icon" href=https://sequr.be/favicon.ico>
-<meta name=msapplication-TileColor content="#e68101">
-<meta name=theme-color content="#e68101">
-<meta itemprop=name content="Bandit (20 -> 30)">
-<meta itemprop=description content="Write-up of level 20 to 30 of the Bandit challenge on OverTheWire.org"><meta itemprop=datePublished content="2020-01-15T17:02:03+00:00">
-<meta itemprop=dateModified content="2020-01-15T17:02:03+00:00">
-<meta itemprop=wordCount content="2529"><meta itemprop=image content="https://sequr.be/otw-bandit.png">
-<meta itemprop=keywords content="Bandit,Over The Wire,OverTheWire,">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:image content="https://sequr.be/otw-bandit.png">
-<meta name=twitter:title content="Bandit (20 -> 30)">
-<meta name=twitter:description content="Write-up of level 20 to 30 of the Bandit challenge on OverTheWire.org">
-<meta property="article:section" content="OverTheWire">
-<meta property="article:section" content="Writeup">
-<meta property="article:published_time" content="2020-01-15 17:02:03 +0000 UTC">
-</head>
-<body>
-<div class=container>
-<header class=header>
-<span class=header__inner>
-<a href=https://sequr.be/ style=text-decoration:none>
-<div class=logo>
-<span class=logo__mark>$</span>
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="Write-up of level 20 to 30 of the Bandit challenge on OverTheWire.org"><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Bandit,Over The Wire,OverTheWire"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/blog/2020/01/bandit-20-30/><title>Bandit (20 -> 30) :: Sequr</title><link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content="#e68101"><meta name=theme-color content="#e68101"><meta itemprop=name content="Bandit (20 -> 30)"><meta itemprop=description content="Write-up of level 20 to 30 of the Bandit challenge on OverTheWire.org"><meta itemprop=datePublished content="2020-01-15T17:02:03+00:00"><meta itemprop=dateModified content="2020-01-15T17:02:03+00:00"><meta itemprop=wordCount content="2529"><meta itemprop=image content="https://sequr.be/otw-bandit.png"><meta itemprop=keywords content="Bandit,Over The Wire,OverTheWire,"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/otw-bandit.png"><meta name=twitter:title content="Bandit (20 -> 30)"><meta name=twitter:description content="Write-up of level 20 to 30 of the Bandit challenge on OverTheWire.org"><meta property="article:section" content="OverTheWire"><meta property="article:section" content="Writeup"><meta property="article:published_time" content="2020-01-15 17:02:03 +0000 UTC"></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/ style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
 <span class=logo__text>nc sequr.be 1337</span>
-<span class=logo__cursor style=background-color:#e68101>
-</span>
-</div>
-</a>
-<span class=header__right>
-<nav class=menu>
-<ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li>
-</ul>
-</nav>
-<span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-</span>
-<span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span>
-</span>
-</span>
-</header>
-<div class=content>
-<main class=post>
-<div class=post-info>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-12 minutes
-</p>
-</div>
-<article>
-<h1 class=post-title>
-<a href=https://sequr.be/blog/2020/01/bandit-20-30/>Bandit (20 -> 30)</a>
-</h1>
-<div class=post-content>
-<h2 id=info>Info <a href=#info>¶</a></h2><p>From the <a href=https://overthewire.org/wargames/ target=_blank rel=noopener>OverTheWire website</a>:</p>
-<blockquote>
-<p>The wargames offered by the OverTheWire community can help you to learn and practice security concepts in the form of fun-filled games.</p>
-<p>~ OverTheWire.org</p>
-</blockquote>
-<h2 id=bandit>Bandit <a href=#bandit>¶</a></h2><p>Bandit is the first series of challenges and it&rsquo;s recommended to start with these.</p>
-<blockquote>
-<p>The Bandit wargame is aimed at absolute beginners. It will teach the basics needed to be able to play other wargames.</p>
-<p>~ OverTheWire.org</p>
-</blockquote>
-<p>Make sure you following along on the website to get more info on the goal of the challenges and the skills that you&rsquo;ll learn from them.</p>
-<p>Always first try to do a challenge yourself.<br>
-You&rsquo;ll learn more and might find methodologies or techniques that work better for you.</p>
-<p>This write-up contains the solution of levels 20 to 30.<br>
-Need to go back for <a href=https://sequr.be/blog/2020/01/bandit-10-20/>levels 10 to 20</a>?</p>
-<h3 id=level-20---21>Level 20 -> 21 <a href=#level-20---21>¶</a></h3><p>Connect with the OverTheWire infrastructure using the credentials retrieved in the previous level.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ ssh bandit20@bandit.labs.overthewire.org -p <span class=m>2220</span>                
-This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
-                          
-bandit20@bandit.labs.overthewire.org<span class=err>&#39;</span>s password:
-</code></pre></div><p>We need a way for a network service on the local system (localhost) to send the password of the previous level to any client connecting to it.</p>
-<p>Set up a netcat listener to act as a network service on localhost. Pipe the previous level&rsquo;s password to it, so that it will echo this string to any client connecting to it.<br>
-Then point the binary in the home directory to the port you&rsquo;ve configured netcat to listen on.<br>
-The application will connect with the service, receive and read the password from the previous level (as is required for this level) and return the password for the next level.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=c1># Setup listener</span>
-<span class=c1># Pipe password to the netcat listener</span>
-<span class=c1># Use &amp; at the end to run in background, so we can call the binary without needing a 2nd sessions</span>
-bandit20@bandit:~$ <span class=nb>echo</span> <span class=s2>&#34;Gb##########0j&#34;</span> <span class=p>|</span> nc -lvp <span class=m>31337</span> <span class=p>&amp;</span>
-<span class=o>[</span>1<span class=o>]</span> <span class=m>30605</span>
-bandit20@bandit:~$ listening on <span class=o>[</span>any<span class=o>]</span> <span class=m>31337</span> ...
-
-<span class=c1># Execute binary, pointing it to our listener</span>
-bandit20@bandit:~$ ./suconnect <span class=m>31337</span>
-connect to <span class=o>[</span>127.0.0.1<span class=o>]</span> from localhost <span class=o>[</span>127.0.0.1<span class=o>]</span> <span class=m>55060</span>
-Read: Gb##########0j
-Password matches, sending next password
-gE##########Gr
-
-<span class=c1># This output comes from the listener process (in background) closing after the client successfully connected and closed its connection</span>
-<span class=o>[</span>1<span class=o>]</span>+  Done                    <span class=nb>echo</span> <span class=s2>&#34;Gb##########0j&#34;</span> <span class=p>|</span> nc -lvp <span class=m>31337</span>
-</code></pre></div><h3 id=level-21---level-22>Level 21 -> Level 22 <a href=#level-21---level-22>¶</a></h3><p>Find the cronjob and look at what command it&rsquo;s executing.</p>
-<p>The cronjob sets the privileges on a file in the <code>tmp</code> folder. Notice that this will allow us to read that file.<br>
-It then adds the contents of bandit22&rsquo;s password file to that file in <code>tmp</code>.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit21@bandit:~$ ls -R /etc/cron.d/
-/etc/cron.d/:
-atop  cronjob_bandit22  cronjob_bandit23  cronjob_bandit24
-bandit21@bandit:~$ cat /etc/cron.d/cronjob_bandit22
-@reboot bandit22 /usr/bin/cronjob_bandit22.sh <span class=p>&amp;</span>&gt; /dev/null
-* * * * * bandit22 /usr/bin/cronjob_bandit22.sh <span class=p>&amp;</span>&gt; /dev/null
-
-bandit21@bandit:~$ cat /usr/bin/cronjob_bandit22.sh
-<span class=c1>#!/bin/bash</span>
-chmod <span class=m>644</span> /tmp/t7**********gv
-cat /etc/bandit_pass/bandit22 &gt; /tmp/t7**********gv
-</code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit21@bandit:~$ cat /tmp/t7**********gv
-Yk##########LI
-</code></pre></div><h3 id=level-22---level-23>Level 22 -> Level 23 <a href=#level-22---level-23>¶</a></h3><p>You&rsquo;ll need to figure out what the value of <code>$mytarget</code> is.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit22@bandit:~$ cat /etc/cron.d/cronjob_bandit23
-@reboot bandit23 /usr/bin/cronjob_bandit23.sh  <span class=p>&amp;</span>&gt; /dev/null
-* * * * * bandit23 /usr/bin/cronjob_bandit23.sh  <span class=p>&amp;</span>&gt; /dev/null
-bandit22@bandit:~$ cat /usr/bin/cronjob_bandit23.sh
-<span class=c1>#!/bin/bash</span>
-
-<span class=nv>myname</span><span class=o>=</span><span class=k>$(</span>whoami<span class=k>)</span>
-<span class=nv>mytarget</span><span class=o>=</span><span class=k>$(</span><span class=nb>echo</span> I am user <span class=nv>$myname</span> <span class=p>|</span> md5sum <span class=p>|</span> cut -d <span class=s1>&#39; &#39;</span> -f 1<span class=k>)</span>
-
-<span class=nb>echo</span> <span class=s2>&#34;Copying passwordfile /etc/bandit_pass/</span><span class=nv>$myname</span><span class=s2> to /tmp/</span><span class=nv>$mytarget</span><span class=s2>&#34;</span>
-
-cat /etc/bandit_pass/<span class=nv>$myname</span> &gt; /tmp/<span class=nv>$mytarget</span>
-</code></pre></div><p>Don&rsquo;t forget that we&rsquo;re aiming for the password of bandit23.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit22@bandit:~$ <span class=nb>echo</span> <span class=s2>&#34;I am user bandit23&#34;</span> <span class=p>|</span> md5sum <span class=p>|</span> cut -d <span class=s1>&#39; &#39;</span> -f <span class=m>1</span>
-8c**********49
-</code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit22@bandit:~$ cat /tmp/8c**********49
-jc##########0n
-</code></pre></div><h3 id=level-23---level-24>Level 23 -> Level 24 <a href=#level-23---level-24>¶</a></h3><p>First start off with looking at the cronjob and the script it&rsquo;s calling.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit23@bandit:~$ cat /etc/cron.d/cronjob_bandit24
-@reboot bandit24 /usr/bin/cronjob_bandit24.sh <span class=p>&amp;</span>&gt; /dev/null
-* * * * * bandit24 /usr/bin/cronjob_bandit24.sh <span class=p>&amp;</span>&gt; /dev/null
-
-bandit23@bandit:~$ cat /usr/bin/cronjob_bandit24.sh
-<span class=c1>#!/bin/bash</span>
-
-<span class=nv>myname</span><span class=o>=</span><span class=k>$(</span>whoami<span class=k>)</span>
-
-<span class=nb>cd</span> /var/spool/<span class=nv>$myname</span>
-<span class=nb>echo</span> <span class=s2>&#34;Executing and deleting all scripts in /var/spool/</span><span class=nv>$myname</span><span class=s2>:&#34;</span>
-<span class=k>for</span> i in * .*<span class=p>;</span>
-<span class=k>do</span>
-    <span class=k>if</span> <span class=o>[</span> <span class=s2>&#34;</span><span class=nv>$i</span><span class=s2>&#34;</span> !<span class=o>=</span> <span class=s2>&#34;.&#34;</span> -a <span class=s2>&#34;</span><span class=nv>$i</span><span class=s2>&#34;</span> !<span class=o>=</span> <span class=s2>&#34;..&#34;</span> <span class=o>]</span><span class=p>;</span>
-    <span class=k>then</span>
-        <span class=nb>echo</span> <span class=s2>&#34;Handling </span><span class=nv>$i</span><span class=s2>&#34;</span>
-        timeout -s <span class=m>9</span> <span class=m>60</span> ./<span class=nv>$i</span>
-        rm -f ./<span class=nv>$i</span>
-    <span class=k>fi</span>
-<span class=k>done</span>
-</code></pre></div><p>Let&rsquo;s analyze this script.</p>
-<ol>
-<li>First, it assigns the output of the <code>whoami</code> command to a variable.<br>
-This would hold the username of the user executing the script, i.e. <em>bandit24</em>.</li>
-<li>Then the script goes to the spool folder for this user.<br>
-<code>/var/spool/</code> usually contains mail, news and printer queues.</li>
-<li>Within this folder, it iterates over every file using a for loop.<br>
-If the name of a file isn&rsquo;t <code>.</code> (current folder) or <code>..</code> (parent folder), it will:
-<ol>
-<li>output some text, including the filename;</li>
-<li>execute the script, timing out after 60 seconds, sending a <code>SIGKILL</code> signal to forcefully kill it; and</li>
-<li>remove the file.</li>
-</ol>
-</li>
-</ol>
-<p>Note that cronjobs are executed within the context of the job owner and anything that&rsquo;s outputted (e.g. echo) is not shown to us. It&rsquo;s usually send to the user via an internal email (i.e. mail spool). So we&rsquo;ll want to retrieve the user&rsquo;s password via a method we do have access to, like a file in <code>/tmp/</code>.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit23@bandit:~$ cat /var/spool/bandit24/sequr.sh
-
-<span class=c1>#!/bin/bash</span>
-
-<span class=c1># Generate a &#34;random&#34; filename</span>
-<span class=c1># 9dda1384c1cc97b1e73c63f42bbca608b47e8e0cce062aa420e67362d57f0e8c</span>
-<span class=c1># echo &#39;Visit sequr.be for more writeups&#39; | sha256sum | cut -d&#39; &#39; -f1</span>
-<span class=c1># 9dda1384c1cc97b1e73c63f42bbca608b47e8e0cce062aa420e67362d57f0e8c</span>
-
-<span class=nv>sequr_tmp</span><span class=o>=</span><span class=s2>&#34;/tmp/9dda1384c1cc97b1e73c63f42bbca608b47e8e0cce062aa420e67362d57f0e8c&#34;</span>
-
-
-touch <span class=nv>$sequr_tmp</span>
-chmod a+r <span class=nv>$sequr_tmp</span>
-cat /etc/bandit_pass/bandit24 &gt;&gt; <span class=nv>$sequr_tmp</span>
-</code></pre></div><p>Once the cronjob has finished, our script will be removed from the spool directory and we will find the password of the next level in our temp file.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit23@bandit:~$ cat /var/spool/bandit24/sequr.sh
-cat: /var/spool/bandit24/sequr.sh: No such file or directory
-
-bandit23@bandit:~$ cat /tmp/9dda1384c1cc97b1e73c63f42bbca608b47e8e0cce062aa420e67362d57f0e8c
-Uo##########hZ
-</code></pre></div><h3 id=level-24---level-25>Level 24 -> Level 25 <a href=#level-24---level-25>¶</a></h3><p>Let&rsquo;s connect to the listener and see what&rsquo;s going on.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit24@bandit:~$ nc localhost <span class=m>30002</span>
-I am the pincode checker <span class=k>for</span> user bandit25. Please enter the password <span class=k>for</span> user bandit24 and the secret pincode on a single line, separated by a space.
-Uo##########hZ <span class=m>0000</span>
-Wrong! Please enter the correct pincode. Try again.
-</code></pre></div><p>Let&rsquo;s see how we can bruteforce this.</p>
-<p>The following oneliner will iterate through every 4-digit combination, open a netcat connection to the listener, try the password and close after 1 second. To keep our output a bit clean and spot more easily when we found the correct pin, I use some inverse grepping to remove unneeded output.</p>
-<p>Note that this script will take 10.000 seconds or over 2 hours to run over every possible combination.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit24@bandit:~$ <span class=k>for</span> pin in <span class=o>{</span>0000..9999<span class=o>}</span><span class=p>;</span> <span class=k>do</span> <span class=nb>echo</span> <span class=s2>&#34;trying </span><span class=nv>$pin</span><span class=s2>&#34;</span><span class=p>;</span> <span class=nb>echo</span> <span class=s2>&#34;Uo##########hZ </span><span class=nv>$pin</span><span class=s2>&#34;</span> <span class=p>|</span> nc -w <span class=m>1</span> localhost <span class=m>30002</span> <span class=p>|</span> grep -v Wrong <span class=p>|</span> grep -v checker<span class=p>;</span> <span class=k>done</span>
-</code></pre></div><p>Let&rsquo;s figure out a faster approach.</p>
-<p>Create a file that contains every possible combination.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit24@bandit:~$ <span class=k>for</span> pin in <span class=o>{</span>0000..9999<span class=o>}</span><span class=p>;</span> <span class=k>do</span> <span class=nb>echo</span> <span class=s2>&#34;Uo##########hZ </span><span class=nv>$pin</span><span class=s2>&#34;</span> &gt;&gt; /tmp/bandit24<span class=p>;</span> <span class=k>done</span>
-bandit24@bandit:~$ head /tmp/bandit24
-Uo##########hZ <span class=m>0000</span>
-Uo##########hZ <span class=m>0001</span>
-Uo##########hZ <span class=m>0002</span>
-Uo##########hZ <span class=m>0003</span>
-Uo##########hZ <span class=m>0004</span>
-Uo##########hZ <span class=m>0005</span>
-Uo##########hZ <span class=m>0006</span>
-Uo##########hZ <span class=m>0007</span>
-Uo##########hZ <span class=m>0008</span>
-Uo##########hZ <span class=m>0009</span>
-bandit24@bandit:~$ tail /tmp/bandit24
-Uo##########hZ <span class=m>9990</span>
-Uo##########hZ <span class=m>9991</span>
-Uo##########hZ <span class=m>9992</span>
-Uo##########hZ <span class=m>9993</span>
-Uo##########hZ <span class=m>9994</span>
-Uo##########hZ <span class=m>9995</span>
-Uo##########hZ <span class=m>9996</span>
-Uo##########hZ <span class=m>9997</span>
-Uo##########hZ <span class=m>9998</span>
-Uo##########hZ <span class=m>9999</span>
-</code></pre></div><p>Pipe this file to netcat. Each line will also be considered a new line in the netcat connection.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit24@bandit:~$ cat /tmp/bandit24 <span class=p>|</span> nc localhost <span class=m>30002</span>
-I am the pincode checker <span class=k>for</span> user bandit25. Please enter the password <span class=k>for</span> user bandit24 and the secret pincode on a single line, separated by a space.
-Wrong! Please enter the correct pincode. Try again.
-Wrong! Please enter the correct pincode. Try again.
-<span class=o>[</span>...<span class=o>]</span>
-Wrong! Please enter the correct pincode. Try again.
-Wrong! Please enter the correct pincode. Try again.
-Correct!
-The password of user bandit25 is uN##########zG
-
-Exiting.
-</code></pre></div><p>To clean the output a bit up, we can again apply a reverse grep.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit24@bandit:~$ cat /tmp/bandit24 <span class=p>|</span> nc localhost <span class=m>30002</span> <span class=p>|</span> grep -v Wrong
-I am the pincode checker <span class=k>for</span> user bandit25. Please enter the password <span class=k>for</span> user bandit24 and the secret pincode on a single line, separated by a space.
-Correct!
-The password of user bandit25 is uN##########zG
-
-Exiting.
-</code></pre></div><h3 id=level-25---level-26>Level 25 -> Level 26 <a href=#level-25---level-26>¶</a></h3><p>As the level goal states, getting the &lsquo;credentials&rsquo; (it&rsquo;s an SSH key) for level26 isn&rsquo;t hard.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit25@bandit:~$ ls
-bandit26.sshkey
-bandit25@bandit:~$ cat bandit26.sshkey 
------BEGIN RSA PRIVATE KEY-----
-MIIEpQIBAAKCAQEApis2AuoooEqeYWamtwX2k5z9uU1Afl2F8VyXQqbv/LTrIwdW
-<span class=c1>################################################################</span>
-IZdtF5HXs2S5CADTwniUS5mX1HO9l5gUkk+h0cH5JnPtsMCnAUM+BRY<span class=o>=</span>
------END RSA PRIVATE KEY-----
-</code></pre></div><p>Let&rsquo;s check what &ldquo;shell&rdquo; bandit26 is using.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit25@bandit:~$ cat /etc/passwd <span class=p>|</span> grep bandit26
-bandit26❌11026:11026:bandit level 26:/home/bandit26:/usr/bin/showtext
-
-bandit25@bandit:~$ cat /usr/bin/showtext
-<span class=c1>#!/bin/sh</span>
-
-<span class=nb>export</span> <span class=nv>TERM</span><span class=o>=</span>linux
-
-more ~/text.txt
-<span class=nb>exit</span> <span class=m>0</span>
-</code></pre></div><p>So it looks like bandit26&rsquo;s shell is a script that outputs the content of <code>~/text.txt</code> using <code>more</code>. If you login as bandit26 using the SSH key we already captured, you&rsquo;ll see the ASCII art contained in text.txt just before the connection closes.</p>
-<p>To exploit the <code>more</code> command into giving us a shell, we first need to resize our terminal so that it&rsquo;s too small for the ASCII art to fit.<br>
-If you use tmux, you can split your terminal horizontally (<code>^b "</code>) and resize your current pane by holding down CTRL and using the up/down arrow (<code>^ + ↑</code>).</p>
-<figure class=center>
-<img src=otw-bandit26-img1.png>
-<figcaption class=center>Resized tmux pane small enough so the ASCII art doesn&rsquo;t fit</figcaption>
-</figure>
-<p>Pressing <code>v</code> will open a text editor (defined by the <code>$EDITOR</code> shell variable). It looks to be vi?</p>
-<p>We can now open a different file, like the password file for bandit26, using <code>:e /etc/bandit_pass/bandit26</code></p>
-<figure class=center>
-<img src=otw-bandit26-img2.png>
-<figcaption class=center>Abusing vi to open password file</figcaption>
-</figure>
-<p>Which opens said file and gives us the password for bandit26.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>5c##########6Z
-</code></pre></div><h3 id=level-26---level-27>Level 26 -> Level 27 <a href=#level-26---level-27>¶</a></h3><p>We need a way to abuse <code>more</code> or <code>vi</code> to gain a shell and retrieve the password for level27.</p>
-<p>In vi, it&rsquo;s possible to execute shell commands.<br>
-However, we first need to set the <code>$TERM</code> variable.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>:set <span class=nv>sh</span><span class=o>=</span>/bin/bash
-</code></pre></div><p>Then we can execute commands within vi.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>:!pwd
-<span class=o>[</span>No write since last change<span class=o>]</span>
-/home/bandit26
-
-:!ls
-<span class=o>[</span>No write since last change<span class=o>]</span>
-bandit27-do  text.txt
-
-:!./bandit27-do
-<span class=o>[</span>No write since last change<span class=o>]</span>
-Run a <span class=nb>command</span> as another user.
-  Example: ./bandit27-do id
-
-shell returned <span class=m>1</span>
-
-:!./bandit27-do cat /etc/bandit_pass/bandit27
-<span class=o>[</span>No write since last change<span class=o>]</span>
-3b##########ea
-</code></pre></div><h3 id=level-27---level-28>Level 27 -> Level 28 <a href=#level-27---level-28>¶</a></h3><p>Make a directory in <code>/tmp</code> where we can clone the repo into.<br>
-Then clone the repo.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit27@bandit:/tmp$ <span class=nb>cd</span>
-bandit27@bandit:~$ <span class=nb>cd</span> /tmp
-bandit27@bandit:/tmp$ mkdir bandit27
-bandit27@bandit:/tmp$ <span class=nb>cd</span> bandit27
-bandit27@bandit:/tmp/bandit27$ git clone ssh://bandit27-git@localhost/home/bandit27-git/repo
-Cloning into <span class=s1>&#39;repo&#39;</span>...
-Could not create directory <span class=s1>&#39;/home/bandit27/.ssh&#39;</span>.
-The authenticity of host <span class=s1>&#39;localhost (127.0.0.1)&#39;</span> can<span class=s1>&#39;t be established.
-</span><span class=s1>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
-</span><span class=s1>Are you sure you want to continue connecting (yes/no)? yes
-</span><span class=s1>Failed to add the host to the list of known hosts (/home/bandit27/.ssh/known_hosts).
-</span><span class=s1>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
-</span><span class=s1>
-</span><span class=s1>bandit27-git@localhost&#39;</span>s password: 
-remote: Counting objects: 3, <span class=k>done</span>.
-remote: Compressing objects: 100% <span class=o>(</span>2/2<span class=o>)</span>, <span class=k>done</span>.
-remote: Total <span class=m>3</span> <span class=o>(</span>delta 0<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
-Receiving objects: 100% <span class=o>(</span>3/3<span class=o>)</span>, <span class=k>done</span>.
-</code></pre></div><p>Look inside the repo to find the password.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit27@bandit:/tmp/bandit27$ ls
-repo
-bandit27@bandit:/tmp/bandit27$ ls repo/
-README
-bandit27@bandit:/tmp/bandit27$ cat repo/README 
-The password to the next level is: 0e##########a2
-</code></pre></div><p>Clean up after ourselves</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit27@bandit:~$ rm -rf /tmp/bandit27
-</code></pre></div><h3 id=level-28---level-29>Level 28 -> Level 29 <a href=#level-28---level-29>¶</a></h3><p>Similar to the previous level.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit28@bandit:~$ mkdir /tmp/bandit28
-bandit28@bandit:~$ <span class=nb>cd</span> /tmp/bandit28
-bandit28@bandit:/tmp/bandit28$ git clone ssh://bandit28-git@localhost/home/bandit28-git/repo
-Cloning into <span class=s1>&#39;repo&#39;</span>...
-Could not create directory <span class=s1>&#39;/home/bandit28/.ssh&#39;</span>.
-The authenticity of host <span class=s1>&#39;localhost (127.0.0.1)&#39;</span> can<span class=s1>&#39;t be established.
-</span><span class=s1>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
-</span><span class=s1>Are you sure you want to continue connecting (yes/no)? yes
-</span><span class=s1>Failed to add the host to the list of known hosts (/home/bandit28/.ssh/known_hosts).
-</span><span class=s1>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
-</span><span class=s1>
-</span><span class=s1>bandit28-git@localhost&#39;</span>s password: 
-remote: Counting objects: 9, <span class=k>done</span>.
-remote: Compressing objects: 100% <span class=o>(</span>6/6<span class=o>)</span>, <span class=k>done</span>.
-remote: Total <span class=m>9</span> <span class=o>(</span>delta 2<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
-Receiving objects: 100% <span class=o>(</span>9/9<span class=o>)</span>, <span class=k>done</span>.
-Resolving deltas: 100% <span class=o>(</span>2/2<span class=o>)</span>, <span class=k>done</span>.
-</code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit28@bandit:/tmp/bandit28$ ls
-repo
-bandit28@bandit:/tmp/bandit28$ <span class=nb>cd</span> repo
-bandit28@bandit:/tmp/bandit28/repo$ ls
-README.md
-bandit28@bandit:/tmp/bandit28/repo$ cat README.md 
-<span class=c1># Bandit Notes</span>
-Some notes <span class=k>for</span> level29 of bandit.
-
-<span class=c1>## credentials</span>
-
-- username: bandit29
-- password: xxxxxxxxxx
-</code></pre></div><p>It looks like the credentials have been removed from the file.</p>
-<p>But perhaps, the creator of this git repository initially did include the credentials in this file, notices his/her mistake and pushed a new commit removing the credentials?</p>
-<p>Looking at the commit history, we see the creator initially set &ldquo;&rdquo; as password value. In a following commit the password was added. And in the final commit this password was replaces by a string of &ldquo;x&rdquo; characters.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit28@bandit:/tmp/bandit28/repo$ git log -p
-commit 073c27c130e6ee407e12faad1dd3848a110c4f95
-Author: Morla Porla &lt;morla@overthewire.org&gt;
-Date:   Tue Oct <span class=m>16</span> 14:00:39 <span class=m>2018</span> +0200
-
-    fix info leak
-
-diff --git a/README.md b/README.md
-index 3f7cee8..5c6457b <span class=m>100644</span>
---- a/README.md
-+++ b/README.md
-@@ -4,5 +4,5 @@ Some notes <span class=k>for</span> level29 of bandit.
- <span class=c1>## credentials</span>
- 
- - username: bandit29
--- password: bb##########b2
-+- password: xxxxxxxxxx
-</code></pre></div><p>Don&rsquo;t forget to clean up!</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit28@bandit:~$ rm -rf /tmp/bandit28
-</code></pre></div><h3 id=level-29---level-30>Level 29 -> Level 30 <a href=#level-29---level-30>¶</a></h3><p>Similar exercise again.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit29@bandit:~$ mkdir /tmp/bandit29
-bandit29@bandit:~$ <span class=nb>cd</span> /tmp/bandit29
-bandit29@bandit:/tmp/bandit29$ git clone ssh://bandit29-git@localhost/home/bandit29-git/repo
-Cloning into <span class=s1>&#39;repo&#39;</span>...
-Could not create directory <span class=s1>&#39;/home/bandit29/.ssh&#39;</span>.
-The authenticity of host <span class=s1>&#39;localhost (127.0.0.1)&#39;</span> can<span class=s1>&#39;t be established.
-</span><span class=s1>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
-</span><span class=s1>Are you sure you want to continue connecting (yes/no)? yes
-</span><span class=s1>Failed to add the host to the list of known hosts (/home/bandit29/.ssh/known_hosts).
-</span><span class=s1>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
-</span><span class=s1>
-</span><span class=s1>bandit29-git@localhost&#39;</span>s password: 
-remote: Counting objects: 16, <span class=k>done</span>.
-remote: Compressing objects: 100% <span class=o>(</span>11/11<span class=o>)</span>, <span class=k>done</span>.
-remote: Total <span class=m>16</span> <span class=o>(</span>delta 2<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
-Receiving objects: 100% <span class=o>(</span>16/16<span class=o>)</span>, <span class=k>done</span>.
-Resolving deltas: 100% <span class=o>(</span>2/2<span class=o>)</span>, <span class=k>done</span>.
-bandit29@bandit:/tmp/bandit29$ ls
-repo
-bandit29@bandit:/tmp/bandit29$ <span class=nb>cd</span> repo/
-bandit29@bandit:/tmp/bandit29/repo$ ls
-README.md
-</code></pre></div><p>Checking the git log doesn&rsquo;t provide us with a password.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit29@bandit:/tmp/bandit29/repo$ git log -p
-commit 84abedc104bbc0c65cb9eb74eb1d3057753e70f8
-Author: Ben Dover &lt;noone@overthewire.org&gt;
-Date:   Tue Oct <span class=m>16</span> 14:00:41 <span class=m>2018</span> +0200
-
-    fix username
-
-diff --git a/README.md b/README.md
-index 2da2f39..1af21d3 <span class=m>100644</span>
---- a/README.md
-+++ b/README.md
-@@ -3,6 +3,6 @@ Some notes <span class=k>for</span> bandit30 of bandit.
- 
- <span class=c1>## credentials</span>
- 
--- username: bandit29
-+- username: bandit30
- - password: &lt;no passwords in production!&gt;
- 
-
-commit 9b19e7d8c1aadf4edcc5b15ba8107329ad6c5650
-Author: Ben Dover &lt;noone@overthewire.org&gt;
-Date:   Tue Oct <span class=m>16</span> 14:00:41 <span class=m>2018</span> +0200
-
-    initial commit of README.md
-
-diff --git a/README.md b/README.md
-new file mode <span class=m>100644</span>
-index 0000000..2da2f39
---- /dev/null
-+++ b/README.md
-@@ -0,0 +1,8 @@
-+# Bandit Notes
-+Some notes <span class=k>for</span> bandit30 of bandit.
-+
-+## credentials
-+
-+- username: bandit29
-</code></pre></div><p>However, the README does say something about having passwords in production, so perhaps there&rsquo;s something in a dev(elopment) branch?</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit29@bandit:/tmp/bandit29/repo$ git log --oneline --decorate --graph --all
-* 33ce2e9 <span class=o>(</span>origin/dev<span class=o>)</span> add data needed <span class=k>for</span> development
-* a8af722 add gif2ascii
-<span class=p>|</span> * 2af54c5 <span class=o>(</span>origin/sploits-dev<span class=o>)</span> add some silly exploit, just <span class=k>for</span> shit and giggles
-<span class=p>|</span>/  
-* 84abedc <span class=o>(</span>HEAD -&gt; master, origin/master, origin/HEAD<span class=o>)</span> fix username
-* 9b19e7d initial commit of README.md
-</code></pre></div><p>Adding <code>--all</code> to the log command gives us much more information, including the password we&rsquo;re looking for.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit29@bandit:/tmp/bandit29/repo$ git log --help
-<span class=o>[</span>...<span class=o>]</span>
-   Commit Limiting
-       Besides specifying a range of commits that should be listed using the special notations explained in the description, additional commit limiting may be applied.
-
-       Using more options generally further limits the output <span class=o>(</span>e.g. --since<span class=o>=</span>&lt;date1&gt; limits to commits newer than &lt;date1&gt;, and using it with --grep<span class=o>=</span>&lt;pattern&gt; further limits to commits
-       whose log message has a line that matches &lt;pattern&gt;<span class=o>)</span>, unless otherwise noted.
-
-       Note that these are applied before commit ordering and formatting options, such as --reverse.
-<span class=o>[</span>...<span class=o>]</span>
-       --all
-           Pretend as <span class=k>if</span> all the refs in refs/ are listed on the <span class=nb>command</span> line as &lt;commit&gt;.
-<span class=o>[</span>...<span class=o>]</span>
-</code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>bandit29@bandit:/tmp/bandit29/repo$ git log -p --all
-commit 84abedc104bbc0c65cb9eb74eb1d3057753e70f8
-Author: Ben Dover &lt;noone@overthewire.org&gt;
-Date:   Tue Oct <span class=m>16</span> 14:00:41 <span class=m>2018</span> +0200
-
-    fix username
-
-diff --git a/README.md b/README.md
-index 2da2f39..1af21d3 <span class=m>100644</span>
---- a/README.md
-+++ b/README.md
-@@ -3,6 +3,6 @@ Some notes <span class=k>for</span> bandit30 of bandit.
- 
- <span class=c1>## credentials</span>
- 
--- username: bandit29
-+- username: bandit30
- - password: &lt;no passwords in production!&gt;
- 
-
-commit 33ce2e95d9c5d6fb0a40e5ee9a2926903646b4e3
-Author: Morla Porla &lt;morla@overthewire.org&gt;
-Date:   Tue Oct <span class=m>16</span> 14:00:41 <span class=m>2018</span> +0200
-
-    add data needed <span class=k>for</span> development
-
-diff --git a/README.md b/README.md
-index 1af21d3..39b87a8 <span class=m>100644</span>
---- a/README.md
-+++ b/README.md
-@@ -4,5 +4,5 @@ Some notes <span class=k>for</span> bandit30 of bandit.
- <span class=c1>## credentials</span>
- 
- - username: bandit30
--- password: &lt;no passwords in production!&gt;
-+- password: 5b##########af
-</code></pre></div><p>Don&rsquo;t forget to clean up!</p>
-</div>
-</article>
-<hr>
-<div class=post-info>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
-<span class=tag><a href=https://sequr.be/tags/bandit/>Bandit</a></span>
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>12 minutes</p></div><article><h1 class=post-title><a href=https://sequr.be/blog/2020/01/bandit-20-30/>Bandit (20 -> 30)</a></h1><div class=post-content><h2 id=info>Info <a href=#info>¶</a></h2><p>From the <a href=https://overthewire.org/wargames/ target=_blank rel=noopener>OverTheWire website</a>:</p><blockquote><p>The wargames offered by the OverTheWire community can help you to learn and practice security concepts in the form of fun-filled games.</p><p>~ OverTheWire.org</p></blockquote><h2 id=bandit>Bandit <a href=#bandit>¶</a></h2><p>Bandit is the first series of challenges and it&rsquo;s recommended to start with these.</p><blockquote><p>The Bandit wargame is aimed at absolute beginners. It will teach the basics needed to be able to play other wargames.</p><p>~ OverTheWire.org</p></blockquote><p>Make sure you following along on the website to get more info on the goal of the challenges and the skills that you&rsquo;ll learn from them.</p><p>Always first try to do a challenge yourself.<br>You&rsquo;ll learn more and might find methodologies or techniques that work better for you.</p><p>This write-up contains the solution of levels 20 to 30.<br>Need to go back for <a href=https://sequr.be/blog/2020/01/bandit-10-20/>levels 10 to 20</a>?</p><h3 id=level-20---21>Level 20 -> 21 <a href=#level-20---21>¶</a></h3><p>Connect with the OverTheWire infrastructure using the credentials retrieved in the previous level.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ ssh bandit20@bandit.labs.overthewire.org -p <span class=m>2220</span>                
+</span></span><span class=line><span class=cl>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+</span></span><span class=line><span class=cl>                          
+</span></span><span class=line><span class=cl>bandit20@bandit.labs.overthewire.org<span class=err>&#39;</span>s password:
+</span></span></code></pre></div><p>We need a way for a network service on the local system (localhost) to send the password of the previous level to any client connecting to it.</p><p>Set up a netcat listener to act as a network service on localhost. Pipe the previous level&rsquo;s password to it, so that it will echo this string to any client connecting to it.<br>Then point the binary in the home directory to the port you&rsquo;ve configured netcat to listen on.<br>The application will connect with the service, receive and read the password from the previous level (as is required for this level) and return the password for the next level.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># Setup listener</span>
+</span></span><span class=line><span class=cl><span class=c1># Pipe password to the netcat listener</span>
+</span></span><span class=line><span class=cl><span class=c1># Use &amp; at the end to run in background, so we can call the binary without needing a 2nd sessions</span>
+</span></span><span class=line><span class=cl>bandit20@bandit:~$ <span class=nb>echo</span> <span class=s2>&#34;Gb##########0j&#34;</span> <span class=p>|</span> nc -lvp <span class=m>31337</span> <span class=p>&amp;</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span> <span class=m>30605</span>
+</span></span><span class=line><span class=cl>bandit20@bandit:~$ listening on <span class=o>[</span>any<span class=o>]</span> <span class=m>31337</span> ...
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Execute binary, pointing it to our listener</span>
+</span></span><span class=line><span class=cl>bandit20@bandit:~$ ./suconnect <span class=m>31337</span>
+</span></span><span class=line><span class=cl>connect to <span class=o>[</span>127.0.0.1<span class=o>]</span> from localhost <span class=o>[</span>127.0.0.1<span class=o>]</span> <span class=m>55060</span>
+</span></span><span class=line><span class=cl>Read: Gb##########0j
+</span></span><span class=line><span class=cl>Password matches, sending next password
+</span></span><span class=line><span class=cl>gE##########Gr
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># This output comes from the listener process (in background) closing after the client successfully connected and closed its connection</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span>+  Done                    <span class=nb>echo</span> <span class=s2>&#34;Gb##########0j&#34;</span> <span class=p>|</span> nc -lvp <span class=m>31337</span>
+</span></span></code></pre></div><h3 id=level-21---level-22>Level 21 -> Level 22 <a href=#level-21---level-22>¶</a></h3><p>Find the cronjob and look at what command it&rsquo;s executing.</p><p>The cronjob sets the privileges on a file in the <code>tmp</code> folder. Notice that this will allow us to read that file.<br>It then adds the contents of bandit22&rsquo;s password file to that file in <code>tmp</code>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit21@bandit:~$ ls -R /etc/cron.d/
+</span></span><span class=line><span class=cl>/etc/cron.d/:
+</span></span><span class=line><span class=cl>atop  cronjob_bandit22  cronjob_bandit23  cronjob_bandit24
+</span></span><span class=line><span class=cl>bandit21@bandit:~$ cat /etc/cron.d/cronjob_bandit22
+</span></span><span class=line><span class=cl>@reboot bandit22 /usr/bin/cronjob_bandit22.sh <span class=p>&amp;</span>&gt; /dev/null
+</span></span><span class=line><span class=cl>* * * * * bandit22 /usr/bin/cronjob_bandit22.sh <span class=p>&amp;</span>&gt; /dev/null
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>bandit21@bandit:~$ cat /usr/bin/cronjob_bandit22.sh
+</span></span><span class=line><span class=cl><span class=c1>#!/bin/bash</span>
+</span></span><span class=line><span class=cl>chmod <span class=m>644</span> /tmp/t7**********gv
+</span></span><span class=line><span class=cl>cat /etc/bandit_pass/bandit22 &gt; /tmp/t7**********gv
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit21@bandit:~$ cat /tmp/t7**********gv
+</span></span><span class=line><span class=cl>Yk##########LI
+</span></span></code></pre></div><h3 id=level-22---level-23>Level 22 -> Level 23 <a href=#level-22---level-23>¶</a></h3><p>You&rsquo;ll need to figure out what the value of <code>$mytarget</code> is.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit22@bandit:~$ cat /etc/cron.d/cronjob_bandit23
+</span></span><span class=line><span class=cl>@reboot bandit23 /usr/bin/cronjob_bandit23.sh  <span class=p>&amp;</span>&gt; /dev/null
+</span></span><span class=line><span class=cl>* * * * * bandit23 /usr/bin/cronjob_bandit23.sh  <span class=p>&amp;</span>&gt; /dev/null
+</span></span><span class=line><span class=cl>bandit22@bandit:~$ cat /usr/bin/cronjob_bandit23.sh
+</span></span><span class=line><span class=cl><span class=c1>#!/bin/bash</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>myname</span><span class=o>=</span><span class=k>$(</span>whoami<span class=k>)</span>
+</span></span><span class=line><span class=cl><span class=nv>mytarget</span><span class=o>=</span><span class=k>$(</span><span class=nb>echo</span> I am user <span class=nv>$myname</span> <span class=p>|</span> md5sum <span class=p>|</span> cut -d <span class=s1>&#39; &#39;</span> -f 1<span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;Copying passwordfile /etc/bandit_pass/</span><span class=nv>$myname</span><span class=s2> to /tmp/</span><span class=nv>$mytarget</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>cat /etc/bandit_pass/<span class=nv>$myname</span> &gt; /tmp/<span class=nv>$mytarget</span>
+</span></span></code></pre></div><p>Don&rsquo;t forget that we&rsquo;re aiming for the password of bandit23.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit22@bandit:~$ <span class=nb>echo</span> <span class=s2>&#34;I am user bandit23&#34;</span> <span class=p>|</span> md5sum <span class=p>|</span> cut -d <span class=s1>&#39; &#39;</span> -f <span class=m>1</span>
+</span></span><span class=line><span class=cl>8c**********49
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit22@bandit:~$ cat /tmp/8c**********49
+</span></span><span class=line><span class=cl>jc##########0n
+</span></span></code></pre></div><h3 id=level-23---level-24>Level 23 -> Level 24 <a href=#level-23---level-24>¶</a></h3><p>First start off with looking at the cronjob and the script it&rsquo;s calling.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit23@bandit:~$ cat /etc/cron.d/cronjob_bandit24
+</span></span><span class=line><span class=cl>@reboot bandit24 /usr/bin/cronjob_bandit24.sh <span class=p>&amp;</span>&gt; /dev/null
+</span></span><span class=line><span class=cl>* * * * * bandit24 /usr/bin/cronjob_bandit24.sh <span class=p>&amp;</span>&gt; /dev/null
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>bandit23@bandit:~$ cat /usr/bin/cronjob_bandit24.sh
+</span></span><span class=line><span class=cl><span class=c1>#!/bin/bash</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>myname</span><span class=o>=</span><span class=k>$(</span>whoami<span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>cd</span> /var/spool/<span class=nv>$myname</span>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;Executing and deleting all scripts in /var/spool/</span><span class=nv>$myname</span><span class=s2>:&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> i in * .*<span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=o>[</span> <span class=s2>&#34;</span><span class=nv>$i</span><span class=s2>&#34;</span> !<span class=o>=</span> <span class=s2>&#34;.&#34;</span> -a <span class=s2>&#34;</span><span class=nv>$i</span><span class=s2>&#34;</span> !<span class=o>=</span> <span class=s2>&#34;..&#34;</span> <span class=o>]</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>then</span>
+</span></span><span class=line><span class=cl>        <span class=nb>echo</span> <span class=s2>&#34;Handling </span><span class=nv>$i</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>        timeout -s <span class=m>9</span> <span class=m>60</span> ./<span class=nv>$i</span>
+</span></span><span class=line><span class=cl>        rm -f ./<span class=nv>$i</span>
+</span></span><span class=line><span class=cl>    <span class=k>fi</span>
+</span></span><span class=line><span class=cl><span class=k>done</span>
+</span></span></code></pre></div><p>Let&rsquo;s analyze this script.</p><ol><li>First, it assigns the output of the <code>whoami</code> command to a variable.<br>This would hold the username of the user executing the script, i.e. <em>bandit24</em>.</li><li>Then the script goes to the spool folder for this user.<br><code>/var/spool/</code> usually contains mail, news and printer queues.</li><li>Within this folder, it iterates over every file using a for loop.<br>If the name of a file isn&rsquo;t <code>.</code> (current folder) or <code>..</code> (parent folder), it will:<ol><li>output some text, including the filename;</li><li>execute the script, timing out after 60 seconds, sending a <code>SIGKILL</code> signal to forcefully kill it; and</li><li>remove the file.</li></ol></li></ol><p>Note that cronjobs are executed within the context of the job owner and anything that&rsquo;s outputted (e.g. echo) is not shown to us. It&rsquo;s usually send to the user via an internal email (i.e. mail spool). So we&rsquo;ll want to retrieve the user&rsquo;s password via a method we do have access to, like a file in <code>/tmp/</code>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit23@bandit:~$ cat /var/spool/bandit24/sequr.sh
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#!/bin/bash</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Generate a &#34;random&#34; filename</span>
+</span></span><span class=line><span class=cl><span class=c1># 9dda1384c1cc97b1e73c63f42bbca608b47e8e0cce062aa420e67362d57f0e8c</span>
+</span></span><span class=line><span class=cl><span class=c1># echo &#39;Visit sequr.be for more writeups&#39; | sha256sum | cut -d&#39; &#39; -f1</span>
+</span></span><span class=line><span class=cl><span class=c1># 9dda1384c1cc97b1e73c63f42bbca608b47e8e0cce062aa420e67362d57f0e8c</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>sequr_tmp</span><span class=o>=</span><span class=s2>&#34;/tmp/9dda1384c1cc97b1e73c63f42bbca608b47e8e0cce062aa420e67362d57f0e8c&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>touch <span class=nv>$sequr_tmp</span>
+</span></span><span class=line><span class=cl>chmod a+r <span class=nv>$sequr_tmp</span>
+</span></span><span class=line><span class=cl>cat /etc/bandit_pass/bandit24 &gt;&gt; <span class=nv>$sequr_tmp</span>
+</span></span></code></pre></div><p>Once the cronjob has finished, our script will be removed from the spool directory and we will find the password of the next level in our temp file.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit23@bandit:~$ cat /var/spool/bandit24/sequr.sh
+</span></span><span class=line><span class=cl>cat: /var/spool/bandit24/sequr.sh: No such file or directory
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>bandit23@bandit:~$ cat /tmp/9dda1384c1cc97b1e73c63f42bbca608b47e8e0cce062aa420e67362d57f0e8c
+</span></span><span class=line><span class=cl>Uo##########hZ
+</span></span></code></pre></div><h3 id=level-24---level-25>Level 24 -> Level 25 <a href=#level-24---level-25>¶</a></h3><p>Let&rsquo;s connect to the listener and see what&rsquo;s going on.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit24@bandit:~$ nc localhost <span class=m>30002</span>
+</span></span><span class=line><span class=cl>I am the pincode checker <span class=k>for</span> user bandit25. Please enter the password <span class=k>for</span> user bandit24 and the secret pincode on a single line, separated by a space.
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0000</span>
+</span></span><span class=line><span class=cl>Wrong! Please enter the correct pincode. Try again.
+</span></span></code></pre></div><p>Let&rsquo;s see how we can bruteforce this.</p><p>The following oneliner will iterate through every 4-digit combination, open a netcat connection to the listener, try the password and close after 1 second. To keep our output a bit clean and spot more easily when we found the correct pin, I use some inverse grepping to remove unneeded output.</p><p>Note that this script will take 10.000 seconds or over 2 hours to run over every possible combination.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit24@bandit:~$ <span class=k>for</span> pin in <span class=o>{</span>0000..9999<span class=o>}</span><span class=p>;</span> <span class=k>do</span> <span class=nb>echo</span> <span class=s2>&#34;trying </span><span class=nv>$pin</span><span class=s2>&#34;</span><span class=p>;</span> <span class=nb>echo</span> <span class=s2>&#34;Uo##########hZ </span><span class=nv>$pin</span><span class=s2>&#34;</span> <span class=p>|</span> nc -w <span class=m>1</span> localhost <span class=m>30002</span> <span class=p>|</span> grep -v Wrong <span class=p>|</span> grep -v checker<span class=p>;</span> <span class=k>done</span>
+</span></span></code></pre></div><p>Let&rsquo;s figure out a faster approach.</p><p>Create a file that contains every possible combination.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit24@bandit:~$ <span class=k>for</span> pin in <span class=o>{</span>0000..9999<span class=o>}</span><span class=p>;</span> <span class=k>do</span> <span class=nb>echo</span> <span class=s2>&#34;Uo##########hZ </span><span class=nv>$pin</span><span class=s2>&#34;</span> &gt;&gt; /tmp/bandit24<span class=p>;</span> <span class=k>done</span>
+</span></span><span class=line><span class=cl>bandit24@bandit:~$ head /tmp/bandit24
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0000</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0001</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0002</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0003</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0004</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0005</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0006</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0007</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0008</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>0009</span>
+</span></span><span class=line><span class=cl>bandit24@bandit:~$ tail /tmp/bandit24
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>9990</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>9991</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>9992</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>9993</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>9994</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>9995</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>9996</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>9997</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>9998</span>
+</span></span><span class=line><span class=cl>Uo##########hZ <span class=m>9999</span>
+</span></span></code></pre></div><p>Pipe this file to netcat. Each line will also be considered a new line in the netcat connection.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit24@bandit:~$ cat /tmp/bandit24 <span class=p>|</span> nc localhost <span class=m>30002</span>
+</span></span><span class=line><span class=cl>I am the pincode checker <span class=k>for</span> user bandit25. Please enter the password <span class=k>for</span> user bandit24 and the secret pincode on a single line, separated by a space.
+</span></span><span class=line><span class=cl>Wrong! Please enter the correct pincode. Try again.
+</span></span><span class=line><span class=cl>Wrong! Please enter the correct pincode. Try again.
+</span></span><span class=line><span class=cl><span class=o>[</span>...<span class=o>]</span>
+</span></span><span class=line><span class=cl>Wrong! Please enter the correct pincode. Try again.
+</span></span><span class=line><span class=cl>Wrong! Please enter the correct pincode. Try again.
+</span></span><span class=line><span class=cl>Correct!
+</span></span><span class=line><span class=cl>The password of user bandit25 is uN##########zG
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Exiting.
+</span></span></code></pre></div><p>To clean the output a bit up, we can again apply a reverse grep.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit24@bandit:~$ cat /tmp/bandit24 <span class=p>|</span> nc localhost <span class=m>30002</span> <span class=p>|</span> grep -v Wrong
+</span></span><span class=line><span class=cl>I am the pincode checker <span class=k>for</span> user bandit25. Please enter the password <span class=k>for</span> user bandit24 and the secret pincode on a single line, separated by a space.
+</span></span><span class=line><span class=cl>Correct!
+</span></span><span class=line><span class=cl>The password of user bandit25 is uN##########zG
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Exiting.
+</span></span></code></pre></div><h3 id=level-25---level-26>Level 25 -> Level 26 <a href=#level-25---level-26>¶</a></h3><p>As the level goal states, getting the &lsquo;credentials&rsquo; (it&rsquo;s an SSH key) for level26 isn&rsquo;t hard.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit25@bandit:~$ ls
+</span></span><span class=line><span class=cl>bandit26.sshkey
+</span></span><span class=line><span class=cl>bandit25@bandit:~$ cat bandit26.sshkey 
+</span></span><span class=line><span class=cl>-----BEGIN RSA PRIVATE KEY-----
+</span></span><span class=line><span class=cl>MIIEpQIBAAKCAQEApis2AuoooEqeYWamtwX2k5z9uU1Afl2F8VyXQqbv/LTrIwdW
+</span></span><span class=line><span class=cl><span class=c1>################################################################</span>
+</span></span><span class=line><span class=cl>IZdtF5HXs2S5CADTwniUS5mX1HO9l5gUkk+h0cH5JnPtsMCnAUM+BRY<span class=o>=</span>
+</span></span><span class=line><span class=cl>-----END RSA PRIVATE KEY-----
+</span></span></code></pre></div><p>Let&rsquo;s check what &ldquo;shell&rdquo; bandit26 is using.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit25@bandit:~$ cat /etc/passwd <span class=p>|</span> grep bandit26
+</span></span><span class=line><span class=cl>bandit26❌11026:11026:bandit level 26:/home/bandit26:/usr/bin/showtext
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>bandit25@bandit:~$ cat /usr/bin/showtext
+</span></span><span class=line><span class=cl><span class=c1>#!/bin/sh</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>TERM</span><span class=o>=</span>linux
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>more ~/text.txt
+</span></span><span class=line><span class=cl><span class=nb>exit</span> <span class=m>0</span>
+</span></span></code></pre></div><p>So it looks like bandit26&rsquo;s shell is a script that outputs the content of <code>~/text.txt</code> using <code>more</code>. If you login as bandit26 using the SSH key we already captured, you&rsquo;ll see the ASCII art contained in text.txt just before the connection closes.</p><p>To exploit the <code>more</code> command into giving us a shell, we first need to resize our terminal so that it&rsquo;s too small for the ASCII art to fit.<br>If you use tmux, you can split your terminal horizontally (<code>^b "</code>) and resize your current pane by holding down CTRL and using the up/down arrow (<code>^ + ↑</code>).</p><figure class=center><img src=otw-bandit26-img1.png><figcaption class=center>Resized tmux pane small enough so the ASCII art doesn&rsquo;t fit</figcaption></figure><p>Pressing <code>v</code> will open a text editor (defined by the <code>$EDITOR</code> shell variable). It looks to be vi?</p><p>We can now open a different file, like the password file for bandit26, using <code>:e /etc/bandit_pass/bandit26</code></p><figure class=center><img src=otw-bandit26-img2.png><figcaption class=center>Abusing vi to open password file</figcaption></figure><p>Which opens said file and gives us the password for bandit26.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>5c##########6Z
+</span></span></code></pre></div><h3 id=level-26---level-27>Level 26 -> Level 27 <a href=#level-26---level-27>¶</a></h3><p>We need a way to abuse <code>more</code> or <code>vi</code> to gain a shell and retrieve the password for level27.</p><p>In vi, it&rsquo;s possible to execute shell commands.<br>However, we first need to set the <code>$TERM</code> variable.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>:set <span class=nv>sh</span><span class=o>=</span>/bin/bash
+</span></span></code></pre></div><p>Then we can execute commands within vi.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>:!pwd
+</span></span><span class=line><span class=cl><span class=o>[</span>No write since last change<span class=o>]</span>
+</span></span><span class=line><span class=cl>/home/bandit26
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>:!ls
+</span></span><span class=line><span class=cl><span class=o>[</span>No write since last change<span class=o>]</span>
+</span></span><span class=line><span class=cl>bandit27-do  text.txt
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>:!./bandit27-do
+</span></span><span class=line><span class=cl><span class=o>[</span>No write since last change<span class=o>]</span>
+</span></span><span class=line><span class=cl>Run a <span class=nb>command</span> as another user.
+</span></span><span class=line><span class=cl>  Example: ./bandit27-do id
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>shell returned <span class=m>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>:!./bandit27-do cat /etc/bandit_pass/bandit27
+</span></span><span class=line><span class=cl><span class=o>[</span>No write since last change<span class=o>]</span>
+</span></span><span class=line><span class=cl>3b##########ea
+</span></span></code></pre></div><h3 id=level-27---level-28>Level 27 -> Level 28 <a href=#level-27---level-28>¶</a></h3><p>Make a directory in <code>/tmp</code> where we can clone the repo into.<br>Then clone the repo.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit27@bandit:/tmp$ <span class=nb>cd</span>
+</span></span><span class=line><span class=cl>bandit27@bandit:~$ <span class=nb>cd</span> /tmp
+</span></span><span class=line><span class=cl>bandit27@bandit:/tmp$ mkdir bandit27
+</span></span><span class=line><span class=cl>bandit27@bandit:/tmp$ <span class=nb>cd</span> bandit27
+</span></span><span class=line><span class=cl>bandit27@bandit:/tmp/bandit27$ git clone ssh://bandit27-git@localhost/home/bandit27-git/repo
+</span></span><span class=line><span class=cl>Cloning into <span class=s1>&#39;repo&#39;</span>...
+</span></span><span class=line><span class=cl>Could not create directory <span class=s1>&#39;/home/bandit27/.ssh&#39;</span>.
+</span></span><span class=line><span class=cl>The authenticity of host <span class=s1>&#39;localhost (127.0.0.1)&#39;</span> can<span class=s1>&#39;t be established.
+</span></span></span><span class=line><span class=cl><span class=s1>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
+</span></span></span><span class=line><span class=cl><span class=s1>Are you sure you want to continue connecting (yes/no)? yes
+</span></span></span><span class=line><span class=cl><span class=s1>Failed to add the host to the list of known hosts (/home/bandit27/.ssh/known_hosts).
+</span></span></span><span class=line><span class=cl><span class=s1>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>bandit27-git@localhost&#39;</span>s password: 
+</span></span><span class=line><span class=cl>remote: Counting objects: 3, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>remote: Compressing objects: 100% <span class=o>(</span>2/2<span class=o>)</span>, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>remote: Total <span class=m>3</span> <span class=o>(</span>delta 0<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
+</span></span><span class=line><span class=cl>Receiving objects: 100% <span class=o>(</span>3/3<span class=o>)</span>, <span class=k>done</span>.
+</span></span></code></pre></div><p>Look inside the repo to find the password.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit27@bandit:/tmp/bandit27$ ls
+</span></span><span class=line><span class=cl>repo
+</span></span><span class=line><span class=cl>bandit27@bandit:/tmp/bandit27$ ls repo/
+</span></span><span class=line><span class=cl>README
+</span></span><span class=line><span class=cl>bandit27@bandit:/tmp/bandit27$ cat repo/README 
+</span></span><span class=line><span class=cl>The password to the next level is: 0e##########a2
+</span></span></code></pre></div><p>Clean up after ourselves</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit27@bandit:~$ rm -rf /tmp/bandit27
+</span></span></code></pre></div><h3 id=level-28---level-29>Level 28 -> Level 29 <a href=#level-28---level-29>¶</a></h3><p>Similar to the previous level.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit28@bandit:~$ mkdir /tmp/bandit28
+</span></span><span class=line><span class=cl>bandit28@bandit:~$ <span class=nb>cd</span> /tmp/bandit28
+</span></span><span class=line><span class=cl>bandit28@bandit:/tmp/bandit28$ git clone ssh://bandit28-git@localhost/home/bandit28-git/repo
+</span></span><span class=line><span class=cl>Cloning into <span class=s1>&#39;repo&#39;</span>...
+</span></span><span class=line><span class=cl>Could not create directory <span class=s1>&#39;/home/bandit28/.ssh&#39;</span>.
+</span></span><span class=line><span class=cl>The authenticity of host <span class=s1>&#39;localhost (127.0.0.1)&#39;</span> can<span class=s1>&#39;t be established.
+</span></span></span><span class=line><span class=cl><span class=s1>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
+</span></span></span><span class=line><span class=cl><span class=s1>Are you sure you want to continue connecting (yes/no)? yes
+</span></span></span><span class=line><span class=cl><span class=s1>Failed to add the host to the list of known hosts (/home/bandit28/.ssh/known_hosts).
+</span></span></span><span class=line><span class=cl><span class=s1>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>bandit28-git@localhost&#39;</span>s password: 
+</span></span><span class=line><span class=cl>remote: Counting objects: 9, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>remote: Compressing objects: 100% <span class=o>(</span>6/6<span class=o>)</span>, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>remote: Total <span class=m>9</span> <span class=o>(</span>delta 2<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
+</span></span><span class=line><span class=cl>Receiving objects: 100% <span class=o>(</span>9/9<span class=o>)</span>, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>Resolving deltas: 100% <span class=o>(</span>2/2<span class=o>)</span>, <span class=k>done</span>.
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit28@bandit:/tmp/bandit28$ ls
+</span></span><span class=line><span class=cl>repo
+</span></span><span class=line><span class=cl>bandit28@bandit:/tmp/bandit28$ <span class=nb>cd</span> repo
+</span></span><span class=line><span class=cl>bandit28@bandit:/tmp/bandit28/repo$ ls
+</span></span><span class=line><span class=cl>README.md
+</span></span><span class=line><span class=cl>bandit28@bandit:/tmp/bandit28/repo$ cat README.md 
+</span></span><span class=line><span class=cl><span class=c1># Bandit Notes</span>
+</span></span><span class=line><span class=cl>Some notes <span class=k>for</span> level29 of bandit.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>## credentials</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>- username: bandit29
+</span></span><span class=line><span class=cl>- password: xxxxxxxxxx
+</span></span></code></pre></div><p>It looks like the credentials have been removed from the file.</p><p>But perhaps, the creator of this git repository initially did include the credentials in this file, notices his/her mistake and pushed a new commit removing the credentials?</p><p>Looking at the commit history, we see the creator initially set &ldquo;&rdquo; as password value. In a following commit the password was added. And in the final commit this password was replaces by a string of &ldquo;x&rdquo; characters.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit28@bandit:/tmp/bandit28/repo$ git log -p
+</span></span><span class=line><span class=cl>commit 073c27c130e6ee407e12faad1dd3848a110c4f95
+</span></span><span class=line><span class=cl>Author: Morla Porla &lt;morla@overthewire.org&gt;
+</span></span><span class=line><span class=cl>Date:   Tue Oct <span class=m>16</span> 14:00:39 <span class=m>2018</span> +0200
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    fix info leak
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index 3f7cee8..5c6457b <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -4,5 +4,5 @@ Some notes <span class=k>for</span> level29 of bandit.
+</span></span><span class=line><span class=cl> <span class=c1>## credentials</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl> - username: bandit29
+</span></span><span class=line><span class=cl>-- password: bb##########b2
+</span></span><span class=line><span class=cl>+- password: xxxxxxxxxx
+</span></span></code></pre></div><p>Don&rsquo;t forget to clean up!</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit28@bandit:~$ rm -rf /tmp/bandit28
+</span></span></code></pre></div><h3 id=level-29---level-30>Level 29 -> Level 30 <a href=#level-29---level-30>¶</a></h3><p>Similar exercise again.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit29@bandit:~$ mkdir /tmp/bandit29
+</span></span><span class=line><span class=cl>bandit29@bandit:~$ <span class=nb>cd</span> /tmp/bandit29
+</span></span><span class=line><span class=cl>bandit29@bandit:/tmp/bandit29$ git clone ssh://bandit29-git@localhost/home/bandit29-git/repo
+</span></span><span class=line><span class=cl>Cloning into <span class=s1>&#39;repo&#39;</span>...
+</span></span><span class=line><span class=cl>Could not create directory <span class=s1>&#39;/home/bandit29/.ssh&#39;</span>.
+</span></span><span class=line><span class=cl>The authenticity of host <span class=s1>&#39;localhost (127.0.0.1)&#39;</span> can<span class=s1>&#39;t be established.
+</span></span></span><span class=line><span class=cl><span class=s1>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
+</span></span></span><span class=line><span class=cl><span class=s1>Are you sure you want to continue connecting (yes/no)? yes
+</span></span></span><span class=line><span class=cl><span class=s1>Failed to add the host to the list of known hosts (/home/bandit29/.ssh/known_hosts).
+</span></span></span><span class=line><span class=cl><span class=s1>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>bandit29-git@localhost&#39;</span>s password: 
+</span></span><span class=line><span class=cl>remote: Counting objects: 16, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>remote: Compressing objects: 100% <span class=o>(</span>11/11<span class=o>)</span>, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>remote: Total <span class=m>16</span> <span class=o>(</span>delta 2<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
+</span></span><span class=line><span class=cl>Receiving objects: 100% <span class=o>(</span>16/16<span class=o>)</span>, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>Resolving deltas: 100% <span class=o>(</span>2/2<span class=o>)</span>, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>bandit29@bandit:/tmp/bandit29$ ls
+</span></span><span class=line><span class=cl>repo
+</span></span><span class=line><span class=cl>bandit29@bandit:/tmp/bandit29$ <span class=nb>cd</span> repo/
+</span></span><span class=line><span class=cl>bandit29@bandit:/tmp/bandit29/repo$ ls
+</span></span><span class=line><span class=cl>README.md
+</span></span></code></pre></div><p>Checking the git log doesn&rsquo;t provide us with a password.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit29@bandit:/tmp/bandit29/repo$ git log -p
+</span></span><span class=line><span class=cl>commit 84abedc104bbc0c65cb9eb74eb1d3057753e70f8
+</span></span><span class=line><span class=cl>Author: Ben Dover &lt;noone@overthewire.org&gt;
+</span></span><span class=line><span class=cl>Date:   Tue Oct <span class=m>16</span> 14:00:41 <span class=m>2018</span> +0200
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    fix username
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index 2da2f39..1af21d3 <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -3,6 +3,6 @@ Some notes <span class=k>for</span> bandit30 of bandit.
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl> <span class=c1>## credentials</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>-- username: bandit29
+</span></span><span class=line><span class=cl>+- username: bandit30
+</span></span><span class=line><span class=cl> - password: &lt;no passwords in production!&gt;
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>commit 9b19e7d8c1aadf4edcc5b15ba8107329ad6c5650
+</span></span><span class=line><span class=cl>Author: Ben Dover &lt;noone@overthewire.org&gt;
+</span></span><span class=line><span class=cl>Date:   Tue Oct <span class=m>16</span> 14:00:41 <span class=m>2018</span> +0200
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    initial commit of README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>new file mode <span class=m>100644</span>
+</span></span><span class=line><span class=cl>index 0000000..2da2f39
+</span></span><span class=line><span class=cl>--- /dev/null
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -0,0 +1,8 @@
+</span></span><span class=line><span class=cl>+# Bandit Notes
+</span></span><span class=line><span class=cl>+Some notes <span class=k>for</span> bandit30 of bandit.
+</span></span><span class=line><span class=cl>+
+</span></span><span class=line><span class=cl>+## credentials
+</span></span><span class=line><span class=cl>+
+</span></span><span class=line><span class=cl>+- username: bandit29
+</span></span></code></pre></div><p>However, the README does say something about having passwords in production, so perhaps there&rsquo;s something in a dev(elopment) branch?</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit29@bandit:/tmp/bandit29/repo$ git log --oneline --decorate --graph --all
+</span></span><span class=line><span class=cl>* 33ce2e9 <span class=o>(</span>origin/dev<span class=o>)</span> add data needed <span class=k>for</span> development
+</span></span><span class=line><span class=cl>* a8af722 add gif2ascii
+</span></span><span class=line><span class=cl><span class=p>|</span> * 2af54c5 <span class=o>(</span>origin/sploits-dev<span class=o>)</span> add some silly exploit, just <span class=k>for</span> shit and giggles
+</span></span><span class=line><span class=cl><span class=p>|</span>/  
+</span></span><span class=line><span class=cl>* 84abedc <span class=o>(</span>HEAD -&gt; master, origin/master, origin/HEAD<span class=o>)</span> fix username
+</span></span><span class=line><span class=cl>* 9b19e7d initial commit of README.md
+</span></span></code></pre></div><p>Adding <code>--all</code> to the log command gives us much more information, including the password we&rsquo;re looking for.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit29@bandit:/tmp/bandit29/repo$ git log --help
+</span></span><span class=line><span class=cl><span class=o>[</span>...<span class=o>]</span>
+</span></span><span class=line><span class=cl>   Commit Limiting
+</span></span><span class=line><span class=cl>       Besides specifying a range of commits that should be listed using the special notations explained in the description, additional commit limiting may be applied.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>       Using more options generally further limits the output <span class=o>(</span>e.g. --since<span class=o>=</span>&lt;date1&gt; limits to commits newer than &lt;date1&gt;, and using it with --grep<span class=o>=</span>&lt;pattern&gt; further limits to commits
+</span></span><span class=line><span class=cl>       whose log message has a line that matches &lt;pattern&gt;<span class=o>)</span>, unless otherwise noted.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>       Note that these are applied before commit ordering and formatting options, such as --reverse.
+</span></span><span class=line><span class=cl><span class=o>[</span>...<span class=o>]</span>
+</span></span><span class=line><span class=cl>       --all
+</span></span><span class=line><span class=cl>           Pretend as <span class=k>if</span> all the refs in refs/ are listed on the <span class=nb>command</span> line as &lt;commit&gt;.
+</span></span><span class=line><span class=cl><span class=o>[</span>...<span class=o>]</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit29@bandit:/tmp/bandit29/repo$ git log -p --all
+</span></span><span class=line><span class=cl>commit 84abedc104bbc0c65cb9eb74eb1d3057753e70f8
+</span></span><span class=line><span class=cl>Author: Ben Dover &lt;noone@overthewire.org&gt;
+</span></span><span class=line><span class=cl>Date:   Tue Oct <span class=m>16</span> 14:00:41 <span class=m>2018</span> +0200
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    fix username
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index 2da2f39..1af21d3 <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -3,6 +3,6 @@ Some notes <span class=k>for</span> bandit30 of bandit.
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl> <span class=c1>## credentials</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>-- username: bandit29
+</span></span><span class=line><span class=cl>+- username: bandit30
+</span></span><span class=line><span class=cl> - password: &lt;no passwords in production!&gt;
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>commit 33ce2e95d9c5d6fb0a40e5ee9a2926903646b4e3
+</span></span><span class=line><span class=cl>Author: Morla Porla &lt;morla@overthewire.org&gt;
+</span></span><span class=line><span class=cl>Date:   Tue Oct <span class=m>16</span> 14:00:41 <span class=m>2018</span> +0200
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    add data needed <span class=k>for</span> development
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index 1af21d3..39b87a8 <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -4,5 +4,5 @@ Some notes <span class=k>for</span> bandit30 of bandit.
+</span></span><span class=line><span class=cl> <span class=c1>## credentials</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl> - username: bandit30
+</span></span><span class=line><span class=cl>-- password: &lt;no passwords in production!&gt;
+</span></span><span class=line><span class=cl>+- password: 5b##########af
+</span></span></code></pre></div><p>Don&rsquo;t forget to clean up!</p></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/bandit/>Bandit</a></span>
 <span class=tag><a href=https://sequr.be/tags/over-the-wire/>Over The Wire</a></span>
-<span class=tag><a href=https://sequr.be/tags/overthewire/>OverTheWire</a></span>
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-<span class=tag><a href=https://sequr.be/categories/overthewire/>OverTheWire</a></span>
-<span class=tag><a href=https://sequr.be/categories/writeup/>Writeup</a></span>
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-2529 Words
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-2020-01-15
-</p>
-</div>
-<hr>
-<div class=sharing-buttons>
-<a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2fbandit-20-30%2f" target=_blank rel=noopener aria-label title="Share on facebook">
-<div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2fbandit-20-30%2f" target=_blank rel=noopener aria-label title="Share on twitter">
-<div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
-<div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2fbandit-20-30%2f&resubmit=true&title=Bandit%20%2820%20-%3e%2030%29" target=_blank rel=noopener aria-label title="Share on reddit">
-<div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="whatsapp://send?text=Bandit%20%2820%20-%3e%2030%29%20https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2fbandit-20-30%2f" target=_blank rel=noopener aria-label title="Share on whatsapp">
-<div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg>
-</div>
-</div>
-</a>
-</div>
-<div class=pagination>
-<div class=pagination__title>
-<span class=pagination__title-h></span>
-<hr>
-</div>
-<div class=pagination__buttons>
-<span class="button previous">
-<a href=https://sequr.be/blog/2020/01/bandit-30-34/>
-<span class=button__icon>←</span>
-<span class=button__text>Bandit (30 -> 34)</span>
-</a>
-</span>
-<span class="button next">
-<a href=https://sequr.be/blog/2020/01/bandit-10-20/>
-<span class=button__text>Bandit (10 -> 20)</span>
-<span class=button__icon>→</span>
-</a>
-</span>
-</div>
-</div>
-</main>
-</div>
-<footer class=footer>
-<div class=footer__inner>
-<div class=footer__content>
-<span>&copy; 2019-2022</span>
+<span class=tag><a href=https://sequr.be/tags/overthewire/>OverTheWire</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg><span class=tag><a href=https://sequr.be/categories/overthewire/>OverTheWire</a></span>
+<span class=tag><a href=https://sequr.be/categories/writeup/>Writeup</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>2529 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2020-01-15</p></div><hr><div class=sharing-buttons><a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2fbandit-20-30%2f" target=_blank rel=noopener aria-label title="Share on facebook"><div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2fbandit-20-30%2f" target=_blank rel=noopener aria-label title="Share on twitter"><div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2fbandit-20-30%2f&resubmit=true&title=Bandit%20%2820%20-%3e%2030%29" target=_blank rel=noopener aria-label title="Share on reddit"><div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg></div></div></a><a class=resp-sharing-button__link href="whatsapp://send?text=Bandit%20%2820%20-%3e%2030%29%20https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2fbandit-20-30%2f" target=_blank rel=noopener aria-label title="Share on whatsapp"><div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg></div></div></a></div><div class=pagination><div class=pagination__title><span class=pagination__title-h></span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://sequr.be/blog/2020/01/bandit-30-34/><span class=button__icon>←</span>
+<span class=button__text>Bandit (30 -> 34)</span></a></span>
+<span class="button next"><a href=https://sequr.be/blog/2020/01/bandit-10-20/><span class=button__text>Bandit (10 -> 20)</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class=footer><div class=footer__inner><div class=footer__content><span>&copy; 2019-2022</span>
 <span><a href=https://sequr.be>DezeStijn</a></span>
-<span>
-<a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
-</a>
-</span>
-</div>
-</div>
-<div class=footer__inner>
-<div class=footer__content>
-<small>
-<span>Powered by <a href='\"http://gohugo.io\"'>Hugo</a>.</span>
-<span>Made with &#10084; by <a href='\"https://github.com/rhazdon\"'>Djordje Atlialp</a></span>
-<br>
-<span>Deployed using <a href=https://github.com/TheGroundZero/TheGroundZero.github.io/ title=TheGroundZero/TheGroundZero.github.io>GitHub Pages</a></span>
-</small>
-</div>
-</div>
-</footer>
-</div>
-<script type=text/javascript src=https://sequr.be/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
-</body>
-</html>
+<span><a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div><div class=footer__inner><div class=footer__content><small><span>Powered by <a href='\"http://gohugo.io\"'>Hugo</a>.</span>
+<span>Made with &#10084; by <a href='\"https://github.com/rhazdon\"'>Djordje Atlialp</a></span><br><span>Deployed using <a href=https://github.com/TheGroundZero/TheGroundZero.github.io/ title=TheGroundZero/TheGroundZero.github.io>GitHub Pages</a></span></small></div></div></footer></div><script type=text/javascript src=https://sequr.be/bundle.min.a2c5b062c87998f04d1b5dfb6a89a1b2d79786c21d0cb63a05e8a2082984b64b77d80955e3b97eab17273775162ba372511b711fea2f7608f216e68a67bb22d6.js integrity="sha512-osWwYsh5mPBNG137aomhsteXhsIdDLY6BeiiCCmEtkt32AlV47l+qxcnN3UWK6NyURtxH+ovdgjyFuaKZ7si1g=="></script></body></html>

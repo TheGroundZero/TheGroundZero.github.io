@@ -1,232 +1,55 @@
-<!doctype html><html lang=en>
-<head>
-<meta charset=utf-8>
-<meta http-equiv=x-ua-compatible content="ie=edge">
-<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-<meta name=author content="DezeStijn">
-<meta name=description content="Write-up of the Blackhole misc challenge by ice3man on HackTheBox.eu. A strange file has been discovered in Stephen Hawking&amp;rsquo;s computer.">
-<meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Challenge,HackTheBox.eu,ice3man,Misc">
-<meta name=robots content="noodp">
-<meta name=theme-color content="#252627">
-<link rel=canonical href=https://sequr.be/blog/2019/09/blackhole/>
-<title>
-Blackhole :: Sequr
-</title>
-<link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css>
-<link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css>
-<link rel=stylesheet type=text/css href=https://sequr.be/css/table.css>
-<link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css>
-<link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png>
-<link rel=manifest href=https://sequr.be/site.webmanifest>
-<link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101>
-<link rel="shortcut icon" href=https://sequr.be/favicon.ico>
-<meta name=msapplication-TileColor content="#e68101">
-<meta name=theme-color content="#e68101">
-<meta itemprop=name content="Blackhole">
-<meta itemprop=description content="Write-up of the Blackhole misc challenge by ice3man on HackTheBox.eu. A strange file has been discovered in Stephen Hawking&rsquo;s computer."><meta itemprop=datePublished content="2019-09-04T21:25:36+00:00">
-<meta itemprop=dateModified content="2019-09-04T21:25:36+00:00">
-<meta itemprop=wordCount content="742"><meta itemprop=image content="https://sequr.be/img/htb-ice3man.png">
-<meta itemprop=keywords content="Challenge,HackTheBox.eu,ice3man,Misc,">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:image content="https://sequr.be/img/htb-ice3man.png">
-<meta name=twitter:title content="Blackhole">
-<meta name=twitter:description content="Write-up of the Blackhole misc challenge by ice3man on HackTheBox.eu. A strange file has been discovered in Stephen Hawking&rsquo;s computer.">
-<meta property="article:section" content="Hack The Box">
-<meta property="article:section" content="Writeup">
-<meta property="article:published_time" content="2019-09-04 21:25:36 +0000 UTC">
-</head>
-<body>
-<div class=container>
-<header class=header>
-<span class=header__inner>
-<a href=https://sequr.be/ style=text-decoration:none>
-<div class=logo>
-<span class=logo__mark>$</span>
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="Write-up of the Blackhole misc challenge by ice3man on HackTheBox.eu. A strange file has been discovered in Stephen Hawking&amp;rsquo;s computer."><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Challenge,HackTheBox.eu,ice3man,Misc"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/blog/2019/09/blackhole/><title>Blackhole :: Sequr</title><link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content="#e68101"><meta name=theme-color content="#e68101"><meta itemprop=name content="Blackhole"><meta itemprop=description content="Write-up of the Blackhole misc challenge by ice3man on HackTheBox.eu. A strange file has been discovered in Stephen Hawking&rsquo;s computer."><meta itemprop=datePublished content="2019-09-04T21:25:36+00:00"><meta itemprop=dateModified content="2019-09-04T21:25:36+00:00"><meta itemprop=wordCount content="742"><meta itemprop=image content="https://sequr.be/img/htb-ice3man.png"><meta itemprop=keywords content="Challenge,HackTheBox.eu,ice3man,Misc,"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/img/htb-ice3man.png"><meta name=twitter:title content="Blackhole"><meta name=twitter:description content="Write-up of the Blackhole misc challenge by ice3man on HackTheBox.eu. A strange file has been discovered in Stephen Hawking&rsquo;s computer."><meta property="article:section" content="Hack The Box"><meta property="article:section" content="Writeup"><meta property="article:published_time" content="2019-09-04 21:25:36 +0000 UTC"></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/ style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
 <span class=logo__text>nc sequr.be 1337</span>
-<span class=logo__cursor style=background-color:#e68101>
-</span>
-</div>
-</a>
-<span class=header__right>
-<nav class=menu>
-<ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li>
-</ul>
-</nav>
-<span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-</span>
-<span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span>
-</span>
-</span>
-</header>
-<div class=content>
-<main class=post>
-<div class=post-info>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-4 minutes
-</p>
-</div>
-<article>
-<h1 class=post-title>
-<a href=https://sequr.be/blog/2019/09/blackhole/>Blackhole</a>
-</h1>
-<div class=post-content>
-<p><strong>Note to fellow-HTBers:</strong> Only write-ups of retired HTB machines or challenges are allowed.</p>
-<h2 id=challenge-info>Challenge info <a href=#challenge-info>¶</a></h2><p>Blackhole [by <a href=https://www.hackthebox.eu/home/users/profile/32583 target=_blank rel=noopener>ice3man</a>]<br>
-A strange file has been discovered in Stephen Hawking&rsquo;s computer. Can you discover what it is?</p>
-<h2 id=the-challenge>The challenge <a href=#the-challenge>¶</a></h2><p>We start of by downloading the Blackhole.zip file and verifying it’s sha256sum with the hash displayed on the challenge page.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ <span class=nb>echo</span> <span class=s2>&#34;7eb770ee9fdadaccfa2dda10895c1eb3f10a572025e99eac2c01d4ea23ee904a Blackhole.zip&#34;</span> <span class=p>|</span> sha256sum -c -
-Blackhole.zip: OK
-</code></pre></div><p>We then proceed to unzip this file using the password provided on the challenge page.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ unzip Blackhole.zip 
-Archive:  Blackhole.zip
-<span class=o>[</span>Blackhole.zip<span class=o>]</span> archive.zip password: 
- extracting: archive.zip
-</code></pre></div><p>This zip contains another zip &ldquo;archive.zip&rdquo; which we&rsquo;ll also unzip. There&rsquo;s no password on this zip.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ unzip -l archive.zip 
-Archive: archive.zip
- Length   Date  Time  Name
---------- ---------- -----  ----
-  <span class=m>60382</span> 2018-06-16 12:47  hawking
----------           -------
-  <span class=m>60382</span>           <span class=m>1</span> file
-
-$ unzip archive.zip 
-Archive: archive.zip
- inflating: hawking
-</code></pre></div><p>This zip contains a file, which appears to be an image. Opening it shows a picture of an quote by Stephen Hawking.<br>
-Note that on Windows and certain Linux distros it appears that the image is inflated as an empty folder. This already reveals there&rsquo;s something &ldquo;special&rdquo; with this image.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ file hawking 
-hawking: JPEG image data, JFIF standard 1.01, aspect ratio, density 72x72, segment length 16, baseline, precision 8, 794x579, components <span class=m>3</span>
-$ xdg-open hawking
-</code></pre></div>
-<figure class=center>
-<img src=https://sequr.be/img/htb-blackhole-img1.jpg>
-<figcaption class=center>Picture of Stephen Hawking included in the zip file</figcaption>
-</figure>
-<p>Since we seem to be dealing with a case of steganography, we&rsquo;ll use <code>steghide</code> in an attempt to extract the hidden data. I attempt a few passwords related to the challenge: blackhole, <strong>hawking</strong>.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ steghide info hawking -p hawking
-<span class=s2>&#34;hawking&#34;</span>:
-  format: jpeg
-  capacity: 3.3 KB
-  embedded file <span class=s2>&#34;flag.txt&#34;</span>:
-    size: 1.6 KB
-    encrypted: rijndael-128, cbc
-    compressed: yes
-
-$ steghide extract -sf hawking -p hawking
-wrote extracted data to <span class=s2>&#34;flag.txt&#34;</span>.
-</code></pre></div><p>The content of flag.txt looks like base64 encoded data. Decoding this, the result still looks like base64 encoded data (double encoded).</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ cat flag.txt 
-<span class=nv>UldaeFluUnhlaUJKZFhoNGRXMTVJRlJ0YVhkMWVuTWdhVzFsSUcxNklGRjZjM2gxWlhRZ1puUnhZV1J4Wm5WdmJYZ2dZblJyWlhWdmRXVm1MQ0J2WVdWNVlYaGhjM1ZsWml3Z2JYcHdJRzFuWm5SaFpDd2dhWFJoSUdsdFpTQndkV1J4YjJaaFpDQmhjaUJrY1dWeGJXUnZkQ0J0WmlCbWRIRWdUM0Y2Wm1SeElISmhaQ0JHZEhGaFpIRm1kVzl0ZUNCUFlXVjVZWGhoYzJzZ2JXWWdablJ4SUVkNmRXaHhaR1YxWm1zZ1lYSWdUMjE1Ym1SMWNITnhJRzFtSUdaMGNTQm1kWGx4SUdGeUlIUjFaU0J3Y1cxbWRDNGdWSEVnYVcxbElHWjBjU0JZWjI5dFpYVnRlaUJDWkdGeWNXVmxZV1FnWVhJZ1dXMW1kSEY1YldaMWIyVWdiV1lnWm5SeElFZDZkV2h4WkdWMVptc2dZWElnVDIxNWJtUjFjSE54SUc1eFptbHhjWG9nTVRrM09TQnRlbkFnTWpBd09TNGdWRzFwZDNWNmN5QnRiM1IxY1doeGNDQnZZWGw1Y1dSdmRXMTRJR1ZuYjI5eFpXVWdhWFZtZENCbGNXaHhaRzE0SUdsaFpIZGxJR0Z5SUdKaFltZDRiV1FnWlc5MWNYcHZjU0IxZWlCcGRIVnZkQ0IwY1NCd2RXVnZaMlZsY1dVZ2RIVmxJR0ZwZWlCbWRIRmhaSFZ4WlNCdGVuQWdiMkZsZVdGNFlYTnJJSFY2SUhOeGVuRmtiWGd1SUZSMVpTQnVZV0YzSUUwZ1RtUjFjWElnVkhWbFptRmtheUJoY2lCR2RYbHhJRzFpWW5GdFpIRndJR0Y2SUdaMGNTQk9aSFZtZFdWMElFVm5lbkJ0YXlCR2RYbHhaU0J1Y1dWbUxXVnhlSGh4WkNCNGRXVm1JSEpoWkNCdElHUnhiMkZrY0MxdVpIRnRkM1Y2Y3lBeU16Y2dhWEZ4ZDJVdUlGUnRhWGQxZW5NZ2FXMWxJRzBnY25GNGVHRnBJR0Z5SUdaMGNTQkVZV3R0ZUNCRllXOTFjV1pyTENCdElIaDFjbkZtZFhseElIbHhlVzV4WkNCaGNpQm1kSEVnUW1GNlpuVnlkVzl0ZUNCTmIyMXdjWGxySUdGeUlFVnZkWEY2YjNGbExDQnRlbkFnYlNCa2NXOTFZblZ4ZW1ZZ1lYSWdablJ4SUVKa2NXVjFjSEY2Wm5WdGVDQlpjWEJ0ZUNCaGNpQlNaSEZ4Y0dGNUxDQm1kSEVnZEhWemRIRmxaaUJ2ZFdoMWVIVnRlaUJ0YVcxa2NDQjFlaUJtZEhFZ1IzcDFabkZ3SUVWbWJXWnhaUzRnVlhvZ01qQXdNaXdnVkcxcGQzVjZjeUJwYldVZ1pHMTZkM0Z3SUhwbmVXNXhaQ0F5TlNCMWVpQm1kSEVnVGs1UFhPS0FtV1VnWW1GNGVDQmhjaUJtZEhFZ01UQXdJRk5rY1cxbWNXVm1JRTVrZFdaaGVtVXVEUXBVUms1N1dqTm9jVVJmZUROR1gyWlVNMTl1TkdWR2JVUndOVjlUTTJaZlN6Qm5YM0F3YVZwOUlBPT0</span><span class=o>=</span>
-
-$ base64 -d flag.txt 
-<span class=nv>RWZxYnRxeiBJdXh4dW15IFRtaXd1enMgaW1lIG16IFF6c3h1ZXQgZnRxYWRxZnVvbXggYnRrZXVvdWVmLCBvYWV5YXhhc3VlZiwgbXpwIG1nZnRhZCwgaXRhIGltZSBwdWRxb2ZhZCBhciBkcWVxbWRvdCBtZiBmdHEgT3F6ZmRxIHJhZCBGdHFhZHFmdW9teCBPYWV5YXhhc2sgbWYgZnRxIEd6dWhxZGV1ZmsgYXIgT215bmR1cHNxIG1mIGZ0cSBmdXlxIGFyIHR1ZSBwcW1mdC4gVHEgaW1lIGZ0cSBYZ29tZXVteiBCZGFycWVlYWQgYXIgWW1mdHF5bWZ1b2UgbWYgZnRxIEd6dWhxZGV1ZmsgYXIgT215bmR1cHNxIG5xZmlxcXogMTk3OSBtenAgMjAwOS4gVG1pd3V6cyBtb3R1cWhxcCBvYXl5cWRvdW14IGVnb29xZWUgaXVmdCBlcWhxZG14IGlhZHdlIGFyIGJhYmd4bWQgZW91cXpvcSB1eiBpdHVvdCB0cSBwdWVvZ2VlcWUgdHVlIGFpeiBmdHFhZHVxZSBtenAgb2FleWF4YXNrIHV6IHNxenFkbXguIFR1ZSBuYWF3IE0gTmR1cXIgVHVlZmFkayBhciBGdXlxIG1iYnFtZHFwIGF6IGZ0cSBOZHVmdWV0IEVnenBtayBGdXlxZSBucWVmLWVxeHhxZCB4dWVmIHJhZCBtIGRxb2FkcC1uZHFtd3V6cyAyMzcgaXFxd2UuIFRtaXd1enMgaW1lIG0gcnF4eGFpIGFyIGZ0cSBEYWtteCBFYW91cWZrLCBtIHh1cnFmdXlxIHlxeW5xZCBhciBmdHEgQmF6ZnVydW9teCBNb21wcXlrIGFyIEVvdXF6b3FlLCBtenAgbSBkcW91YnVxemYgYXIgZnRxIEJkcWV1cHF6ZnVteCBZcXBteCBhciBSZHFxcGF5LCBmdHEgdHVzdHFlZiBvdWh1eHVteiBtaW1kcCB1eiBmdHEgR3p1ZnFwIEVmbWZxZS4gVXogMjAwMiwgVG1pd3V6cyBpbWUgZG16d3FwIHpneW5xZCAyNSB1eiBmdHEgTk5PXOKAmWUgYmF4eCBhciBmdHEgMTAwIFNkcW1mcWVmIE5kdWZhemUuDQpURk57WjNocURfeDNGX2ZUM19uNGVGbURwNV9TM2ZfSzBnX3AwaVp9IA</span><span class=o>==</span>
-
-$ base64 -d flag.txt <span class=p>|</span> base64 -d -
-Efqbtqz Iuxxumy Tmiwuzs ime mz Qzsxuet ftqadqfuomx btkeuouef, oaeyaxasuef, mzp mgftad, ita ime pudqofad ar dqeqmdot mf ftq Oqzfdq rad Ftqadqfuomx Oaeyaxask mf ftq Gzuhqdeufk ar Omyndupsq mf ftq fuyq ar tue pqmft. Tq ime ftq Xgomeumz Bdarqeead ar Ymftqymfuoe mf ftq Gzuhqdeufk ar Omyndupsq nqfiqqz <span class=m>1979</span> mzp 2009. Tmiwuzs motuqhqp oayyqdoumx egooqee iuft eqhqdmx iadwe ar babgxmd eouqzoq uz ituot tq pueogeeqe tue aiz ftqaduqe mzp oaeyaxask uz sqzqdmx. Tue naaw M Nduqr Tuefadk ar Fuyq mbbqmdqp az ftq Ndufuet Egzpmk Fuyqe nqef-eqxxqd xuef rad m dqoadp-ndqmwuzs <span class=m>237</span> iqqwe. Tmiwuzs ime m rqxxai ar ftq Dakmx Eaouqfk, m xurqfuyq yqynqd ar ftq Bazfuruomx Mompqyk ar Eouqzoqe, mzp m dqoubuqzf ar ftq Bdqeupqzfumx Yqpmx ar Rdqqpay, ftq tustqef ouhuxumz mimdp uz ftq Gzufqp Efmfqe. Uz 2002, Tmiwuzs ime dmzwqp zgynqd <span class=m>25</span> uz ftq NNO<span class=se>\’</span>e baxx ar ftq <span class=m>100</span> Sdqmfqef Ndufaze.
-TFN<span class=o>{</span>Z3hqD_x3F_fT3_n4eFmDp5_S3f_K0g_p0iZ<span class=o>}</span>
-</code></pre></div><p>After double-decoding the flag.txt, we retrieve some text that appears to contain the flag (see syntax at the end) but which seems to still be encoded somehow as it doesn&rsquo;t follow the proper Hack the Box flag syntax: <code>HTB{S0m3_t3xt}</code>.</p>
-<p>My first guess would be that this is ROT13 encoded, as you can clearly see distinct words with recurrences of certain letters.<br>
-However, this results in more garbage output.</p>
-<p>Perhaps this is still encoded using a <a href=https://en.wikipedia.org/wiki/Caesar_cipher%22 target=_blank rel=noopener>Caesar cipher</a>, but using a different number of shifts?<br>
-Let&rsquo;s try a decoder that does ROT1-25 as I&rsquo;m too lazy to do <a href=https://en.wikipedia.org/wiki/Frequency_analysis%22 target=_blank rel=noopener>frequency analysis</a> to figure out the actual &ldquo;shift distance&rdquo;.<br>
-You can find such decoder at <a href=https://tech.pookey.co.uk/non-wp/rot-decoder.php%22 target=_blank rel=noopener>https://tech.pookey.co.uk/non-wp/rot-decoder.php</a>.</p>
-<h2 id=getting-the-flag>Getting the flag <a href=#getting-the-flag>¶</a></h2><p>The output next to ROT14 is actually readable and has a flag following the correct syntax.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>Stephen William Hawking was an English theoretical physicist, cosmologist, and author, who was director of research at the Centre <span class=k>for</span> Theoretical Cosmology at the University of Cambridge at the <span class=nb>time</span> of his death. He was the Lucasian Professor of Mathematics at the University of Cambridge between <span class=m>1979</span> and 2009. Hawking achieved commercial success with several works of popular science in which he discusses his own theories and cosmology in general. His book A Brief History of Time appeared on the British Sunday Times best-seller list <span class=k>for</span> a record-breaking <span class=m>237</span> weeks. Hawking was a fellow of the Royal Society, a lifetime member of the Pontifical Academy of Sciences, and a recipient of the Presidential Medal of Freedom, the highest civilian award in the United States. In 2002, Hawking was ranked number <span class=m>25</span> in the BBC<span class=se>\’</span>s poll of the <span class=m>100</span> Greatest Britons.
-HTB<span class=o>{</span>N3veR_l3T_tH3_b4sTaRd5_G3t_Y0u_d0wN<span class=o>}</span>
-</code></pre></div>
-</div>
-</article>
-<hr>
-<div class=post-info>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
-<span class=tag><a href=https://sequr.be/tags/challenge/>Challenge</a></span>
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>4 minutes</p></div><article><h1 class=post-title><a href=https://sequr.be/blog/2019/09/blackhole/>Blackhole</a></h1><div class=post-content><p><strong>Note to fellow-HTBers:</strong> Only write-ups of retired HTB machines or challenges are allowed.</p><h2 id=challenge-info>Challenge info <a href=#challenge-info>¶</a></h2><p>Blackhole [by <a href=https://www.hackthebox.eu/home/users/profile/32583 target=_blank rel=noopener>ice3man</a>]<br>A strange file has been discovered in Stephen Hawking&rsquo;s computer. Can you discover what it is?</p><h2 id=the-challenge>The challenge <a href=#the-challenge>¶</a></h2><p>We start of by downloading the Blackhole.zip file and verifying it’s sha256sum with the hash displayed on the challenge page.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>echo</span> <span class=s2>&#34;7eb770ee9fdadaccfa2dda10895c1eb3f10a572025e99eac2c01d4ea23ee904a Blackhole.zip&#34;</span> <span class=p>|</span> sha256sum -c -
+</span></span><span class=line><span class=cl>Blackhole.zip: OK
+</span></span></code></pre></div><p>We then proceed to unzip this file using the password provided on the challenge page.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ unzip Blackhole.zip 
+</span></span><span class=line><span class=cl>Archive:  Blackhole.zip
+</span></span><span class=line><span class=cl><span class=o>[</span>Blackhole.zip<span class=o>]</span> archive.zip password: 
+</span></span><span class=line><span class=cl> extracting: archive.zip
+</span></span></code></pre></div><p>This zip contains another zip &ldquo;archive.zip&rdquo; which we&rsquo;ll also unzip. There&rsquo;s no password on this zip.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ unzip -l archive.zip 
+</span></span><span class=line><span class=cl>Archive: archive.zip
+</span></span><span class=line><span class=cl> Length   Date  Time  Name
+</span></span><span class=line><span class=cl>--------- ---------- -----  ----
+</span></span><span class=line><span class=cl>  <span class=m>60382</span> 2018-06-16 12:47  hawking
+</span></span><span class=line><span class=cl>---------           -------
+</span></span><span class=line><span class=cl>  <span class=m>60382</span>           <span class=m>1</span> file
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ unzip archive.zip 
+</span></span><span class=line><span class=cl>Archive: archive.zip
+</span></span><span class=line><span class=cl> inflating: hawking
+</span></span></code></pre></div><p>This zip contains a file, which appears to be an image. Opening it shows a picture of an quote by Stephen Hawking.<br>Note that on Windows and certain Linux distros it appears that the image is inflated as an empty folder. This already reveals there&rsquo;s something &ldquo;special&rdquo; with this image.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ file hawking 
+</span></span><span class=line><span class=cl>hawking: JPEG image data, JFIF standard 1.01, aspect ratio, density 72x72, segment length 16, baseline, precision 8, 794x579, components <span class=m>3</span>
+</span></span><span class=line><span class=cl>$ xdg-open hawking
+</span></span></code></pre></div><figure class=center><img src=https://sequr.be/img/htb-blackhole-img1.jpg><figcaption class=center>Picture of Stephen Hawking included in the zip file</figcaption></figure><p>Since we seem to be dealing with a case of steganography, we&rsquo;ll use <code>steghide</code> in an attempt to extract the hidden data. I attempt a few passwords related to the challenge: blackhole, <strong>hawking</strong>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ steghide info hawking -p hawking
+</span></span><span class=line><span class=cl><span class=s2>&#34;hawking&#34;</span>:
+</span></span><span class=line><span class=cl>  format: jpeg
+</span></span><span class=line><span class=cl>  capacity: 3.3 KB
+</span></span><span class=line><span class=cl>  embedded file <span class=s2>&#34;flag.txt&#34;</span>:
+</span></span><span class=line><span class=cl>    size: 1.6 KB
+</span></span><span class=line><span class=cl>    encrypted: rijndael-128, cbc
+</span></span><span class=line><span class=cl>    compressed: yes
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ steghide extract -sf hawking -p hawking
+</span></span><span class=line><span class=cl>wrote extracted data to <span class=s2>&#34;flag.txt&#34;</span>.
+</span></span></code></pre></div><p>The content of flag.txt looks like base64 encoded data. Decoding this, the result still looks like base64 encoded data (double encoded).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ cat flag.txt 
+</span></span><span class=line><span class=cl><span class=nv>UldaeFluUnhlaUJKZFhoNGRXMTVJRlJ0YVhkMWVuTWdhVzFsSUcxNklGRjZjM2gxWlhRZ1puUnhZV1J4Wm5WdmJYZ2dZblJyWlhWdmRXVm1MQ0J2WVdWNVlYaGhjM1ZsWml3Z2JYcHdJRzFuWm5SaFpDd2dhWFJoSUdsdFpTQndkV1J4YjJaaFpDQmhjaUJrY1dWeGJXUnZkQ0J0WmlCbWRIRWdUM0Y2Wm1SeElISmhaQ0JHZEhGaFpIRm1kVzl0ZUNCUFlXVjVZWGhoYzJzZ2JXWWdablJ4SUVkNmRXaHhaR1YxWm1zZ1lYSWdUMjE1Ym1SMWNITnhJRzFtSUdaMGNTQm1kWGx4SUdGeUlIUjFaU0J3Y1cxbWRDNGdWSEVnYVcxbElHWjBjU0JZWjI5dFpYVnRlaUJDWkdGeWNXVmxZV1FnWVhJZ1dXMW1kSEY1YldaMWIyVWdiV1lnWm5SeElFZDZkV2h4WkdWMVptc2dZWElnVDIxNWJtUjFjSE54SUc1eFptbHhjWG9nTVRrM09TQnRlbkFnTWpBd09TNGdWRzFwZDNWNmN5QnRiM1IxY1doeGNDQnZZWGw1Y1dSdmRXMTRJR1ZuYjI5eFpXVWdhWFZtZENCbGNXaHhaRzE0SUdsaFpIZGxJR0Z5SUdKaFltZDRiV1FnWlc5MWNYcHZjU0IxZWlCcGRIVnZkQ0IwY1NCd2RXVnZaMlZsY1dVZ2RIVmxJR0ZwZWlCbWRIRmhaSFZ4WlNCdGVuQWdiMkZsZVdGNFlYTnJJSFY2SUhOeGVuRmtiWGd1SUZSMVpTQnVZV0YzSUUwZ1RtUjFjWElnVkhWbFptRmtheUJoY2lCR2RYbHhJRzFpWW5GdFpIRndJR0Y2SUdaMGNTQk9aSFZtZFdWMElFVm5lbkJ0YXlCR2RYbHhaU0J1Y1dWbUxXVnhlSGh4WkNCNGRXVm1JSEpoWkNCdElHUnhiMkZrY0MxdVpIRnRkM1Y2Y3lBeU16Y2dhWEZ4ZDJVdUlGUnRhWGQxZW5NZ2FXMWxJRzBnY25GNGVHRnBJR0Z5SUdaMGNTQkVZV3R0ZUNCRllXOTFjV1pyTENCdElIaDFjbkZtZFhseElIbHhlVzV4WkNCaGNpQm1kSEVnUW1GNlpuVnlkVzl0ZUNCTmIyMXdjWGxySUdGeUlFVnZkWEY2YjNGbExDQnRlbkFnYlNCa2NXOTFZblZ4ZW1ZZ1lYSWdablJ4SUVKa2NXVjFjSEY2Wm5WdGVDQlpjWEJ0ZUNCaGNpQlNaSEZ4Y0dGNUxDQm1kSEVnZEhWemRIRmxaaUJ2ZFdoMWVIVnRlaUJ0YVcxa2NDQjFlaUJtZEhFZ1IzcDFabkZ3SUVWbWJXWnhaUzRnVlhvZ01qQXdNaXdnVkcxcGQzVjZjeUJwYldVZ1pHMTZkM0Z3SUhwbmVXNXhaQ0F5TlNCMWVpQm1kSEVnVGs1UFhPS0FtV1VnWW1GNGVDQmhjaUJtZEhFZ01UQXdJRk5rY1cxbWNXVm1JRTVrZFdaaGVtVXVEUXBVUms1N1dqTm9jVVJmZUROR1gyWlVNMTl1TkdWR2JVUndOVjlUTTJaZlN6Qm5YM0F3YVZwOUlBPT0</span><span class=o>=</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ base64 -d flag.txt 
+</span></span><span class=line><span class=cl><span class=nv>RWZxYnRxeiBJdXh4dW15IFRtaXd1enMgaW1lIG16IFF6c3h1ZXQgZnRxYWRxZnVvbXggYnRrZXVvdWVmLCBvYWV5YXhhc3VlZiwgbXpwIG1nZnRhZCwgaXRhIGltZSBwdWRxb2ZhZCBhciBkcWVxbWRvdCBtZiBmdHEgT3F6ZmRxIHJhZCBGdHFhZHFmdW9teCBPYWV5YXhhc2sgbWYgZnRxIEd6dWhxZGV1ZmsgYXIgT215bmR1cHNxIG1mIGZ0cSBmdXlxIGFyIHR1ZSBwcW1mdC4gVHEgaW1lIGZ0cSBYZ29tZXVteiBCZGFycWVlYWQgYXIgWW1mdHF5bWZ1b2UgbWYgZnRxIEd6dWhxZGV1ZmsgYXIgT215bmR1cHNxIG5xZmlxcXogMTk3OSBtenAgMjAwOS4gVG1pd3V6cyBtb3R1cWhxcCBvYXl5cWRvdW14IGVnb29xZWUgaXVmdCBlcWhxZG14IGlhZHdlIGFyIGJhYmd4bWQgZW91cXpvcSB1eiBpdHVvdCB0cSBwdWVvZ2VlcWUgdHVlIGFpeiBmdHFhZHVxZSBtenAgb2FleWF4YXNrIHV6IHNxenFkbXguIFR1ZSBuYWF3IE0gTmR1cXIgVHVlZmFkayBhciBGdXlxIG1iYnFtZHFwIGF6IGZ0cSBOZHVmdWV0IEVnenBtayBGdXlxZSBucWVmLWVxeHhxZCB4dWVmIHJhZCBtIGRxb2FkcC1uZHFtd3V6cyAyMzcgaXFxd2UuIFRtaXd1enMgaW1lIG0gcnF4eGFpIGFyIGZ0cSBEYWtteCBFYW91cWZrLCBtIHh1cnFmdXlxIHlxeW5xZCBhciBmdHEgQmF6ZnVydW9teCBNb21wcXlrIGFyIEVvdXF6b3FlLCBtenAgbSBkcW91YnVxemYgYXIgZnRxIEJkcWV1cHF6ZnVteCBZcXBteCBhciBSZHFxcGF5LCBmdHEgdHVzdHFlZiBvdWh1eHVteiBtaW1kcCB1eiBmdHEgR3p1ZnFwIEVmbWZxZS4gVXogMjAwMiwgVG1pd3V6cyBpbWUgZG16d3FwIHpneW5xZCAyNSB1eiBmdHEgTk5PXOKAmWUgYmF4eCBhciBmdHEgMTAwIFNkcW1mcWVmIE5kdWZhemUuDQpURk57WjNocURfeDNGX2ZUM19uNGVGbURwNV9TM2ZfSzBnX3AwaVp9IA</span><span class=o>==</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ base64 -d flag.txt <span class=p>|</span> base64 -d -
+</span></span><span class=line><span class=cl>Efqbtqz Iuxxumy Tmiwuzs ime mz Qzsxuet ftqadqfuomx btkeuouef, oaeyaxasuef, mzp mgftad, ita ime pudqofad ar dqeqmdot mf ftq Oqzfdq rad Ftqadqfuomx Oaeyaxask mf ftq Gzuhqdeufk ar Omyndupsq mf ftq fuyq ar tue pqmft. Tq ime ftq Xgomeumz Bdarqeead ar Ymftqymfuoe mf ftq Gzuhqdeufk ar Omyndupsq nqfiqqz <span class=m>1979</span> mzp 2009. Tmiwuzs motuqhqp oayyqdoumx egooqee iuft eqhqdmx iadwe ar babgxmd eouqzoq uz ituot tq pueogeeqe tue aiz ftqaduqe mzp oaeyaxask uz sqzqdmx. Tue naaw M Nduqr Tuefadk ar Fuyq mbbqmdqp az ftq Ndufuet Egzpmk Fuyqe nqef-eqxxqd xuef rad m dqoadp-ndqmwuzs <span class=m>237</span> iqqwe. Tmiwuzs ime m rqxxai ar ftq Dakmx Eaouqfk, m xurqfuyq yqynqd ar ftq Bazfuruomx Mompqyk ar Eouqzoqe, mzp m dqoubuqzf ar ftq Bdqeupqzfumx Yqpmx ar Rdqqpay, ftq tustqef ouhuxumz mimdp uz ftq Gzufqp Efmfqe. Uz 2002, Tmiwuzs ime dmzwqp zgynqd <span class=m>25</span> uz ftq NNO<span class=se>\’</span>e baxx ar ftq <span class=m>100</span> Sdqmfqef Ndufaze.
+</span></span><span class=line><span class=cl>TFN<span class=o>{</span>Z3hqD_x3F_fT3_n4eFmDp5_S3f_K0g_p0iZ<span class=o>}</span>
+</span></span></code></pre></div><p>After double-decoding the flag.txt, we retrieve some text that appears to contain the flag (see syntax at the end) but which seems to still be encoded somehow as it doesn&rsquo;t follow the proper Hack the Box flag syntax: <code>HTB{S0m3_t3xt}</code>.</p><p>My first guess would be that this is ROT13 encoded, as you can clearly see distinct words with recurrences of certain letters.<br>However, this results in more garbage output.</p><p>Perhaps this is still encoded using a <a href=https://en.wikipedia.org/wiki/Caesar_cipher%22 target=_blank rel=noopener>Caesar cipher</a>, but using a different number of shifts?<br>Let&rsquo;s try a decoder that does ROT1-25 as I&rsquo;m too lazy to do <a href=https://en.wikipedia.org/wiki/Frequency_analysis%22 target=_blank rel=noopener>frequency analysis</a> to figure out the actual &ldquo;shift distance&rdquo;.<br>You can find such decoder at <a href=https://tech.pookey.co.uk/non-wp/rot-decoder.php%22 target=_blank rel=noopener>https://tech.pookey.co.uk/non-wp/rot-decoder.php</a>.</p><h2 id=getting-the-flag>Getting the flag <a href=#getting-the-flag>¶</a></h2><p>The output next to ROT14 is actually readable and has a flag following the correct syntax.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Stephen William Hawking was an English theoretical physicist, cosmologist, and author, who was director of research at the Centre <span class=k>for</span> Theoretical Cosmology at the University of Cambridge at the <span class=nb>time</span> of his death. He was the Lucasian Professor of Mathematics at the University of Cambridge between <span class=m>1979</span> and 2009. Hawking achieved commercial success with several works of popular science in which he discusses his own theories and cosmology in general. His book A Brief History of Time appeared on the British Sunday Times best-seller list <span class=k>for</span> a record-breaking <span class=m>237</span> weeks. Hawking was a fellow of the Royal Society, a lifetime member of the Pontifical Academy of Sciences, and a recipient of the Presidential Medal of Freedom, the highest civilian award in the United States. In 2002, Hawking was ranked number <span class=m>25</span> in the BBC<span class=se>\’</span>s poll of the <span class=m>100</span> Greatest Britons.
+</span></span><span class=line><span class=cl>HTB<span class=o>{</span>N3veR_l3T_tH3_b4sTaRd5_G3t_Y0u_d0wN<span class=o>}</span>
+</span></span></code></pre></div></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/challenge/>Challenge</a></span>
 <span class=tag><a href=https://sequr.be/tags/hackthebox.eu/>HackTheBox.eu</a></span>
 <span class=tag><a href=https://sequr.be/tags/ice3man/>ice3man</a></span>
-<span class=tag><a href=https://sequr.be/tags/misc/>Misc</a></span>
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-<span class=tag><a href=https://sequr.be/categories/hack-the-box/>Hack The Box</a></span>
-<span class=tag><a href=https://sequr.be/categories/writeup/>Writeup</a></span>
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-742 Words
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-2019-09-04
-</p>
-</div>
-<hr>
-<div class=sharing-buttons>
-<a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2fblackhole%2f" target=_blank rel=noopener aria-label title="Share on facebook">
-<div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2fblackhole%2f" target=_blank rel=noopener aria-label title="Share on twitter">
-<div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
-<div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2fblackhole%2f&resubmit=true&title=Blackhole" target=_blank rel=noopener aria-label title="Share on reddit">
-<div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="whatsapp://send?text=Blackhole%20https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2fblackhole%2f" target=_blank rel=noopener aria-label title="Share on whatsapp">
-<div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg>
-</div>
-</div>
-</a>
-</div>
-<div class=pagination>
-<div class=pagination__title>
-<span class=pagination__title-h></span>
-<hr>
-</div>
-<div class=pagination__buttons>
-<span class="button previous">
-<a href=https://sequr.be/blog/2019/09/crooked-crockford/>
-<span class=button__icon>←</span>
-<span class=button__text>Crooked Crockford</span>
-</a>
-</span>
-<span class="button next">
-<a href=https://sequr.be/blog/2019/09/longbottoms-locker/>
-<span class=button__text>Longbottom’s Locker</span>
-<span class=button__icon>→</span>
-</a>
-</span>
-</div>
-</div>
-</main>
-</div>
-<footer class=footer>
-<div class=footer__inner>
-<div class=footer__content>
-<span>&copy; 2019-2022</span>
+<span class=tag><a href=https://sequr.be/tags/misc/>Misc</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg><span class=tag><a href=https://sequr.be/categories/hack-the-box/>Hack The Box</a></span>
+<span class=tag><a href=https://sequr.be/categories/writeup/>Writeup</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>742 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2019-09-04</p></div><hr><div class=sharing-buttons><a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2fblackhole%2f" target=_blank rel=noopener aria-label title="Share on facebook"><div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2fblackhole%2f" target=_blank rel=noopener aria-label title="Share on twitter"><div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2fblackhole%2f&resubmit=true&title=Blackhole" target=_blank rel=noopener aria-label title="Share on reddit"><div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg></div></div></a><a class=resp-sharing-button__link href="whatsapp://send?text=Blackhole%20https%3a%2f%2fsequr.be%2fblog%2f2019%2f09%2fblackhole%2f" target=_blank rel=noopener aria-label title="Share on whatsapp"><div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg></div></div></a></div><div class=pagination><div class=pagination__title><span class=pagination__title-h></span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://sequr.be/blog/2019/09/crooked-crockford/><span class=button__icon>←</span>
+<span class=button__text>Crooked Crockford</span></a></span>
+<span class="button next"><a href=https://sequr.be/blog/2019/09/longbottoms-locker/><span class=button__text>Longbottom’s Locker</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class=footer><div class=footer__inner><div class=footer__content><span>&copy; 2019-2022</span>
 <span><a href=https://sequr.be>DezeStijn</a></span>
-<span>
-<a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
-</a>
-</span>
-</div>
-</div>
-<div class=footer__inner>
-<div class=footer__content>
-<small>
-<span>Powered by <a href='\"http://gohugo.io\"'>Hugo</a>.</span>
-<span>Made with &#10084; by <a href='\"https://github.com/rhazdon\"'>Djordje Atlialp</a></span>
-<br>
-<span>Deployed using <a href=https://github.com/TheGroundZero/TheGroundZero.github.io/ title=TheGroundZero/TheGroundZero.github.io>GitHub Pages</a></span>
-</small>
-</div>
-</div>
-</footer>
-</div>
-<script type=text/javascript src=https://sequr.be/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
-</body>
-</html>
+<span><a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div><div class=footer__inner><div class=footer__content><small><span>Powered by <a href='\"http://gohugo.io\"'>Hugo</a>.</span>
+<span>Made with &#10084; by <a href='\"https://github.com/rhazdon\"'>Djordje Atlialp</a></span><br><span>Deployed using <a href=https://github.com/TheGroundZero/TheGroundZero.github.io/ title=TheGroundZero/TheGroundZero.github.io>GitHub Pages</a></span></small></div></div></footer></div><script type=text/javascript src=https://sequr.be/bundle.min.a2c5b062c87998f04d1b5dfb6a89a1b2d79786c21d0cb63a05e8a2082984b64b77d80955e3b97eab17273775162ba372511b711fea2f7608f216e68a67bb22d6.js integrity="sha512-osWwYsh5mPBNG137aomhsteXhsIdDLY6BeiiCCmEtkt32AlV47l+qxcnN3UWK6NyURtxH+ovdgjyFuaKZ7si1g=="></script></body></html>

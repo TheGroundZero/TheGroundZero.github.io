@@ -1,366 +1,189 @@
-<!doctype html><html lang=en>
-<head>
-<meta charset=utf-8>
-<meta http-equiv=x-ua-compatible content="ie=edge">
-<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-<meta name=author content="DezeStijn">
-<meta name=description content="Getting solar production data from the Ginlong Solis inverter via RS485 serial and sending it to Home Assistant over MQTT">
-<meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Home Automation,Energy Management,Electricity Metering,Solis,MQTT,serial,Raspberry Pi">
-<meta name=robots content="noodp">
-<meta name=theme-color content="#252627">
-<link rel=canonical href=https://sequr.be/blog/2021/08/reading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt/>
-<title>
-Reading Ginlong Solis inverter over serial and importing in Home Assistant over MQTT :: Sequr
-</title>
-<link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css>
-<link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css>
-<link rel=stylesheet type=text/css href=https://sequr.be/css/table.css>
-<link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css>
-<link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png>
-<link rel=manifest href=https://sequr.be/site.webmanifest>
-<link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101>
-<link rel="shortcut icon" href=https://sequr.be/favicon.ico>
-<meta name=msapplication-TileColor content="#e68101">
-<meta name=theme-color content="#e68101">
-<meta itemprop=name content="Reading Ginlong Solis inverter over serial and importing in Home Assistant over MQTT">
-<meta itemprop=description content="Getting solar production data from the Ginlong Solis inverter via RS485 serial and sending it to Home Assistant over MQTT"><meta itemprop=datePublished content="2021-08-29T00:00:00+00:00">
-<meta itemprop=dateModified content="2021-10-07T00:00:00+00:00">
-<meta itemprop=wordCount content="2347"><meta itemprop=image content="https://sequr.be/blog/2021/08/reading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt/cover.png">
-<meta itemprop=keywords content="Home Automation,Energy Management,Electricity Metering,Solis,MQTT,serial,Raspberry Pi,">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:image content="https://sequr.be/blog/2021/08/reading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt/cover.png">
-<meta name=twitter:title content="Reading Ginlong Solis inverter over serial and importing in Home Assistant over MQTT">
-<meta name=twitter:description content="Getting solar production data from the Ginlong Solis inverter via RS485 serial and sending it to Home Assistant over MQTT">
-<meta property="article:section" content="Home Automation">
-<meta property="article:published_time" content="2021-08-29 00:00:00 +0000 UTC">
-</head>
-<body>
-<div class=container>
-<header class=header>
-<span class=header__inner>
-<a href=https://sequr.be/ style=text-decoration:none>
-<div class=logo>
-<span class=logo__mark>$</span>
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="Getting solar production data from the Ginlong Solis inverter via RS485 serial and sending it to Home Assistant over MQTT"><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Home Automation,Energy Management,Electricity Metering,Solis,MQTT,serial,Raspberry Pi"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/blog/2021/08/reading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt/><title>Reading Ginlong Solis inverter over serial and importing in Home Assistant over MQTT :: Sequr</title><link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content="#e68101"><meta name=theme-color content="#e68101"><meta itemprop=name content="Reading Ginlong Solis inverter over serial and importing in Home Assistant over MQTT"><meta itemprop=description content="Getting solar production data from the Ginlong Solis inverter via RS485 serial and sending it to Home Assistant over MQTT"><meta itemprop=datePublished content="2021-08-29T00:00:00+00:00"><meta itemprop=dateModified content="2021-10-07T00:00:00+00:00"><meta itemprop=wordCount content="2347"><meta itemprop=image content="https://sequr.be/blog/2021/08/reading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt/cover.png"><meta itemprop=keywords content="Home Automation,Energy Management,Electricity Metering,Solis,MQTT,serial,Raspberry Pi,"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/blog/2021/08/reading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt/cover.png"><meta name=twitter:title content="Reading Ginlong Solis inverter over serial and importing in Home Assistant over MQTT"><meta name=twitter:description content="Getting solar production data from the Ginlong Solis inverter via RS485 serial and sending it to Home Assistant over MQTT"><meta property="article:section" content="Home Automation"><meta property="article:published_time" content="2021-08-29 00:00:00 +0000 UTC"></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/ style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
 <span class=logo__text>nc sequr.be 1337</span>
-<span class=logo__cursor style=background-color:#e68101>
-</span>
-</div>
-</a>
-<span class=header__right>
-<nav class=menu>
-<ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li>
-</ul>
-</nav>
-<span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-</span>
-<span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span>
-</span>
-</span>
-</header>
-<div class=content>
-<main class=post>
-<div class=post-info>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-12 minutes
-</p>
-</div>
-<article>
-<h1 class=post-title>
-<a href=https://sequr.be/blog/2021/08/reading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt/>Reading Ginlong Solis inverter over serial and importing in Home Assistant over MQTT</a>
-</h1>
-<hr>
-<aside id=toc>
-<div class=toc-title>Table of Contents</div>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#introduction>Introduction</a></li>
-<li><a href=#what-well-need>What we&rsquo;ll need</a></li>
-<li><a href=#preparing-the-raspberry-pi>Preparing the Raspberry Pi</a>
-<ul>
-<li><a href=#flashing-microsd-card>Flashing microSD card</a></li>
-<li><a href=#wifi-and-ssh>WiFi and SSH</a></li>
-<li><a href=#rs485-hat>RS485 HAT</a></li>
-<li><a href=#setting-up-serial-connection>Setting up serial connection</a></li>
-</ul>
-</li>
-<li><a href=#solis-inverter-com-port>Solis inverter COM port</a></li>
-<li><a href=#script>Script</a>
-<ul>
-<li><a href=#cronjob>Cronjob</a></li>
-</ul>
-</li>
-<li><a href=#home-assistant>Home Assistant</a>
-<ul>
-<li><a href=#creating-sensors>Creating sensors</a>
-<ul>
-<li><a href=#incorrect-values-when-inverter-boots>Incorrect values when inverter boots</a></li>
-</ul>
-</li>
-<li><a href=#home-assistant-energy-dashboard>Home Assistant Energy Dashboard</a></li>
-</ul>
-</li>
-</ul>
-</nav>
-</aside>
-<hr>
-<div class=post-content>
-<h2 id=introduction>Introduction <a href=#introduction>¶</a></h2><p>A few years ago we got some solar panels installed.
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>12 minutes</p></div><article><h1 class=post-title><a href=https://sequr.be/blog/2021/08/reading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt/>Reading Ginlong Solis inverter over serial and importing in Home Assistant over MQTT</a></h1><hr><aside id=toc><div class=toc-title>Table of Contents</div><nav id=TableOfContents><ul><li><a href=#introduction>Introduction</a></li><li><a href=#what-well-need>What we&rsquo;ll need</a></li><li><a href=#preparing-the-raspberry-pi>Preparing the Raspberry Pi</a><ul><li><a href=#flashing-microsd-card>Flashing microSD card</a></li><li><a href=#wifi-and-ssh>WiFi and SSH</a></li><li><a href=#rs485-hat>RS485 HAT</a></li><li><a href=#setting-up-serial-connection>Setting up serial connection</a></li></ul></li><li><a href=#solis-inverter-com-port>Solis inverter COM port</a></li><li><a href=#script>Script</a><ul><li><a href=#cronjob>Cronjob</a></li></ul></li><li><a href=#home-assistant>Home Assistant</a><ul><li><a href=#creating-sensors>Creating sensors</a><ul><li><a href=#incorrect-values-when-inverter-boots>Incorrect values when inverter boots</a></li></ul></li><li><a href=#home-assistant-energy-dashboard>Home Assistant Energy Dashboard</a></li></ul></li></ul></nav></aside><hr><div class=post-content><h2 id=introduction>Introduction <a href=#introduction>¶</a></h2><p>A few years ago we got some solar panels installed.
 The installation includes solar panels (duh!), a Ginlong Solis inverter and a Landis+Gyr meter.
-The meter uploads meter data to the platform of the installer, however it only does so twice a day.</p>
-<p>To get real-time data on our solar production, I figured I had 3 options:</p>
-<ol>
-<li><strong>Get the data from the inverter.</strong><br>
-While the Solis inverter has modules that can upload the meter data over WiFi or 2G/3G to the cloud portal of Ginlong,
-our installer didn&rsquo;t install any as they for some reason chose to use a seperate meter.<br>
-However, the COM port is still accessible.<br>
-I&rsquo;d have to figure out how to connect to it, which pins I need, the protocol it speaks and how to decode the data.</li>
-<li><strong>Get the data from the meter.</strong><br>
-The Landis+Gyr meter has an LED that does 1.000 pulses for 1 kWH.<br>
-So I could hook up a light sensor, like the Home Assistant glow, and count pulses.</li>
-<li><strong>Hook a clamp onto the power wire entering the fuse box.</strong><br>
-A Shelly EM connected to the incoming Live wire would give me an easy Commercial off-the-shelf (COTS) solution.<br>
-I already have a 3EM measuring the flow from/to the grid, as I <a href=https://sequr.be/blog/2021/08/monitoring-electricity-consumption-and-production-with-shelly-3em-and-home-assistants-energy-dashboard/ title="Monitoring electricity consumption and production with Shelly 3EM and Home Assistant’s Energy Dashboard" target=_blank rel=noopener>discussed in a previous post</a>.</li>
-</ol>
-<p>After following multiple tutorials, like <a href=https://esphome.io/cookbook/power_meter.html title="ESPHome - Non-Invasive Power Meter" target=_blank rel=noopener>this one</a> from the ESPHome cookbook without much success, I dropped plan no. 2 and decided to take my changes with option 1.
-If this would fail, I&rsquo;d give up on DIY and go for option 3: the Shelly EM.</p>
-<p>Luckily I found <a href=https://gathering.tweakers.net/forum/list_messages/1900048 title="Tweakers - Ginlong Solis omvormer uitlezen voor Domoticz" target=_blank rel=noopener>these</a> <a href=https://alphyraz.tweakblogs.net/blog/17760/solis-omvormer-uitlezen-met-een-raspberry-pi title="Tweakblogs - Solis-omvormer uitlezen met een Raspberry Pi" target=_blank rel=noopener>two</a> tutorials giving me a pretty detailed explanation on how to hook up a Raspberry Pi to the inverter&rsquo;s COM port
-using a RS485 serial to UART/USB converter.</p>
-<p>After a bit of swearing and a bit of help from Solis' local help center, I managed to get this solution to work :)<br>
-Since I there were a few differences between the tutorials I found and the solution I finally managed to hack together, I thought it may be a good idea to document my process.
-Even if it doesn&rsquo;t help anyone else, it&rsquo;ll help future me if the solution ever breaks down :p</p>
-<h2 id=what-well-need>What we&rsquo;ll need <a href=#what-well-need>¶</a></h2><p>Our shopping list is pretty small for this one:</p>
-<ul>
-<li>A <a href=https://s.click.aliexpress.com/e/_9QUiuf title="Raspberry Pi Zero W" target=_blank rel=noopener>RPi Zero W</a></li>
-<li>(optional) <a href=https://www.kiwi-electronics.nl/modmypi-pi-zero-case-black title="ModMyPi Zero Case" target=_blank rel=noopener>ModMyPi Zero case</a> with GPIO cutout</li>
-<li><a href=https://www.aliexpress.com/item/4000627262613.html title="Kingston Canvast Select Plus Class10 microSD card" target=_blank rel=noopener>microSD card</a></li>
-<li>A <a href=https://www.kiwi-electronics.nl/rs-485-pi title="RPi RS485 HAT" target=_blank rel=noopener>RS485 Pi HAT</a><br>
-Alternatively: <a href=https://www.aliexpress.com/item/1005002260964199.html title="USB 2.0 to TTL RS485 Serial Converter Adapter" target=_blank rel=noopener>RS485 to USB</a> (not tested).</li>
-<li><a href=https://s.click.aliexpress.com/e/_AUEfli title="Exceedconn EC 4-pin socket" target=_blank rel=noopener>4-pin socket connector</a></li>
-<li><a href=https://s.click.aliexpress.com/e/_AcyKgH title="CHOETECH USB charger" target=_blank rel=noopener>USB charger</a></li>
-<li><a href=https://s.click.aliexpress.com/e/_AkjZEI title="Baseus Micro USB Cable 2A" target=_blank rel=noopener>micro-USB cable</a></li>
-</ul>
-<h2 id=preparing-the-raspberry-pi>Preparing the Raspberry Pi <a href=#preparing-the-raspberry-pi>¶</a></h2><h3 id=flashing-microsd-card>Flashing microSD card <a href=#flashing-microsd-card>¶</a></h3><p>We&rsquo;ll only need the Raspberry Pi to read the data over UART and send it to Home Assistant over MQTT.
-This will be done via a simple Python script.</p>
-<p>So I just flashed <a href=https://www.raspberrypi.org/software/operating-systems/ title="Raspberry Pi Operating Systems" target=_blank rel=noopener>Raspbian Lite</a> on the SD card using <a href=https://www.balena.io/etcher/ title=balenaEtcher target=_blank rel=noopener>balenaEtcher</a> as we don&rsquo;t need a Graphical User Interface (GUI).</p>
-<h3 id=wifi-and-ssh>WiFi and SSH <a href=#wifi-and-ssh>¶</a></h3><p>To get our Raspberry Pi to immediately connect to our WiFi, we can add a <code>wpa_supplicant.conf</code> file in the boot partition on the SD card.</p>
-<ol>
-<li>Plug the microSD card back in the computer after flashing.</li>
-<li>Create a new file and name it <code>wpa_supplicant.conf</code></li>
-<li>Add the following code and save the file.<br>
-Make sure you modify it to match your situation and ensure you&rsquo;re using Unix line endings (<code>\n</code>).</li>
-</ol>
-<pre tabindex=0><code class=language-conf data-lang=conf>ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+The meter uploads meter data to the platform of the installer, however it only does so twice a day.</p><p>To get real-time data on our solar production, I figured I had 3 options:</p><ol><li><strong>Get the data from the inverter.</strong><br>While the Solis inverter has modules that can upload the meter data over WiFi or 2G/3G to the cloud portal of Ginlong,
+our installer didn&rsquo;t install any as they for some reason chose to use a seperate meter.<br>However, the COM port is still accessible.<br>I&rsquo;d have to figure out how to connect to it, which pins I need, the protocol it speaks and how to decode the data.</li><li><strong>Get the data from the meter.</strong><br>The Landis+Gyr meter has an LED that does 1.000 pulses for 1 kWH.<br>So I could hook up a light sensor, like the Home Assistant glow, and count pulses.</li><li><strong>Hook a clamp onto the power wire entering the fuse box.</strong><br>A Shelly EM connected to the incoming Live wire would give me an easy Commercial off-the-shelf (COTS) solution.<br>I already have a 3EM measuring the flow from/to the grid, as I <a href=https://sequr.be/blog/2021/08/monitoring-electricity-consumption-and-production-with-shelly-3em-and-home-assistants-energy-dashboard/ title="Monitoring electricity consumption and production with Shelly 3EM and Home Assistant’s Energy Dashboard" target=_blank rel=noopener>discussed in a previous post</a>.</li></ol><p>After following multiple tutorials, like <a href=https://esphome.io/cookbook/power_meter.html title="ESPHome - Non-Invasive Power Meter" target=_blank rel=noopener>this one</a> from the ESPHome cookbook without much success, I dropped plan no. 2 and decided to take my changes with option 1.
+If this would fail, I&rsquo;d give up on DIY and go for option 3: the Shelly EM.</p><p>Luckily I found <a href=https://gathering.tweakers.net/forum/list_messages/1900048 title="Tweakers - Ginlong Solis omvormer uitlezen voor Domoticz" target=_blank rel=noopener>these</a> <a href=https://alphyraz.tweakblogs.net/blog/17760/solis-omvormer-uitlezen-met-een-raspberry-pi title="Tweakblogs - Solis-omvormer uitlezen met een Raspberry Pi" target=_blank rel=noopener>two</a> tutorials giving me a pretty detailed explanation on how to hook up a Raspberry Pi to the inverter&rsquo;s COM port
+using a RS485 serial to UART/USB converter.</p><p>After a bit of swearing and a bit of help from Solis&rsquo; local help center, I managed to get this solution to work :)<br>Since I there were a few differences between the tutorials I found and the solution I finally managed to hack together, I thought it may be a good idea to document my process.
+Even if it doesn&rsquo;t help anyone else, it&rsquo;ll help future me if the solution ever breaks down :p</p><h2 id=what-well-need>What we&rsquo;ll need <a href=#what-well-need>¶</a></h2><p>Our shopping list is pretty small for this one:</p><ul><li>A <a href=https://s.click.aliexpress.com/e/_9QUiuf title="Raspberry Pi Zero W" target=_blank rel=noopener>RPi Zero W</a></li><li>(optional) <a href=https://www.kiwi-electronics.nl/modmypi-pi-zero-case-black title="ModMyPi Zero Case" target=_blank rel=noopener>ModMyPi Zero case</a> with GPIO cutout</li><li><a href=https://www.aliexpress.com/item/4000627262613.html title="Kingston Canvast Select Plus Class10 microSD card" target=_blank rel=noopener>microSD card</a></li><li>A <a href=https://www.kiwi-electronics.nl/rs-485-pi title="RPi RS485 HAT" target=_blank rel=noopener>RS485 Pi HAT</a><br>Alternatively: <a href=https://www.aliexpress.com/item/1005002260964199.html title="USB 2.0 to TTL RS485 Serial Converter Adapter" target=_blank rel=noopener>RS485 to USB</a> (not tested).</li><li><a href=https://s.click.aliexpress.com/e/_AUEfli title="Exceedconn EC 4-pin socket" target=_blank rel=noopener>4-pin socket connector</a></li><li><a href=https://s.click.aliexpress.com/e/_AcyKgH title="CHOETECH USB charger" target=_blank rel=noopener>USB charger</a></li><li><a href=https://s.click.aliexpress.com/e/_AkjZEI title="Baseus Micro USB Cable 2A" target=_blank rel=noopener>micro-USB cable</a></li></ul><h2 id=preparing-the-raspberry-pi>Preparing the Raspberry Pi <a href=#preparing-the-raspberry-pi>¶</a></h2><h3 id=flashing-microsd-card>Flashing microSD card <a href=#flashing-microsd-card>¶</a></h3><p>We&rsquo;ll only need the Raspberry Pi to read the data over UART and send it to Home Assistant over MQTT.
+This will be done via a simple Python script.</p><p>So I just flashed <a href=https://www.raspberrypi.org/software/operating-systems/ title="Raspberry Pi Operating Systems" target=_blank rel=noopener>Raspbian Lite</a> on the SD card using <a href=https://www.balena.io/etcher/ title=balenaEtcher target=_blank rel=noopener>balenaEtcher</a> as we don&rsquo;t need a Graphical User Interface (GUI).</p><h3 id=wifi-and-ssh>WiFi and SSH <a href=#wifi-and-ssh>¶</a></h3><p>To get our Raspberry Pi to immediately connect to our WiFi, we can add a <code>wpa_supplicant.conf</code> file in the boot partition on the SD card.</p><ol><li>Plug the microSD card back in the computer after flashing.</li><li>Create a new file and name it <code>wpa_supplicant.conf</code></li><li>Add the following code and save the file.<br>Make sure you modify it to match your situation and ensure you&rsquo;re using Unix line endings (<code>\n</code>).</li></ol><pre tabindex=0><code class=language-conf data-lang=conf>ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 country=BE # changeme
 
 network={
-    ssid=&quot;YOUR_SSID&quot;
-    psk=&quot;YOUR_PASSWORD&quot;
+    ssid=&#34;YOUR_SSID&#34;
+    psk=&#34;YOUR_PASSWORD&#34;
     key_mgmt=WPA-PSK
 }
 </code></pre><p>To make sure we can SSH into the RPi, create an empty file named <code>ssh</code>.
-No extension, no data.<br>
-This must be done before the first boot of the Raspberry Pi.</p>
-<h3 id=rs485-hat>RS485 HAT <a href=#rs485-hat>¶</a></h3><p>If you got the RS485 HAT, you&rsquo;ll still need to solder the 2x20 pin header, and optionally the A/B/GND pin header and/or DB9 serial connector.<br>
-The HAT should come with a resistor.
-Normally the last device in the line in Modbus has a resistor on it, so I soldered mine on as well.</p>
-<figure class=center>
-<img src=rpi-rs485hat.png alt="Picture of Raspberry Pi with RS485 HAT">
-<figcaption class=center>RS485 HAT with components</figcaption>
-</figure>
-<h3 id=setting-up-serial-connection>Setting up serial connection <a href=#setting-up-serial-connection>¶</a></h3><p>Power the Raspberry Pi with a phone charger (5V A1 is sufficient) so that we can connect to it over SSH.<br>
-Before we do anything else, it may also be a good idea to update our Raspberry Pi.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>ssh pi@&lt;ip.of.RPi.zero&gt;
-<span class=c1># password = raspberry</span>
-
-sudo apt update
-sudo apt dist-upgrade -y
-sudo apt autoremove -y
-</code></pre></div><p>The RPi Zero W uses the same serial for the Bluetooth as we want to use for our HAT (which is connected to GPIO 14 and 15).
-So we need to do a few tweak, which includes enabling hardware UART and moving bluetooth to the secondary UART channel.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>sudo raspi-config
-<span class=c1># &gt; 3  - Interface Options</span>
-<span class=c1># &gt; P6 - Serial Port</span>
-<span class=c1># &gt; Would you like a login shell to be accessible over serial?</span>
-<span class=c1>#   &gt; No</span>
-<span class=c1># &gt; Would you like the serial port hardware to be enabled?</span>
-<span class=c1>#   &gt; Yes</span>
-
-sudo nano /boot/config.txt
-<span class=c1># Before [pi4] add the following lines:</span>
-<span class=nv>enable_uart</span><span class=o>=</span><span class=m>1</span>
-<span class=nv>dtoverlay</span><span class=o>=</span>miniuart-bt
-<span class=nv>force_turbo</span><span class=o>=</span><span class=m>1</span>
-<span class=c1># Save and close</span>
-<span class=c1># Ctrl+X / Y / [Return]</span>
-</code></pre></div><p>Also check that <code>/boot/cmdline.txt</code> doesn&rsquo;t start a terminal over serial.<br>
-My file looks like:</p>
-<pre tabindex=0><code class=language-conf data-lang=conf>console=tty1 root=PARTUUID=92a0ae12-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait
+No extension, no data.<br>This must be done before the first boot of the Raspberry Pi.</p><h3 id=rs485-hat>RS485 HAT <a href=#rs485-hat>¶</a></h3><p>If you got the RS485 HAT, you&rsquo;ll still need to solder the 2x20 pin header, and optionally the A/B/GND pin header and/or DB9 serial connector.<br>The HAT should come with a resistor.
+Normally the last device in the line in Modbus has a resistor on it, so I soldered mine on as well.</p><figure class=center><img src=rpi-rs485hat.png alt="Picture of Raspberry Pi with RS485 HAT"><figcaption class=center>RS485 HAT with components</figcaption></figure><h3 id=setting-up-serial-connection>Setting up serial connection <a href=#setting-up-serial-connection>¶</a></h3><p>Power the Raspberry Pi with a phone charger (5V A1 is sufficient) so that we can connect to it over SSH.<br>Before we do anything else, it may also be a good idea to update our Raspberry Pi.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ssh pi@&lt;ip.of.RPi.zero&gt;
+</span></span><span class=line><span class=cl><span class=c1># password = raspberry</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo apt update
+</span></span><span class=line><span class=cl>sudo apt dist-upgrade -y
+</span></span><span class=line><span class=cl>sudo apt autoremove -y
+</span></span></code></pre></div><p>The RPi Zero W uses the same serial for the Bluetooth as we want to use for our HAT (which is connected to GPIO 14 and 15).
+So we need to do a few tweak, which includes enabling hardware UART and moving bluetooth to the secondary UART channel.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo raspi-config
+</span></span><span class=line><span class=cl><span class=c1># &gt; 3  - Interface Options</span>
+</span></span><span class=line><span class=cl><span class=c1># &gt; P6 - Serial Port</span>
+</span></span><span class=line><span class=cl><span class=c1># &gt; Would you like a login shell to be accessible over serial?</span>
+</span></span><span class=line><span class=cl><span class=c1>#   &gt; No</span>
+</span></span><span class=line><span class=cl><span class=c1># &gt; Would you like the serial port hardware to be enabled?</span>
+</span></span><span class=line><span class=cl><span class=c1>#   &gt; Yes</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo nano /boot/config.txt
+</span></span><span class=line><span class=cl><span class=c1># Before [pi4] add the following lines:</span>
+</span></span><span class=line><span class=cl><span class=nv>enable_uart</span><span class=o>=</span><span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=nv>dtoverlay</span><span class=o>=</span>miniuart-bt
+</span></span><span class=line><span class=cl><span class=nv>force_turbo</span><span class=o>=</span><span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=c1># Save and close</span>
+</span></span><span class=line><span class=cl><span class=c1># Ctrl+X / Y / [Return]</span>
+</span></span></code></pre></div><p>Also check that <code>/boot/cmdline.txt</code> doesn&rsquo;t start a terminal over serial.<br>My file looks like:</p><pre tabindex=0><code class=language-conf data-lang=conf>console=tty1 root=PARTUUID=92a0ae12-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait
 </code></pre><p>Give the Raspberry Pi a reboot.
-The serial connection of the HAT should be now connected to <code>/dev/serial0</code>, which actually is a symbolic link to <code>/dev/ttyAMA0</code>.</p>
-<h2 id=solis-inverter-com-port>Solis inverter COM port <a href=#solis-inverter-com-port>¶</a></h2><p>The COM port of the Solis inverter has 4 pins, conveniently numbered 1-4.
-We&rsquo;ll only need pins 3 and 4, which correspond with pins A and B on the RS485 HAT respectively.</p>
-<p>I got a connector with a length of wire attached to it already.
-That&rsquo;s why I &lsquo;hacked&rsquo; the connection between the HAT and the COM port together using Dupont wires and a DC jack.<br>
-In the future I&rsquo;ll probably de-solder the 3-pin header and solder the COM-cable directly to the A and B holes on the HAT.</p>
-<p>If you bought the connector from AliExpress, you&rsquo;ll need to attach some wire yourself.
-A length of RJ11 (telephone) cable or ethernet cable or some speaker wire should suffice.<br>
-You can decide yourself whether you want to solder onto the RPi HAT, use a connector (e.g. Wago or DC jack) or crimp some Dupont connectors onto the wires.</p>
-<figure class=center>
-<img src=rpi-rs485hat-connected.png alt="Picture of Raspbarry Pi connected to Solis inverter's COM port">
-<figcaption class=center>RS485 hooked up to the inverter</figcaption>
-</figure>
-<h2 id=script>Script <a href=#script>¶</a></h2><p>Now it&rsquo;s time for the script that will read the data over serial and forward them over MQTT.</p>
-<p>We&rsquo;ll need a few packages for this script, so let&rsquo;s install them first.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=c1># ssh pi@&lt;ip.of.RPi.zero&gt;</span>
-sudo apt update
-sudo apt install -y python3 python3-pip
-python3 -m pip install -U pyserial
-python3 -m pip install -U minimalmodbus
-python3 -m pip install -U mqtt-mqtt
-</code></pre></div><p>Then create a new file (I called mine <code>solis_meter.py</code>) and paste the following code.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=ch>#!/usr/bin/env python3</span>
-<span class=c1># -*- coding: utf-8 -*-</span>
-<span class=c1>#</span>
-<span class=c1># Read modbus data from Ginlong Solis inverter</span>
-<span class=c1># and send over MQTT</span>
-<span class=c1>#</span>
-<span class=c1># Based on https://github.com/rogersia/Solis-4G</span>
-<span class=c1># Includes fixes, small modifcations and refactoring. Migrated to Python3.</span>
-<span class=c1># See https://sequr.be/blog/2021/08/reading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt/</span>
-<span class=c1>#</span>
-<span class=kn>import</span> <span class=nn>logging</span>
-<span class=kn>import</span> <span class=nn>minimalmodbus</span>
-<span class=kn>import</span> <span class=nn>paho.mqtt.client</span> <span class=k>as</span> <span class=nn>mqtt</span>
-<span class=kn>import</span> <span class=nn>serial</span>
-<span class=kn>import</span> <span class=nn>socket</span>
-<span class=kn>import</span> <span class=nn>sys</span>
-<span class=kn>import</span> <span class=nn>time</span>
-
-<span class=n>broker</span> <span class=o>=</span> <span class=s2>&#34;192.168.xxx.yyy&#34;</span>      <span class=c1># Set to MQTT broker IP (likely your HA IP)</span>
-<span class=n>port</span> <span class=o>=</span> <span class=mi>1883</span>                     <span class=c1># Set to MQTT broker port</span>
-<span class=n>mqttuser</span> <span class=o>=</span> <span class=s2>&#34;YOUR_MQTT_USER&#34;</span>     <span class=c1># Set to your MQTT user username</span>
-<span class=n>mqttpass</span> <span class=o>=</span> <span class=s2>&#34;YOUR_MQTT_PASSWORD&#34;</span> <span class=c1># Set to your MQTT user password</span>
-<span class=n>client_id</span> <span class=o>=</span> <span class=s2>&#34;solis_com&#34;</span>
-
-<span class=n>logging</span><span class=o>.</span><span class=n>basicConfig</span><span class=p>(</span><span class=n>stream</span><span class=o>=</span><span class=n>sys</span><span class=o>.</span><span class=n>stderr</span><span class=p>,</span> <span class=n>level</span><span class=o>=</span><span class=n>logging</span><span class=o>.</span><span class=n>INFO</span><span class=p>)</span>
-
-<span class=k>def</span> <span class=nf>mqtt_connect</span><span class=p>():</span>
-  <span class=c1># callback for mqtt</span>
-  <span class=k>def</span> <span class=nf>on_connect</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=n>userdata</span><span class=p>,</span> <span class=n>flags</span><span class=p>,</span> <span class=n>rc</span><span class=p>):</span>
-    <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s2>&#34;MQTT connected with result code </span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>rc</span><span class=p>))</span>
-
-  <span class=n>client</span> <span class=o>=</span> <span class=n>mqtt</span><span class=o>.</span><span class=n>Client</span><span class=p>(</span><span class=n>client_id</span><span class=p>)</span>
-  <span class=n>client</span><span class=o>.</span><span class=n>username_pw_set</span><span class=p>(</span><span class=n>mqttuser</span><span class=p>,</span> <span class=n>mqttpass</span><span class=p>)</span>
-  <span class=n>client</span><span class=o>.</span><span class=n>on_connect</span> <span class=o>=</span> <span class=n>on_connect</span>
-  <span class=n>client</span><span class=o>.</span><span class=n>connect_async</span><span class=p>(</span><span class=n>broker</span><span class=p>,</span> <span class=n>port</span><span class=p>,</span> <span class=mi>60</span><span class=p>)</span>
-  <span class=k>return</span> <span class=n>client</span>
-
-<span class=k>def</span> <span class=nf>mqtt_subscribe</span><span class=p>(</span><span class=n>client</span><span class=p>):</span>
-  <span class=k>def</span> <span class=nf>on_message</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=n>userdata</span><span class=p>,</span> <span class=n>msg</span><span class=p>):</span>
-    <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s2>&#34;[ </span><span class=si>{}</span><span class=s2> (</span><span class=si>{}</span><span class=s2>)] </span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>msg</span><span class=o>.</span><span class=n>topic</span><span class=p>,</span> <span class=n>msg</span><span class=o>.</span><span class=n>qos</span><span class=p>,</span> <span class=n>msg</span><span class=o>.</span><span class=n>payload</span><span class=p>))</span>
-
-  <span class=n>client</span><span class=o>.</span><span class=n>subscribe</span><span class=p>(</span><span class=s2>&#34;meters/solis_com/command&#34;</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
-  <span class=n>client</span><span class=o>.</span><span class=n>on_message</span> <span class=o>=</span> <span class=n>on_message</span>
-
-<span class=k>def</span> <span class=nf>mqtt_publish</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=n>data</span><span class=p>):</span>
-  <span class=k>def</span> <span class=nf>on_publish</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=n>userdata</span><span class=p>,</span> <span class=n>mid</span><span class=p>):</span>
-    <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s2>&#34;[</span><span class=si>{}</span><span class=s2>] published (</span><span class=si>{}</span><span class=s2>)&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>mid</span><span class=p>,</span> <span class=n>userdata</span><span class=p>))</span>
-
-  <span class=k>def</span> <span class=nf>send</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=n>topic</span><span class=p>,</span> <span class=n>payload</span><span class=o>=</span><span class=s2>&#34;&#34;</span><span class=p>,</span> <span class=n>qos</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>retain</span><span class=o>=</span><span class=kc>False</span><span class=p>):</span>
-    <span class=n>res</span> <span class=o>=</span> <span class=n>client</span><span class=o>.</span><span class=n>publish</span><span class=p>(</span><span class=n>topic</span><span class=p>,</span> <span class=n>payload</span><span class=p>,</span> <span class=n>qos</span><span class=p>,</span> <span class=n>retain</span><span class=p>)</span>
-    <span class=n>res</span><span class=o>.</span><span class=n>wait_for_publish</span><span class=p>()</span>
-    <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s2>&#34;[</span><span class=si>{}</span><span class=s2>] status: </span><span class=si>{}</span><span class=s2> - </span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>res</span><span class=o>.</span><span class=n>mid</span><span class=p>,</span> <span class=n>res</span><span class=o>.</span><span class=n>rc</span><span class=p>,</span> <span class=s2>&#34;Published&#34;</span> <span class=k>if</span> <span class=n>res</span><span class=o>.</span><span class=n>is_published</span><span class=p>()</span> <span class=k>else</span> <span class=s2>&#34;Failed&#34;</span><span class=p>))</span>
-    <span class=n>time</span><span class=o>.</span><span class=n>sleep</span><span class=p>(</span><span class=mf>0.5</span><span class=p>)</span>
-
-  <span class=n>client</span><span class=o>.</span><span class=n>on_publish</span> <span class=o>=</span> <span class=n>on_publish</span>
-  <span class=n>time</span><span class=o>.</span><span class=n>sleep</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
-  <span class=k>for</span> <span class=n>k</span><span class=p>,</span> <span class=n>v</span> <span class=ow>in</span> <span class=n>data</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
-    <span class=n>send</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=s2>&#34;meters/solis_com/</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>k</span><span class=p>),</span> <span class=n>v</span><span class=p>)</span>
-
-<span class=k>def</span> <span class=nf>modbus_connect</span><span class=p>():</span>
-  <span class=n>instrument</span> <span class=o>=</span> <span class=n>minimalmodbus</span><span class=o>.</span><span class=n>Instrument</span><span class=p>(</span><span class=s1>&#39;/dev/serial0&#39;</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span> <span class=c1># Set to inverter&#39;s address</span>
-  <span class=n>instrument</span><span class=o>.</span><span class=n>serial</span><span class=o>.</span><span class=n>baudrate</span> <span class=o>=</span> <span class=mi>9600</span>
-  <span class=n>instrument</span><span class=o>.</span><span class=n>serial</span><span class=o>.</span><span class=n>bytesize</span> <span class=o>=</span> <span class=mi>8</span>
-  <span class=n>instrument</span><span class=o>.</span><span class=n>serial</span><span class=o>.</span><span class=n>parity</span>   <span class=o>=</span> <span class=n>serial</span><span class=o>.</span><span class=n>PARITY_NONE</span>
-  <span class=n>instrument</span><span class=o>.</span><span class=n>serial</span><span class=o>.</span><span class=n>stopbits</span> <span class=o>=</span> <span class=mi>1</span>
-  <span class=n>instrument</span><span class=o>.</span><span class=n>serial</span><span class=o>.</span><span class=n>timeout</span>  <span class=o>=</span> <span class=mi>3</span>
-  <span class=c1>#instrument.debug = True</span>
-  <span class=k>return</span> <span class=n>instrument</span>
-
-<span class=k>def</span> <span class=nf>modbus_read</span><span class=p>(</span><span class=n>instrument</span><span class=p>):</span>
-  <span class=n>timestamp</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
-  <span class=c1># get data from solis</span>
-  <span class=n>Realtime_ACW</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_long</span><span class=p>(</span><span class=mi>3004</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read AC Watts as Unsigned 32-Bit</span>
-  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> W&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;AC Watts&#34;</span><span class=p>,</span> <span class=n>Realtime_ACW</span><span class=p>))</span>
-  <span class=n>Realtime_DCV</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3021</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read DC Volts as Unsigned 16-Bit</span>
-  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> V&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;DC Volt&#34;</span><span class=p>,</span> <span class=n>Realtime_DCV</span><span class=p>))</span>
-  <span class=n>Realtime_DCI</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3022</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read DC Current as Unsigned 16-Bit</span>
-  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> A&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;DC Current&#34;</span><span class=p>,</span> <span class=n>Realtime_DCI</span><span class=p>))</span>
-  <span class=n>Realtime_ACV</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3035</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read AC Volts as Unsigned 16-Bit</span>
-  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> V&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;AC Volt&#34;</span><span class=p>,</span> <span class=n>Realtime_ACV</span><span class=p>))</span>
-  <span class=n>Realtime_ACI</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3038</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read AC Current as Unsigned 16-Bit</span>
-  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> A&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;AC Current&#34;</span><span class=p>,</span> <span class=n>Realtime_ACI</span><span class=p>))</span>
-  <span class=n>Realtime_ACF</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3042</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read AC Frequency as Unsigned 16-Bit</span>
-  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> Hz&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;AC Frequency&#34;</span><span class=p>,</span> <span class=n>Realtime_ACF</span><span class=p>))</span>
-  <span class=n>Inverter_C</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3041</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span> <span class=c1># Read Inverter Temperature as Signed 16-Bit</span>
-  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> °C&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;Inverter Temperature&#34;</span><span class=p>,</span> <span class=n>Inverter_C</span><span class=p>))</span>
-  <span class=n>AlltimeEnergy_KW</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_long</span><span class=p>(</span><span class=mi>3008</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read All Time Energy (KWH Total) as Unsigned 32-Bit</span>
-  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> kWh&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;Generated (All time)&#34;</span><span class=p>,</span> <span class=n>AlltimeEnergy_KW</span><span class=p>))</span>
-  <span class=n>Today_KW</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3014</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read Today Energy (KWH Total) as 16-Bit</span>
-  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> kWh&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;Generated (Today)&#34;</span><span class=p>,</span> <span class=n>Today_KW</span><span class=p>))</span>
-
-  <span class=n>data</span> <span class=o>=</span> <span class=p>{</span>
-    <span class=s1>&#39;online&#39;</span><span class=p>:</span> <span class=n>timestamp</span><span class=p>,</span>
-    <span class=s1>&#39;acw&#39;</span><span class=p>:</span> <span class=n>Realtime_ACW</span><span class=p>,</span>
-    <span class=s1>&#39;dcv&#39;</span><span class=p>:</span> <span class=n>Realtime_DCV</span><span class=p>,</span>
-    <span class=s1>&#39;dci&#39;</span><span class=p>:</span> <span class=n>Realtime_DCI</span><span class=p>,</span>
-    <span class=s1>&#39;acv&#39;</span><span class=p>:</span> <span class=n>Realtime_ACV</span><span class=p>,</span>
-    <span class=s1>&#39;aci&#39;</span><span class=p>:</span> <span class=n>Realtime_ACI</span><span class=p>,</span>
-    <span class=s1>&#39;acf&#39;</span><span class=p>:</span> <span class=n>Realtime_ACF</span><span class=p>,</span>
-    <span class=s1>&#39;inc&#39;</span><span class=p>:</span> <span class=n>Inverter_C</span>
-  <span class=p>}</span>
-
-  <span class=c1># Fix for 0-values during inverter powerup</span>
-  <span class=k>if</span> <span class=n>AlltimeEnergy_KW</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span> <span class=n>data</span><span class=p>[</span><span class=s2>&#34;gat&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=n>AlltimeEnergy_KW</span>
-  <span class=k>if</span> <span class=n>Today_KW</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span> <span class=n>data</span><span class=p>[</span><span class=s2>&#34;gto&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=n>Today_KW</span>
-
-<span class=k>def</span> <span class=nf>main</span><span class=p>():</span>
-  <span class=k>try</span><span class=p>:</span>
-    <span class=n>mqttc</span> <span class=o>=</span> <span class=n>mqtt_connect</span><span class=p>()</span>
-    <span class=n>mqtt_subscribe</span><span class=p>(</span><span class=n>mqttc</span><span class=p>)</span>
-    <span class=n>mqttc</span><span class=o>.</span><span class=n>loop_start</span><span class=p>()</span>
-    <span class=n>modc</span> <span class=o>=</span> <span class=n>modbus_connect</span><span class=p>()</span>
-    <span class=n>data</span> <span class=o>=</span> <span class=n>modbus_read</span><span class=p>(</span><span class=n>modc</span><span class=p>)</span>
-    <span class=n>mqtt_publish</span><span class=p>(</span><span class=n>mqttc</span><span class=p>,</span> <span class=n>data</span><span class=p>)</span>
-
-  <span class=k>except</span> <span class=ne>TypeError</span> <span class=k>as</span> <span class=n>err</span><span class=p>:</span>
-    <span class=n>logging</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s2>&#34;TypeError:</span><span class=se>\n</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>err</span><span class=p>))</span>
-
-  <span class=k>except</span> <span class=ne>ValueError</span> <span class=k>as</span> <span class=n>err</span><span class=p>:</span>
-    <span class=n>logging</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s2>&#34;ValueError:</span><span class=se>\n</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>err</span><span class=p>))</span>
-
-  <span class=k>except</span> <span class=n>minimalmodbus</span><span class=o>.</span><span class=n>NoResponseError</span> <span class=k>as</span> <span class=n>err</span><span class=p>:</span>
-    <span class=n>logging</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s2>&#34;Modbus no response:</span><span class=se>\n</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>err</span><span class=p>))</span>
-
-  <span class=k>except</span> <span class=n>serial</span><span class=o>.</span><span class=n>SerialException</span> <span class=k>as</span> <span class=n>err</span><span class=p>:</span>
-    <span class=n>logging</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s2>&#34;SerialException:</span><span class=se>\n</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>err</span><span class=p>))</span>
-
-  <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>err</span><span class=p>:</span>
-    <span class=n>logging</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s2>&#34;Exception:</span><span class=se>\n</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>err</span><span class=p>))</span>
-
-<span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
-  <span class=n>main</span><span class=p>()</span>
-</code></pre></div><p>Make sure you modify the broker IP and MQTT username/password.</p>
-<p>You&rsquo;ll also notice the comment <code>Set inverter's address</code>.<br>
-This is something that had me swearing for way to long &mldr;<br>
-The scripts I based my configuration on used modbus address <code>1</code> for the Solis inverter, however mine appeared to be configured to use address <code>2</code> &mldr; &lt;insert headbang emoji>.<br>
-To find the address of your inverter, follow the steps in <a href="https://youtu.be/-RikYPv0_DQ?t=298" title="Solis Training Video: Wifi Stick and Box Setup" target=_blank rel=noopener>this Solis training video</a> (Enter > Settings > Set Address).</p>
-<p>Running the script with the RPi connected to the Solis inverter and the inverter being online, should give you something like below.<br>
-If not, change the log level at the top of the code to <code>logging.DEBUG</code> figure out what the issue is.</p>
-<pre tabindex=0><code class=language-log data-lang=log>$ ./solis_meter.py
+The serial connection of the HAT should be now connected to <code>/dev/serial0</code>, which actually is a symbolic link to <code>/dev/ttyAMA0</code>.</p><h2 id=solis-inverter-com-port>Solis inverter COM port <a href=#solis-inverter-com-port>¶</a></h2><p>The COM port of the Solis inverter has 4 pins, conveniently numbered 1-4.
+We&rsquo;ll only need pins 3 and 4, which correspond with pins A and B on the RS485 HAT respectively.</p><p>I got a connector with a length of wire attached to it already.
+That&rsquo;s why I &lsquo;hacked&rsquo; the connection between the HAT and the COM port together using Dupont wires and a DC jack.<br>In the future I&rsquo;ll probably de-solder the 3-pin header and solder the COM-cable directly to the A and B holes on the HAT.</p><p>If you bought the connector from AliExpress, you&rsquo;ll need to attach some wire yourself.
+A length of RJ11 (telephone) cable or ethernet cable or some speaker wire should suffice.<br>You can decide yourself whether you want to solder onto the RPi HAT, use a connector (e.g. Wago or DC jack) or crimp some Dupont connectors onto the wires.</p><figure class=center><img src=rpi-rs485hat-connected.png alt="Picture of Raspbarry Pi connected to Solis inverter's COM port"><figcaption class=center>RS485 hooked up to the inverter</figcaption></figure><h2 id=script>Script <a href=#script>¶</a></h2><p>Now it&rsquo;s time for the script that will read the data over serial and forward them over MQTT.</p><p>We&rsquo;ll need a few packages for this script, so let&rsquo;s install them first.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># ssh pi@&lt;ip.of.RPi.zero&gt;</span>
+</span></span><span class=line><span class=cl>sudo apt update
+</span></span><span class=line><span class=cl>sudo apt install -y python3 python3-pip
+</span></span><span class=line><span class=cl>python3 -m pip install -U pyserial
+</span></span><span class=line><span class=cl>python3 -m pip install -U minimalmodbus
+</span></span><span class=line><span class=cl>python3 -m pip install -U mqtt-mqtt
+</span></span></code></pre></div><p>Then create a new file (I called mine <code>solis_meter.py</code>) and paste the following code.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=ch>#!/usr/bin/env python3</span>
+</span></span><span class=line><span class=cl><span class=c1># -*- coding: utf-8 -*-</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Read modbus data from Ginlong Solis inverter</span>
+</span></span><span class=line><span class=cl><span class=c1># and send over MQTT</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Based on https://github.com/rogersia/Solis-4G</span>
+</span></span><span class=line><span class=cl><span class=c1># Includes fixes, small modifcations and refactoring. Migrated to Python3.</span>
+</span></span><span class=line><span class=cl><span class=c1># See https://sequr.be/blog/2021/08/reading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt/</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>logging</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>minimalmodbus</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>paho.mqtt.client</span> <span class=k>as</span> <span class=nn>mqtt</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>serial</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>socket</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>sys</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>broker</span> <span class=o>=</span> <span class=s2>&#34;192.168.xxx.yyy&#34;</span>      <span class=c1># Set to MQTT broker IP (likely your HA IP)</span>
+</span></span><span class=line><span class=cl><span class=n>port</span> <span class=o>=</span> <span class=mi>1883</span>                     <span class=c1># Set to MQTT broker port</span>
+</span></span><span class=line><span class=cl><span class=n>mqttuser</span> <span class=o>=</span> <span class=s2>&#34;YOUR_MQTT_USER&#34;</span>     <span class=c1># Set to your MQTT user username</span>
+</span></span><span class=line><span class=cl><span class=n>mqttpass</span> <span class=o>=</span> <span class=s2>&#34;YOUR_MQTT_PASSWORD&#34;</span> <span class=c1># Set to your MQTT user password</span>
+</span></span><span class=line><span class=cl><span class=n>client_id</span> <span class=o>=</span> <span class=s2>&#34;solis_com&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>logging</span><span class=o>.</span><span class=n>basicConfig</span><span class=p>(</span><span class=n>stream</span><span class=o>=</span><span class=n>sys</span><span class=o>.</span><span class=n>stderr</span><span class=p>,</span> <span class=n>level</span><span class=o>=</span><span class=n>logging</span><span class=o>.</span><span class=n>INFO</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>mqtt_connect</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=c1># callback for mqtt</span>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>on_connect</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=n>userdata</span><span class=p>,</span> <span class=n>flags</span><span class=p>,</span> <span class=n>rc</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s2>&#34;MQTT connected with result code </span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>rc</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>client</span> <span class=o>=</span> <span class=n>mqtt</span><span class=o>.</span><span class=n>Client</span><span class=p>(</span><span class=n>client_id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=n>client</span><span class=o>.</span><span class=n>username_pw_set</span><span class=p>(</span><span class=n>mqttuser</span><span class=p>,</span> <span class=n>mqttpass</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=n>client</span><span class=o>.</span><span class=n>on_connect</span> <span class=o>=</span> <span class=n>on_connect</span>
+</span></span><span class=line><span class=cl>  <span class=n>client</span><span class=o>.</span><span class=n>connect_async</span><span class=p>(</span><span class=n>broker</span><span class=p>,</span> <span class=n>port</span><span class=p>,</span> <span class=mi>60</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>client</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>mqtt_subscribe</span><span class=p>(</span><span class=n>client</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>on_message</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=n>userdata</span><span class=p>,</span> <span class=n>msg</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s2>&#34;[ </span><span class=si>{}</span><span class=s2> (</span><span class=si>{}</span><span class=s2>)] </span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>msg</span><span class=o>.</span><span class=n>topic</span><span class=p>,</span> <span class=n>msg</span><span class=o>.</span><span class=n>qos</span><span class=p>,</span> <span class=n>msg</span><span class=o>.</span><span class=n>payload</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>client</span><span class=o>.</span><span class=n>subscribe</span><span class=p>(</span><span class=s2>&#34;meters/solis_com/command&#34;</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=n>client</span><span class=o>.</span><span class=n>on_message</span> <span class=o>=</span> <span class=n>on_message</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>mqtt_publish</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=n>data</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>on_publish</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=n>userdata</span><span class=p>,</span> <span class=n>mid</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s2>&#34;[</span><span class=si>{}</span><span class=s2>] published (</span><span class=si>{}</span><span class=s2>)&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>mid</span><span class=p>,</span> <span class=n>userdata</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>send</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=n>topic</span><span class=p>,</span> <span class=n>payload</span><span class=o>=</span><span class=s2>&#34;&#34;</span><span class=p>,</span> <span class=n>qos</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>retain</span><span class=o>=</span><span class=kc>False</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>res</span> <span class=o>=</span> <span class=n>client</span><span class=o>.</span><span class=n>publish</span><span class=p>(</span><span class=n>topic</span><span class=p>,</span> <span class=n>payload</span><span class=p>,</span> <span class=n>qos</span><span class=p>,</span> <span class=n>retain</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>res</span><span class=o>.</span><span class=n>wait_for_publish</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s2>&#34;[</span><span class=si>{}</span><span class=s2>] status: </span><span class=si>{}</span><span class=s2> - </span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>res</span><span class=o>.</span><span class=n>mid</span><span class=p>,</span> <span class=n>res</span><span class=o>.</span><span class=n>rc</span><span class=p>,</span> <span class=s2>&#34;Published&#34;</span> <span class=k>if</span> <span class=n>res</span><span class=o>.</span><span class=n>is_published</span><span class=p>()</span> <span class=k>else</span> <span class=s2>&#34;Failed&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>time</span><span class=o>.</span><span class=n>sleep</span><span class=p>(</span><span class=mf>0.5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>client</span><span class=o>.</span><span class=n>on_publish</span> <span class=o>=</span> <span class=n>on_publish</span>
+</span></span><span class=line><span class=cl>  <span class=n>time</span><span class=o>.</span><span class=n>sleep</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=n>k</span><span class=p>,</span> <span class=n>v</span> <span class=ow>in</span> <span class=n>data</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>send</span><span class=p>(</span><span class=n>client</span><span class=p>,</span> <span class=s2>&#34;meters/solis_com/</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>k</span><span class=p>),</span> <span class=n>v</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>modbus_connect</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=n>instrument</span> <span class=o>=</span> <span class=n>minimalmodbus</span><span class=o>.</span><span class=n>Instrument</span><span class=p>(</span><span class=s1>&#39;/dev/serial0&#39;</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span> <span class=c1># Set to inverter&#39;s address</span>
+</span></span><span class=line><span class=cl>  <span class=n>instrument</span><span class=o>.</span><span class=n>serial</span><span class=o>.</span><span class=n>baudrate</span> <span class=o>=</span> <span class=mi>9600</span>
+</span></span><span class=line><span class=cl>  <span class=n>instrument</span><span class=o>.</span><span class=n>serial</span><span class=o>.</span><span class=n>bytesize</span> <span class=o>=</span> <span class=mi>8</span>
+</span></span><span class=line><span class=cl>  <span class=n>instrument</span><span class=o>.</span><span class=n>serial</span><span class=o>.</span><span class=n>parity</span>   <span class=o>=</span> <span class=n>serial</span><span class=o>.</span><span class=n>PARITY_NONE</span>
+</span></span><span class=line><span class=cl>  <span class=n>instrument</span><span class=o>.</span><span class=n>serial</span><span class=o>.</span><span class=n>stopbits</span> <span class=o>=</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>  <span class=n>instrument</span><span class=o>.</span><span class=n>serial</span><span class=o>.</span><span class=n>timeout</span>  <span class=o>=</span> <span class=mi>3</span>
+</span></span><span class=line><span class=cl>  <span class=c1>#instrument.debug = True</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>instrument</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>modbus_read</span><span class=p>(</span><span class=n>instrument</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>  <span class=n>timestamp</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=c1># get data from solis</span>
+</span></span><span class=line><span class=cl>  <span class=n>Realtime_ACW</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_long</span><span class=p>(</span><span class=mi>3004</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read AC Watts as Unsigned 32-Bit</span>
+</span></span><span class=line><span class=cl>  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> W&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;AC Watts&#34;</span><span class=p>,</span> <span class=n>Realtime_ACW</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=n>Realtime_DCV</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3021</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read DC Volts as Unsigned 16-Bit</span>
+</span></span><span class=line><span class=cl>  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> V&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;DC Volt&#34;</span><span class=p>,</span> <span class=n>Realtime_DCV</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=n>Realtime_DCI</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3022</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read DC Current as Unsigned 16-Bit</span>
+</span></span><span class=line><span class=cl>  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> A&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;DC Current&#34;</span><span class=p>,</span> <span class=n>Realtime_DCI</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=n>Realtime_ACV</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3035</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read AC Volts as Unsigned 16-Bit</span>
+</span></span><span class=line><span class=cl>  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> V&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;AC Volt&#34;</span><span class=p>,</span> <span class=n>Realtime_ACV</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=n>Realtime_ACI</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3038</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read AC Current as Unsigned 16-Bit</span>
+</span></span><span class=line><span class=cl>  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> A&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;AC Current&#34;</span><span class=p>,</span> <span class=n>Realtime_ACI</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=n>Realtime_ACF</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3042</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read AC Frequency as Unsigned 16-Bit</span>
+</span></span><span class=line><span class=cl>  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> Hz&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;AC Frequency&#34;</span><span class=p>,</span> <span class=n>Realtime_ACF</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=n>Inverter_C</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3041</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span> <span class=c1># Read Inverter Temperature as Signed 16-Bit</span>
+</span></span><span class=line><span class=cl>  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> °C&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;Inverter Temperature&#34;</span><span class=p>,</span> <span class=n>Inverter_C</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=n>AlltimeEnergy_KW</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_long</span><span class=p>(</span><span class=mi>3008</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read All Time Energy (KWH Total) as Unsigned 32-Bit</span>
+</span></span><span class=line><span class=cl>  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> kWh&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;Generated (All time)&#34;</span><span class=p>,</span> <span class=n>AlltimeEnergy_KW</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=n>Today_KW</span> <span class=o>=</span> <span class=n>instrument</span><span class=o>.</span><span class=n>read_register</span><span class=p>(</span><span class=mi>3014</span><span class=p>,</span> <span class=n>number_of_decimals</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span> <span class=n>functioncode</span><span class=o>=</span><span class=mi>4</span><span class=p>,</span> <span class=n>signed</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=c1># Read Today Energy (KWH Total) as 16-Bit</span>
+</span></span><span class=line><span class=cl>  <span class=n>logging</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>{:&lt;23s}{:10.2f}</span><span class=s2> kWh&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=s2>&#34;Generated (Today)&#34;</span><span class=p>,</span> <span class=n>Today_KW</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>data</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;online&#39;</span><span class=p>:</span> <span class=n>timestamp</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;acw&#39;</span><span class=p>:</span> <span class=n>Realtime_ACW</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;dcv&#39;</span><span class=p>:</span> <span class=n>Realtime_DCV</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;dci&#39;</span><span class=p>:</span> <span class=n>Realtime_DCI</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;acv&#39;</span><span class=p>:</span> <span class=n>Realtime_ACV</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;aci&#39;</span><span class=p>:</span> <span class=n>Realtime_ACI</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;acf&#39;</span><span class=p>:</span> <span class=n>Realtime_ACF</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;inc&#39;</span><span class=p>:</span> <span class=n>Inverter_C</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1># Fix for 0-values during inverter powerup</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=n>AlltimeEnergy_KW</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span> <span class=n>data</span><span class=p>[</span><span class=s2>&#34;gat&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=n>AlltimeEnergy_KW</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=n>Today_KW</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span> <span class=n>data</span><span class=p>[</span><span class=s2>&#34;gto&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=n>Today_KW</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>main</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>mqttc</span> <span class=o>=</span> <span class=n>mqtt_connect</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>mqtt_subscribe</span><span class=p>(</span><span class=n>mqttc</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>mqttc</span><span class=o>.</span><span class=n>loop_start</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>modc</span> <span class=o>=</span> <span class=n>modbus_connect</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>data</span> <span class=o>=</span> <span class=n>modbus_read</span><span class=p>(</span><span class=n>modc</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>mqtt_publish</span><span class=p>(</span><span class=n>mqttc</span><span class=p>,</span> <span class=n>data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>except</span> <span class=ne>TypeError</span> <span class=k>as</span> <span class=n>err</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>logging</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s2>&#34;TypeError:</span><span class=se>\n</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>err</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>except</span> <span class=ne>ValueError</span> <span class=k>as</span> <span class=n>err</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>logging</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s2>&#34;ValueError:</span><span class=se>\n</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>err</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>except</span> <span class=n>minimalmodbus</span><span class=o>.</span><span class=n>NoResponseError</span> <span class=k>as</span> <span class=n>err</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>logging</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s2>&#34;Modbus no response:</span><span class=se>\n</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>err</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>except</span> <span class=n>serial</span><span class=o>.</span><span class=n>SerialException</span> <span class=k>as</span> <span class=n>err</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>logging</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s2>&#34;SerialException:</span><span class=se>\n</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>err</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>err</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>logging</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s2>&#34;Exception:</span><span class=se>\n</span><span class=si>{}</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>err</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=n>main</span><span class=p>()</span>
+</span></span></code></pre></div><p>Make sure you modify the broker IP and MQTT username/password.</p><p>You&rsquo;ll also notice the comment <code>Set inverter's address</code>.<br>This is something that had me swearing for way to long &mldr;<br>The scripts I based my configuration on used modbus address <code>1</code> for the Solis inverter, however mine appeared to be configured to use address <code>2</code> &mldr; &lt;insert headbang emoji>.<br>To find the address of your inverter, follow the steps in <a href="https://youtu.be/-RikYPv0_DQ?t=298" title="Solis Training Video: Wifi Stick and Box Setup" target=_blank rel=noopener>this Solis training video</a> (Enter > Settings > Set Address).</p><p>Running the script with the RPi connected to the Solis inverter and the inverter being online, should give you something like below.<br>If not, change the log level at the top of the code to <code>logging.DEBUG</code> figure out what the issue is.</p><pre tabindex=0><code class=language-log data-lang=log>$ ./solis_meter.py
 INFO:root:AC Watts                  1233.00 W
 INFO:root:DC Volt                     28.12 V
 INFO:root:DC Current                  45.00 A
@@ -370,237 +193,125 @@ INFO:root:AC Frequency                49.99 Hz
 INFO:root:Inverter Temperature        38.00 °C
 INFO:root:Generated (All time)      7018.00 kWh
 INFO:root:Generated (Today)            5.30 kWh
-</code></pre><p>If you listen to <code>meters/solis_com/#</code> on your MQTT broker you should see the same values come in.</p>
-<h3 id=cronjob>Cronjob <a href=#cronjob>¶</a></h3><p>To run this script every minute, add it to your crontab.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>crontab -e
-
-<span class=c1># Add the following line to the end</span>
-* * * * * /home/pi/solis_meter.py &gt; /dev/null
-</code></pre></div><h2 id=home-assistant>Home Assistant <a href=#home-assistant>¶</a></h2><h3 id=creating-sensors>Creating sensors <a href=#creating-sensors>¶</a></h3><p>To get the data into Home Assistant, we&rsquo;ll need to create some MQTT sensors.
-This is about the same as we did in the <a href=https://sequr.be/blog/2020/10/getting-started-with-mqtt-and-home-assistant-and-shelly/#a-shelly-1pm title="Getting started with MQTT and Home Assistant (and Shelly)" target=_blank rel=noopener>Getting Started with MQTT</a> post.</p>
-<p>Add the following config under the <code>sensor:</code> section, either in <code>configuration.yaml</code> or in your sensors file if you seperated your config.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - Last update&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_online&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/online&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>timestamp</span><span class=w>
-</span><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ (value | int | timestamp_local | as_datetime()).isoformat() }}&#34;</span><span class=w>
-</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - AC Watts&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_acw&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/acw&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
-</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>W</span><span class=w>
-</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - DC Volt&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_dcv&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/dcv&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>voltage</span><span class=w>
-</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>V</span><span class=w>
-</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - DC Current&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_dci&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/dci&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>current</span><span class=w>
-</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>A</span><span class=w>
-</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - AC Volt&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_acv&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/acv&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>voltage</span><span class=w>
-</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>V</span><span class=w>
-</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - AC Current&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_aci&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/aci&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>current</span><span class=w>
-</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>A</span><span class=w>
-</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - AC Frequency&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_acf&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/acf&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>Hz</span><span class=w>
-</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - Inverter Temperature&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_inc&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/inc&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
-</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>°C</span><span class=w>
-</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - Generated (All time)&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_gat&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/gat&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
-</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>kWh</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
-</span><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - Generated (Today)&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_gto&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/gto&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
-</span><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>kWh</span><span class=w>
-</span><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
-</span></code></pre></div><p><strong>Home Assistant 2021.9.0</strong></p>
-<p>HA 2021.9.0 introduced <code>state_class: total_increasing</code>.
+</code></pre><p>If you listen to <code>meters/solis_com/#</code> on your MQTT broker you should see the same values come in.</p><h3 id=cronjob>Cronjob <a href=#cronjob>¶</a></h3><p>To run this script every minute, add it to your crontab.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>crontab -e
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Add the following line to the end</span>
+</span></span><span class=line><span class=cl>* * * * * /home/pi/solis_meter.py &gt; /dev/null
+</span></span></code></pre></div><h2 id=home-assistant>Home Assistant <a href=#home-assistant>¶</a></h2><h3 id=creating-sensors>Creating sensors <a href=#creating-sensors>¶</a></h3><p>To get the data into Home Assistant, we&rsquo;ll need to create some MQTT sensors.
+This is about the same as we did in the <a href=https://sequr.be/blog/2020/10/getting-started-with-mqtt-and-home-assistant-and-shelly/#a-shelly-1pm title="Getting started with MQTT and Home Assistant (and Shelly)" target=_blank rel=noopener>Getting Started with MQTT</a> post.</p><p>Add the following config under the <code>sensor:</code> section, either in <code>configuration.yaml</code> or in your sensors file if you seperated your config.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - Last update&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_online&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/online&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>timestamp</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ (value | int | timestamp_local | as_datetime()).isoformat() }}&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - AC Watts&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_acw&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/acw&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>power</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>W</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - DC Volt&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_dcv&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/dcv&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>voltage</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>V</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - DC Current&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_dci&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/dci&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>current</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>A</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - AC Volt&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_acv&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/acv&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>voltage</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>V</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - AC Current&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_aci&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/aci&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>current</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>A</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - AC Frequency&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_acf&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/acf&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>Hz</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - Inverter Temperature&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_inc&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/inc&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>temperature</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>°C</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - Generated (All time)&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_gat&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/gat&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>kWh</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - Generated (Today)&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>qos</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;solis_com_gto&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;meters/solis_com/gto&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>energy</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>unit_of_measurement</span><span class=p>:</span><span class=w> </span><span class=l>kWh</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>total_increasing</span><span class=w>
+</span></span></span></code></pre></div><p><strong>Home Assistant 2021.9.0</strong></p><p>HA 2021.9.0 introduced <code>state_class: total_increasing</code>.
 Before this version, we need to add a <code>last reset</code> timestamp in the sensor&rsquo;s attributes to be able to add this sensor to the Energy Dashboard.
-More info on the <a href=https://developers.home-assistant.io/blog/2021/08/16/state_class_total/ title="New sensor state class: total_increasing" target=_blank rel=noopener>Home Assistant Developers Blog</a>.</p>
-<p>The <em>old</em> solution was to use the following attributes for the &lsquo;All time&rsquo; sensor.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>measurement</span><span class=w>
-</span><span class=w>  </span><span class=nt>last_reset_topic</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;meters/solis_com/gat&#39;</span><span class=w>
-</span><span class=w>  </span><span class=nt>last_reset_value_template</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;1970-01-01T00:00:00+00:00&#39;</span><span class=w>
-</span></code></pre></div><p>After saving this config, go to <em>Configuration</em> > <em>Server Controls</em> > <em>YAML configuration reloading</em> and click <em>Manually configured MQTT entities</em>.<br>
-Wait for the next MQTT message to come in and enjoy seeing the data appear in Home Assistant :)</p>
-<figure class=center>
-<img src=ha-energy_solis.png alt="Home Assistant - Solis sensor entities">
-<figcaption class=center>Our sensors in Home Assistant</figcaption>
-</figure>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>entities</span><span class=w>
-</span><span class=w></span><span class=nt>entities</span><span class=p>:</span><span class=w>
-</span><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_last_update</span><span class=w>
-</span><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_ac_current</span><span class=w>
-</span><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_ac_volt</span><span class=w>
-</span><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_ac_watts</span><span class=w>
-</span><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_ac_frequency</span><span class=w>
-</span><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_dc_current</span><span class=w>
-</span><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_dc_volt</span><span class=w>
-</span><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_generated_today</span><span class=w>
-</span><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_generated_all_time</span><span class=w>
-</span><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_inverter_temperature</span><span class=w>
-</span></code></pre></div><h4 id=incorrect-values-when-inverter-boots>Incorrect values when inverter boots <a href=#incorrect-values-when-inverter-boots>¶</a></h4><p>After running this code for a while, I noticed the inverter would sometimes report 0 (zero) for the <em>Generated (All time)</em> sensor.
-I figured out this happens when the inverter boots in the morning, as it shuts down when there&rsquo;s no solar production.</p>
-<p>This would cause Home Assistant to see this as a reset of the counter, after which the next (correct) was seen as just a huge production increase.
-As a result, I would get some very wild readings.</p>
-<p>To fix this, I created a filtered version of the <em>Generated (All time)</em> sensor, which ignores readings that vary too much.</p>
-<p>Add the following below the sensor configurations and use the <em>clean</em> version of the sensor in your Energy Dashboard.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>filter</span><span class=w>
-</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - Generated (All time) - clean&#34;</span><span class=w>
-</span><span class=w>  </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_generated_all_time</span><span class=w>
-</span><span class=w>  </span><span class=nt>filters</span><span class=p>:</span><span class=w>
-</span><span class=w>    </span>- <span class=nt>filter</span><span class=p>:</span><span class=w> </span><span class=l>outlier</span><span class=w>
-</span><span class=w>      </span><span class=nt>window_size</span><span class=p>:</span><span class=w> </span><span class=m>3</span><span class=w>  </span><span class=c># Watch last 3 values</span><span class=w>
-</span><span class=w>      </span><span class=nt>radius</span><span class=p>:</span><span class=w> </span><span class=m>10</span><span class=w>      </span><span class=c># Ignore any change &gt; 10kWh</span><span class=w>
-</span></code></pre></div><p><strong>Note:</strong> This issue was fixed later in the Python code on the Raspberry Pi, only sending the <code>gat</code> and <code>gto</code> values if they are bigger than 0.
+More info on the <a href=https://developers.home-assistant.io/blog/2021/08/16/state_class_total/ title="New sensor state class: total_increasing" target=_blank rel=noopener>Home Assistant Developers Blog</a>.</p><p>The <em>old</em> solution was to use the following attributes for the &lsquo;All time&rsquo; sensor.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=w>  </span><span class=nt>state_class</span><span class=p>:</span><span class=w> </span><span class=l>measurement</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>last_reset_topic</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;meters/solis_com/gat&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>last_reset_value_template</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;1970-01-01T00:00:00+00:00&#39;</span><span class=w>
+</span></span></span></code></pre></div><p>After saving this config, go to <em>Configuration</em> > <em>Server Controls</em> > <em>YAML configuration reloading</em> and click <em>Manually configured MQTT entities</em>.<br>Wait for the next MQTT message to come in and enjoy seeing the data appear in Home Assistant :)</p><figure class=center><img src=ha-energy_solis.png alt="Home Assistant - Solis sensor entities"><figcaption class=center>Our sensors in Home Assistant</figcaption></figure><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>entities</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>entities</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_last_update</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_ac_current</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_ac_volt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_ac_watts</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_ac_frequency</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_dc_current</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_dc_volt</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_generated_today</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_generated_all_time</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_inverter_temperature</span><span class=w>
+</span></span></span></code></pre></div><h4 id=incorrect-values-when-inverter-boots>Incorrect values when inverter boots <a href=#incorrect-values-when-inverter-boots>¶</a></h4><p>After running this code for a while, I noticed the inverter would sometimes report 0 (zero) for the <em>Generated (All time)</em> sensor.
+I figured out this happens when the inverter boots in the morning, as it shuts down when there&rsquo;s no solar production.</p><p>This would cause Home Assistant to see this as a reset of the counter, after which the next (correct) was seen as just a huge production increase.
+As a result, I would get some very wild readings.</p><p>To fix this, I created a filtered version of the <em>Generated (All time)</em> sensor, which ignores readings that vary too much.</p><p>Add the following below the sensor configurations and use the <em>clean</em> version of the sensor in your Energy Dashboard.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>filter</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Solis meter - Generated (All time) - clean&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>sensor.solis_meter_generated_all_time</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>filters</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>filter</span><span class=p>:</span><span class=w> </span><span class=l>outlier</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>window_size</span><span class=p>:</span><span class=w> </span><span class=m>3</span><span class=w>  </span><span class=c># Watch last 3 values</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>radius</span><span class=p>:</span><span class=w> </span><span class=m>10</span><span class=w>      </span><span class=c># Ignore any change &gt; 10kWh</span><span class=w>
+</span></span></span></code></pre></div><p><strong>Note:</strong> This issue was fixed later in the Python code on the Raspberry Pi, only sending the <code>gat</code> and <code>gto</code> values if they are bigger than 0.
 Home Assistant is will detect the drop in the value of the <code>Generated (Today)</code> output and doesn&rsquo;t require a 0 (zero) value to be sent first for that day&rsquo;s counter to be reset.
-The value of the <code>Generated (All time)</code> should never drop.</p>
-<h3 id=home-assistant-energy-dashboard>Home Assistant Energy Dashboard <a href=#home-assistant-energy-dashboard>¶</a></h3><p>We can now add our sensor to the Home Assistant Energy Dashboard.</p>
-<p>We discussed setting up the Energy Dashboard in a <a href=https://sequr.be/blog/2021/08/monitoring-electricity-consumption-and-production-with-shelly-3em-and-home-assistants-energy-dashboard/ title="Monitoring electricity consumption and production with Shelly 3EM and Home Assistant’s Energy Dashboard" target=_blank rel=noopener>previous blog post</a>.
+The value of the <code>Generated (All time)</code> should never drop.</p><h3 id=home-assistant-energy-dashboard>Home Assistant Energy Dashboard <a href=#home-assistant-energy-dashboard>¶</a></h3><p>We can now add our sensor to the Home Assistant Energy Dashboard.</p><p>We discussed setting up the Energy Dashboard in a <a href=https://sequr.be/blog/2021/08/monitoring-electricity-consumption-and-production-with-shelly-3em-and-home-assistants-energy-dashboard/ title="Monitoring electricity consumption and production with Shelly 3EM and Home Assistant’s Energy Dashboard" target=_blank rel=noopener>previous blog post</a>.
 If you don&rsquo;t know how to use the Energy Dashboard, I advise you to go read that post.
-It also discusses using a Shelly 3EM to monitor our grid consumption/return.</p>
-<figure class=center>
-<img src=ha-energy_solar.png alt="Energy Dashboard - adding solar production meter">
-<figcaption class=center>Adding our meter to the Energy Dashboard</figcaption>
-</figure>
-<p>If you configured the <a href=https://www.home-assistant.io/integrations/forecast_solar title="Home Assistant - Forecast.Solar" target=_blank rel=noopener>Forecast</a> integration, the dashboard will use historic averages combined with weather forecasting
+It also discusses using a Shelly 3EM to monitor our grid consumption/return.</p><figure class=center><img src=ha-energy_solar.png alt="Energy Dashboard - adding solar production meter"><figcaption class=center>Adding our meter to the Energy Dashboard</figcaption></figure><p>If you configured the <a href=https://www.home-assistant.io/integrations/forecast_solar title="Home Assistant - Forecast.Solar" target=_blank rel=noopener>Forecast</a> integration, the dashboard will use historic averages combined with weather forecasting
 to show you the expected solar production for the day.
-Using this integration, you&rsquo;ll get a line graph depicting the forecasted solar production for that day.</p>
-<figure class=center>
-<img src=ha-energy_solar_forecast.png alt="Energy Dashboard - solar forecast">
-<figcaption class=center>Solar Forecast and first hour of data capture</figcaption>
-</figure>
-<p>Special thanks to the very helpful people at the EU Service team of Solis for helping me answer some questions regarding this setup!</p>
-</div>
-</article>
-<hr>
-<div class=post-info>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
-<span class=tag><a href=https://sequr.be/tags/home-automation/>Home Automation</a></span>
+Using this integration, you&rsquo;ll get a line graph depicting the forecasted solar production for that day.</p><figure class=center><img src=ha-energy_solar_forecast.png alt="Energy Dashboard - solar forecast"><figcaption class=center>Solar Forecast and first hour of data capture</figcaption></figure><p>Special thanks to the very helpful people at the EU Service team of Solis for helping me answer some questions regarding this setup!</p></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/home-automation/>Home Automation</a></span>
 <span class=tag><a href=https://sequr.be/tags/energy-management/>Energy Management</a></span>
 <span class=tag><a href=https://sequr.be/tags/electricity-metering/>Electricity Metering</a></span>
 <span class=tag><a href=https://sequr.be/tags/solis/>Solis</a></span>
 <span class=tag><a href=https://sequr.be/tags/mqtt/>MQTT</a></span>
 <span class=tag><a href=https://sequr.be/tags/serial/>serial</a></span>
-<span class=tag><a href=https://sequr.be/tags/raspberry-pi/>Raspberry Pi</a></span>
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-<span class=tag><a href=https://sequr.be/categories/home-automation/>Home Automation</a></span>
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-2347 Words
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-2021-08-29
-(Last updated: 2021-10-07)
-</p>
-</div>
-<hr>
-<div class=sharing-buttons>
-<a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2021%2f08%2freading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt%2f" target=_blank rel=noopener aria-label title="Share on facebook">
-<div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2021%2f08%2freading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt%2f" target=_blank rel=noopener aria-label title="Share on twitter">
-<div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
-<div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2021%2f08%2freading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt%2f&resubmit=true&title=Reading%20Ginlong%20Solis%20inverter%20over%20serial%20and%20importing%20in%20Home%20Assistant%20over%20MQTT" target=_blank rel=noopener aria-label title="Share on reddit">
-<div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="whatsapp://send?text=Reading%20Ginlong%20Solis%20inverter%20over%20serial%20and%20importing%20in%20Home%20Assistant%20over%20MQTT%20https%3a%2f%2fsequr.be%2fblog%2f2021%2f08%2freading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt%2f" target=_blank rel=noopener aria-label title="Share on whatsapp">
-<div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg>
-</div>
-</div>
-</a>
-</div>
-<div class=pagination>
-<div class=pagination__title>
-<span class=pagination__title-h></span>
-<hr>
-</div>
-<div class=pagination__buttons>
-<span class="button previous">
-<a href=https://sequr.be/blog/2021/10/aliexpress-11-11-sales/>
-<span class=button__icon>←</span>
-<span class=button__text>AliExpress 11-11 sales</span>
-</a>
-</span>
-<span class="button next">
-<a href=https://sequr.be/blog/2021/08/monitoring-electricity-consumption-and-production-with-shelly-3em-and-home-assistants-energy-dashboard/>
-<span class=button__text>Monitoring electricity consumption and production with Shelly 3EM and Home Assistant's Energy Dashboard</span>
-<span class=button__icon>→</span>
-</a>
-</span>
-</div>
-</div>
-</main>
-</div>
-<footer class=footer>
-<div class=footer__inner>
-<div class=footer__content>
-<span>&copy; 2019-2022</span>
+<span class=tag><a href=https://sequr.be/tags/raspberry-pi/>Raspberry Pi</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg><span class=tag><a href=https://sequr.be/categories/home-automation/>Home Automation</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>2347 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2021-08-29
+(Last updated: 2021-10-07)</p></div><hr><div class=sharing-buttons><a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2021%2f08%2freading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt%2f" target=_blank rel=noopener aria-label title="Share on facebook"><div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2021%2f08%2freading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt%2f" target=_blank rel=noopener aria-label title="Share on twitter"><div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2021%2f08%2freading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt%2f&resubmit=true&title=Reading%20Ginlong%20Solis%20inverter%20over%20serial%20and%20importing%20in%20Home%20Assistant%20over%20MQTT" target=_blank rel=noopener aria-label title="Share on reddit"><div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg></div></div></a><a class=resp-sharing-button__link href="whatsapp://send?text=Reading%20Ginlong%20Solis%20inverter%20over%20serial%20and%20importing%20in%20Home%20Assistant%20over%20MQTT%20https%3a%2f%2fsequr.be%2fblog%2f2021%2f08%2freading-ginlong-solis-inverter-over-serial-and-importing-in-home-assistant-over-mqtt%2f" target=_blank rel=noopener aria-label title="Share on whatsapp"><div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg></div></div></a></div><div class=pagination><div class=pagination__title><span class=pagination__title-h></span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://sequr.be/blog/2021/10/aliexpress-11-11-sales/><span class=button__icon>←</span>
+<span class=button__text>AliExpress 11-11 sales</span></a></span>
+<span class="button next"><a href=https://sequr.be/blog/2021/08/monitoring-electricity-consumption-and-production-with-shelly-3em-and-home-assistants-energy-dashboard/><span class=button__text>Monitoring electricity consumption and production with Shelly 3EM and Home Assistant's Energy Dashboard</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class=footer><div class=footer__inner><div class=footer__content><span>&copy; 2019-2022</span>
 <span><a href=https://sequr.be>DezeStijn</a></span>
-<span>
-<a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
-</a>
-</span>
-</div>
-</div>
-<div class=footer__inner>
-<div class=footer__content>
-<small>
-<span>Powered by <a href='\"http://gohugo.io\"'>Hugo</a>.</span>
-<span>Made with &#10084; by <a href='\"https://github.com/rhazdon\"'>Djordje Atlialp</a></span>
-<br>
-<span>Deployed using <a href=https://github.com/TheGroundZero/TheGroundZero.github.io/ title=TheGroundZero/TheGroundZero.github.io>GitHub Pages</a></span>
-</small>
-</div>
-</div>
-</footer>
-</div>
-<script type=text/javascript src=https://sequr.be/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
-</body>
-</html>
+<span><a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div><div class=footer__inner><div class=footer__content><small><span>Powered by <a href='\"http://gohugo.io\"'>Hugo</a>.</span>
+<span>Made with &#10084; by <a href='\"https://github.com/rhazdon\"'>Djordje Atlialp</a></span><br><span>Deployed using <a href=https://github.com/TheGroundZero/TheGroundZero.github.io/ title=TheGroundZero/TheGroundZero.github.io>GitHub Pages</a></span></small></div></div></footer></div><script type=text/javascript src=https://sequr.be/bundle.min.a2c5b062c87998f04d1b5dfb6a89a1b2d79786c21d0cb63a05e8a2082984b64b77d80955e3b97eab17273775162ba372511b711fea2f7608f216e68a67bb22d6.js integrity="sha512-osWwYsh5mPBNG137aomhsteXhsIdDLY6BeiiCCmEtkt32AlV47l+qxcnN3UWK6NyURtxH+ovdgjyFuaKZ7si1g=="></script></body></html>

