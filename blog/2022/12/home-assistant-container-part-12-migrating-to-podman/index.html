@@ -60,7 +60,6 @@ It gracefully handles leader elections during network partitions and can tolerat
 </span></span></span><span class=line><span class=cl><span class=sd>        Description=Run a single node etcd
 </span></span></span><span class=line><span class=cl><span class=sd>        After=network-online.target
 </span></span></span><span class=line><span class=cl><span class=sd>        Wants=network-online.target
-</span></span></span><span class=line><span class=cl><span class=sd>
 </span></span></span><span class=line><span class=cl><span class=sd>        [Service]
 </span></span></span><span class=line><span class=cl><span class=sd>        ExecStartPre=mkdir -p /var/lib/etcd
 </span></span></span><span class=line><span class=cl><span class=sd>        ExecStartPre=-/bin/podman kill etcd
@@ -76,7 +75,6 @@ It gracefully handles leader elections during network partitions and can tolerat
 </span></span></span><span class=line><span class=cl><span class=sd>                            --listen-client-urls http://127.0.0.1:2379          \
 </span></span></span><span class=line><span class=cl><span class=sd>                            --initial-cluster node1=http://127.0.0.1:2380
 </span></span></span><span class=line><span class=cl><span class=sd>        ExecStop=/bin/podman stop etcd
-</span></span></span><span class=line><span class=cl><span class=sd>
 </span></span></span><span class=line><span class=cl><span class=sd>        [Install]
 </span></span></span><span class=line><span class=cl><span class=sd>        WantedBy=multi-user.target</span><span class=w>        
 </span></span></span></code></pre></div><p>To convert this Butane configuration file into an Ignition config, we need the Butane tool.
