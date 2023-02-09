@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
       
       - name: Exiftool Scrub
-        uses: TheGroundZero/exiftool-scrub@v1.1.0
+        uses: TheGroundZero/exiftool-scrub@v1.2.0
         env:
           SUB_DIR: /content
         continue-on-error: true
