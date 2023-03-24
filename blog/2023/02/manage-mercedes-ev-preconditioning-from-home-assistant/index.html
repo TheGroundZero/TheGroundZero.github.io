@@ -82,7 +82,7 @@ The integration doesn&rsquo;t do any calculations, so you need to do your own ba
 </span></span></span><span style=display:flex><span><span style=color:#e6db74>        {% set depart_weekday = state_attr(&#39;sensor.licenseplate_departure_time&#39;, &#39;departureTimeWeekday&#39;) | int %}
 </span></span></span><span style=display:flex><span><span style=color:#e6db74>        {% set depart_minutes = state_attr(&#39;sensor.licenseplate_departure_time&#39;, &#39;original_value&#39;) | int %}
 </span></span></span><span style=display:flex><span><span style=color:#e6db74>        {% set depart_time = today_at(timedelta(minutes = depart_minutes)) %}
-</span></span></span><span style=display:flex><span><span style=color:#e6db74>        {% if depart_weekday == now().weekday() and today_at(depart_time) &lt; now(): %}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        {% if depart_weekday == now().weekday() and depart_time &lt; now() %}
 </span></span></span><span style=display:flex><span><span style=color:#e6db74>          {{ (depart_time + timedelta(days = 7)).isoformat() }}
 </span></span></span><span style=display:flex><span><span style=color:#e6db74>        {% else -%}
 </span></span></span><span style=display:flex><span><span style=color:#e6db74>          {{ (depart_time + timedelta(days = (depart_weekday - now().weekday()) % 7)).isoformat() }}
