@@ -6,60 +6,60 @@ Starting of with <em>Part 1: Install Debian, Docker and Portainer</em>.</p><h2 i
 This process is the same for just about any system.</p><ol><li>Download <a href=https://www.debian.org/distrib/netinst#smallcd title="Download Debian ISO" target=_blank rel=noopener>latest ISO</a>.<br>I pick the &ldquo;Small&rdquo; image as it includes most files in the image, requiring less to be downloaded during the install process.</li><li>Download <a href=https://www.balena.io/etcher/ title="Download Balena Etcher" target=_blank rel=noopener>Balena Etcher</a>, a tool to write ISO images to a USB drive.
 If you&rsquo;re on a linux system, you could use <code>dd</code> instead.</li><li>Plugin the loaded USB drive in your system and boot from USB.</li><li>Follow the installation proces.<br>Most of the process is following the defaults and just pressing Continue.<br><strong>!!</strong> Don&rsquo;t forget the credentials you entered for the <em>root</em> user and the non-admin user.<br><strong>!!</strong> Just make sure you do NOT install a graphical user interface (GUI) if you&rsquo;re not planning on using this as a desktop system,
 and you DO install the SSH server.</li><li>Once the install is completed, SSH into the box using the non-admin credentials.</li></ol><h2 id=install-docker-and-docker-compose>Install Docker and Docker Compose <a href=#install-docker-and-docker-compose>¶</a></h2><h3 id=install-docker>Install Docker <a href=#install-docker>¶</a></h3><p>Even though the people at Docker are pushing really hard for us to install Docker Desktop,
-as this requires a GUI interface (which we explicitely didn&rsquo;t install) we&rsquo;ll just install <a href=https://docs.docker.com/engine/install/debian/ title="Install Docker Engine on Debian | Docker Documentation" target=_blank rel=noopener>Docker Engine</a> instead.</p><p>You can read through the documentation, but basically we&rsquo;ll execute the following commands:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># Install prerequisites</span>
-</span></span><span class=line><span class=cl>sudo apt-get update
-</span></span><span class=line><span class=cl>sudo apt-get install <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>    ca-certificates <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>    curl <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>    gnupg <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>    lsb-release
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Add Docker repository</span>
-</span></span><span class=line><span class=cl>sudo mkdir -p /etc/apt/keyrings
-</span></span><span class=line><span class=cl>curl -fsSL https://download.docker.com/linux/debian/gpg <span class=p>|</span> sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>  <span class=s2>&#34;deb [arch=</span><span class=k>$(</span>dpkg --print-architecture<span class=k>)</span><span class=s2> signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-</span></span></span><span class=line><span class=cl><span class=s2>  </span><span class=k>$(</span>lsb_release -cs<span class=k>)</span><span class=s2> stable&#34;</span> <span class=p>|</span> sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Install Docker Engine</span>
-</span></span><span class=line><span class=cl>sudo apt-get update
-</span></span><span class=line><span class=cl>sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+as this requires a GUI interface (which we explicitely didn&rsquo;t install) we&rsquo;ll just install <a href=https://docs.docker.com/engine/install/debian/ title="Install Docker Engine on Debian | Docker Documentation" target=_blank rel=noopener>Docker Engine</a> instead.</p><p>You can read through the documentation, but basically we&rsquo;ll execute the following commands:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Install prerequisites</span>
+</span></span><span style=display:flex><span>sudo apt-get update
+</span></span><span style=display:flex><span>sudo apt-get install <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    ca-certificates <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    curl <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    gnupg <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    lsb-release
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Add Docker repository</span>
+</span></span><span style=display:flex><span>sudo mkdir -p /etc/apt/keyrings
+</span></span><span style=display:flex><span>curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+</span></span><span style=display:flex><span>echo <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  <span style=color:#e6db74>&#34;deb [arch=</span><span style=color:#66d9ef>$(</span>dpkg --print-architecture<span style=color:#66d9ef>)</span><span style=color:#e6db74> signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  </span><span style=color:#66d9ef>$(</span>lsb_release -cs<span style=color:#66d9ef>)</span><span style=color:#e6db74> stable&#34;</span> | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Install Docker Engine</span>
+</span></span><span style=display:flex><span>sudo apt-get update
+</span></span><span style=display:flex><span>sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 </span></span></code></pre></div><h3 id=install-docker-compose>Install Docker Compose <a href=#install-docker-compose>¶</a></h3><p>The <a href=https://docs.docker.com/compose/install/ title="Install Docker Compose | Docker Documentation" target=_blank rel=noopener>Docker Compose documentation</a> keeps pushing you to Docker Desktop.</p><p>Luckily, we don&rsquo;t even need to download Docker Compose from <a href=https://github.com/docker/compose/releases title="Docker Compose releases on GitHub" target=_blank rel=noopener>GitHub</a> as it actually came included during the installtion of Docker Engine.
-The only thing we need to do is link to the executable and grant execution permissions.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/bin/docker-compose
-</span></span><span class=line><span class=cl>sudo chmod u+x /usr/bin/docker-compose
-</span></span></code></pre></div><h3 id=setting-up-permissions>Setting up permissions <a href=#setting-up-permissions>¶</a></h3><p>Next, to simplify our lives, we allow our non-admin user (I named them <code>sysadmin</code>) to perform root actions using <code>sudo</code>, and to run <code>docker</code> and <code>docker-compose</code>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>su <span class=c1># enter root password</span>
-</span></span><span class=line><span class=cl><span class=c1># install sudo</span>
-</span></span><span class=line><span class=cl>apt install sudo
-</span></span><span class=line><span class=cl>gpasswd -a sysadmin sudo
-</span></span><span class=line><span class=cl><span class=c1># add sysadmin to docker group</span>
-</span></span><span class=line><span class=cl>gpasswd -a sysadmin docker
-</span></span></code></pre></div><p>Exit SSH session and login as the non-admin user again for changes to apply.</p><h2 id=install-portainer>Install Portainer <a href=#install-portainer>¶</a></h2><h3 id=docker-composeyaml>docker-compose.yaml <a href=#docker-composeyaml>¶</a></h3><p>To <em>install</em> Portainer, we&rsquo;ll create a docker-compose script which we&rsquo;ll then launch to set everything up.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>cd</span> /opt
-</span></span><span class=line><span class=cl>sudo nano docker-compose.yaml <span class=c1># or file editor of choice</span>
-</span></span><span class=line><span class=cl><span class=c1># Edit file, see below</span>
-</span></span><span class=line><span class=cl><span class=c1># Save and Close via Ctrl+O and Ctrl+X</span>
+The only thing we need to do is link to the executable and grant execution permissions.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>sudo ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/bin/docker-compose
+</span></span><span style=display:flex><span>sudo chmod u+x /usr/bin/docker-compose
+</span></span></code></pre></div><h3 id=setting-up-permissions>Setting up permissions <a href=#setting-up-permissions>¶</a></h3><p>Next, to simplify our lives, we allow our non-admin user (I named them <code>sysadmin</code>) to perform root actions using <code>sudo</code>, and to run <code>docker</code> and <code>docker-compose</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>su <span style=color:#75715e># enter root password</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># install sudo</span>
+</span></span><span style=display:flex><span>apt install sudo
+</span></span><span style=display:flex><span>gpasswd -a sysadmin sudo
+</span></span><span style=display:flex><span><span style=color:#75715e># add sysadmin to docker group</span>
+</span></span><span style=display:flex><span>gpasswd -a sysadmin docker
+</span></span></code></pre></div><p>Exit SSH session and login as the non-admin user again for changes to apply.</p><h2 id=install-portainer>Install Portainer <a href=#install-portainer>¶</a></h2><h3 id=docker-composeyaml>docker-compose.yaml <a href=#docker-composeyaml>¶</a></h3><p>To <em>install</em> Portainer, we&rsquo;ll create a docker-compose script which we&rsquo;ll then launch to set everything up.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>cd /opt
+</span></span><span style=display:flex><span>sudo nano docker-compose.yaml <span style=color:#75715e># or file editor of choice</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Edit file, see below</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Save and Close via Ctrl+O and Ctrl+X</span>
 </span></span></code></pre></div><p>Don&rsquo;t forget to update the timezone in the config below.</p><p>Also, I&rsquo;m storing all my Docker config and volumes in the <code>/opt</code> folder. This makes it easier to back everything up.
 These volumes will store data from the Docker image locally so the data isn&rsquo;t lost when a container is rebuilt (e.g. when upgrading).</p><p>Sometimes you&rsquo;ll be <em>exposing</em> a local file, socket or device to the Docker container so it can access said file/socket/device.
-Here we expose the file that holds our local time settings so Portainer knows what time it is (for log timestamps) as well as the socket that controls Docker so Container can perform actions in Docker.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;3.0&#39;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>services</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>portainer</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>container_name</span><span class=p>:</span><span class=w> </span><span class=l>portainer</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>portainer/portainer-ce:latest</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>restart</span><span class=p>:</span><span class=w> </span><span class=l>unless-stopped</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ports</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=s2>&#34;9000:9000/tcp&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=s2>&#34;9443:9443/tcp&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>environment</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>TZ=Europe/Brussels</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>volumes</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>/etc/localtime:/etc/localtime:ro</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>/var/run/docker.sock:/var/run/docker.sock</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>/opt/portainer/data:/data</span><span class=w>
-</span></span></span></code></pre></div><h3 id=permissions>Permissions <a href=#permissions>¶</a></h3><p>We&rsquo;ll also allow our non-admin user to modify this file.
-Again, just to make our lives a little bit easier.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo chown root:docker docker-compose.yaml
-</span></span><span class=line><span class=cl>sudo chmod g+w docker-compose.yaml
+Here we expose the file that holds our local time settings so Portainer knows what time it is (for log timestamps) as well as the socket that controls Docker so Container can perform actions in Docker.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>version</span>: <span style=color:#e6db74>&#39;3.0&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>services</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>portainer</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>container_name</span>: <span style=color:#ae81ff>portainer</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: <span style=color:#ae81ff>portainer/portainer-ce:latest</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>restart</span>: <span style=color:#ae81ff>unless-stopped</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ports</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;9000:9000/tcp&#34;</span>
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;9443:9443/tcp&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>environment</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>TZ=Europe/Brussels</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>volumes</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/etc/localtime:/etc/localtime:ro</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/var/run/docker.sock:/var/run/docker.sock</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/opt/portainer/data:/data</span>
+</span></span></code></pre></div><h3 id=permissions>Permissions <a href=#permissions>¶</a></h3><p>We&rsquo;ll also allow our non-admin user to modify this file.
+Again, just to make our lives a little bit easier.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>sudo chown root:docker docker-compose.yaml
+</span></span><span style=display:flex><span>sudo chmod g+w docker-compose.yaml
 </span></span></code></pre></div><h3 id=check-config>Check config <a href=#check-config>¶</a></h3><p>Want to make sure you made no errors in your <code>docker-compose.yaml</code>?
-Run the following command and Docker will output you what it will be running, as well as any erors in your config and warnings that are relevant.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker-compose -f docker-compose.yaml config
+Run the following command and Docker will output you what it will be running, as well as any erors in your config and warnings that are relevant.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>docker-compose -f docker-compose.yaml config
 </span></span></code></pre></div><h3 id=launch>Launch <a href=#launch>¶</a></h3><p>We now run <code>docker-compose up -d</code> and Docker will download the latest Portainer image and set everything up.
 Once that is done we&rsquo;re able to open the Portainer web interface by browsing to <code>https://&lt;ip.of.our.box>:9443</code> (you&rsquo;ll get a warning about a self-signed certificate) or <code>http://&lt;ip.of.our.box>:9000</code> (non-encrypted connection).</p><p>The first time we visit this portal, it&rsquo;ll ask us to create a user account.
 Make sure you don&rsquo;t forget these credentials!</p><figure class=center><img src=cover.png alt="Screenshot of Portainer interface showing a running Portainer container"><figcaption class=center>Portainer up and running</figcaption></figure><p>With this behind our back, the next step is to set up Home Assistant Container.

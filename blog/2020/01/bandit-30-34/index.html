@@ -1,200 +1,200 @@
 <!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="Write-up of level 30 to 34 of the Bandit challenge on OverTheWire.org"><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Bandit,Over The Wire,OverTheWire"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/blog/2020/01/bandit-30-34/><title>Bandit (30 -> 34) :: Sequr</title><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin=anonymous referrerpolicy=no-referrer><link rel=stylesheet href=https://sequr.be/main.2a064c455b0ecbd6b1481b3bf9df2441e95838691022f40a5338c2cb1244f075.css integrity="sha256-KgZMRVsOy9axSBs7+d8kQelYOGkQIvQKUzjCyxJE8HU="><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content><meta itemprop=name content="Bandit (30 -> 34)"><meta itemprop=description content="Write-up of level 30 to 34 of the Bandit challenge on OverTheWire.org"><meta itemprop=datePublished content="2020-01-17T23:50:26+00:00"><meta itemprop=dateModified content="2020-01-17T23:50:26+00:00"><meta itemprop=wordCount content="1512"><meta itemprop=image content="https://sequr.be/otw-bandit.png"><meta itemprop=keywords content="Bandit,Over The Wire,OverTheWire,"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/otw-bandit.png"><meta name=twitter:title content="Bandit (30 -> 34)"><meta name=twitter:description content="Write-up of level 30 to 34 of the Bandit challenge on OverTheWire.org"><meta property="article:section" content="OverTheWire"><meta property="article:section" content="Writeup"><meta property="article:published_time" content="2020-01-17 23:50:26 +0000 UTC"></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/ style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
 <span class=logo__text>nc sequr.be 1337</span>
-<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>8 minutes</p></div><article><h1 class=post-title><a href=https://sequr.be/blog/2020/01/bandit-30-34/>Bandit (30 -> 34)</a></h1><div class=post-content><h2 id=info>Info <a href=#info>¶</a></h2><p>From the <a href=https://overthewire.org/wargames/ target=_blank rel=noopener>OverTheWire website</a>:</p><blockquote><p>The wargames offered by the OverTheWire community can help you to learn and practice security concepts in the form of fun-filled games.</p><p>~ OverTheWire.org</p></blockquote><h2 id=bandit>Bandit <a href=#bandit>¶</a></h2><p>Bandit is the first series of challenges and it&rsquo;s recommended to start with these.</p><blockquote><p>The Bandit wargame is aimed at absolute beginners. It will teach the basics needed to be able to play other wargames.</p><p>~ OverTheWire.org</p></blockquote><p>Make sure you following along on the website to get more info on the goal of the challenges and the skills that you&rsquo;ll learn from them.</p><p>Always first try to do a challenge yourself.<br>You&rsquo;ll learn more and might find methodologies or techniques that work better for you.</p><p>This write-up contains the solution of levels 30 to 40.<br>Need to go back for <a href=https://sequr.be/blog/2020/01/bandit-20-30/>levels 20 to 30</a>?</p><h3 id=level-30---31>Level 30 -> 31 <a href=#level-30---31>¶</a></h3><p>Connect with the OverTheWire infrastructure using the credentials retrieved in the previous level.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ ssh bandit30@bandit.labs.overthewire.org -p <span class=m>2220</span>                
-</span></span><span class=line><span class=cl>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
-</span></span><span class=line><span class=cl>                          
-</span></span><span class=line><span class=cl>bandit30@bandit.labs.overthewire.org<span class=err>&#39;</span>s password:
-</span></span></code></pre></div><p>We start of (again) with creating a directory to clone the git repo into.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit30@bandit:~$ mkdir /tmp/bandit30
-</span></span><span class=line><span class=cl>bandit30@bandit:~$ <span class=nb>cd</span> /tmp/bandit30
-</span></span><span class=line><span class=cl>bandit30@bandit:/tmp/bandit30$ git clone ssh://bandit30-git@localhost/home/bandit30-git/repo
-</span></span><span class=line><span class=cl>Cloning into <span class=s1>&#39;repo&#39;</span>...
-</span></span><span class=line><span class=cl>Could not create directory <span class=s1>&#39;/home/bandit30/.ssh&#39;</span>.
-</span></span><span class=line><span class=cl>The authenticity of host <span class=s1>&#39;localhost (127.0.0.1)&#39;</span> can<span class=s1>&#39;t be established.
-</span></span></span><span class=line><span class=cl><span class=s1>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
-</span></span></span><span class=line><span class=cl><span class=s1>Are you sure you want to continue connecting (yes/no)? yes
-</span></span></span><span class=line><span class=cl><span class=s1>Failed to add the host to the list of known hosts (/home/bandit30/.ssh/known_hosts).
-</span></span></span><span class=line><span class=cl><span class=s1>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
-</span></span></span><span class=line><span class=cl><span class=s1>
-</span></span></span><span class=line><span class=cl><span class=s1>bandit30-git@localhost&#39;</span>s password: 
-</span></span><span class=line><span class=cl>remote: Counting objects: 4, <span class=k>done</span>.
-</span></span><span class=line><span class=cl>remote: Total <span class=m>4</span> <span class=o>(</span>delta 0<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
-</span></span><span class=line><span class=cl>Receiving objects: 100% <span class=o>(</span>4/4<span class=o>)</span>, <span class=k>done</span>.
-</span></span></code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit30@bandit:/tmp/bandit30$ ls
-</span></span><span class=line><span class=cl>repo
-</span></span><span class=line><span class=cl>bandit30@bandit:/tmp/bandit30$ <span class=nb>cd</span> repo/
-</span></span><span class=line><span class=cl>bandit30@bandit:/tmp/bandit30/repo$ ls
-</span></span><span class=line><span class=cl>README.md
-</span></span><span class=line><span class=cl>bandit30@bandit:/tmp/bandit30/repo$ cat README.md 
-</span></span><span class=line><span class=cl>just an epmty file... muahaha
-</span></span></code></pre></div><p>Ben likes to have a laugh…</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit30@bandit:/tmp/bandit30/repo$ git log -p --all
-</span></span><span class=line><span class=cl>commit 3aa4c239f729b07deb99a52f125893e162daac9e
-</span></span><span class=line><span class=cl>Author: Ben Dover &lt;noone@overthewire.org&gt;
-</span></span><span class=line><span class=cl>Date:   Tue Oct <span class=m>16</span> 14:00:44 <span class=m>2018</span> +0200
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>    initial commit of README.md
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
-</span></span><span class=line><span class=cl>new file mode <span class=m>100644</span>
-</span></span><span class=line><span class=cl>index 0000000..029ba42
-</span></span><span class=line><span class=cl>--- /dev/null
-</span></span><span class=line><span class=cl>+++ b/README.md
-</span></span><span class=line><span class=cl>@@ -0,0 +1 @@
-</span></span><span class=line><span class=cl>+just an epmty file... muahaha
-</span></span></code></pre></div><p>Let&rsquo;s look around and see if we can find any other interesting files. Especially the <code>.git</code> folder might contain some leads, since this <em>hidden</em> folder contains the configurations and metadata of the repository.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit30@bandit:/tmp/bandit30/repo/.git$ cat packed-refs 
-</span></span><span class=line><span class=cl><span class=c1># pack-refs with: peeled fully-peeled </span>
-</span></span><span class=line><span class=cl>3aa4c239f729b07deb99a52f125893e162daac9e refs/remotes/origin/master
-</span></span><span class=line><span class=cl>f17132340e8ee6c159e0a4a6bc6f80e1da3b1aea refs/tags/secret
-</span></span></code></pre></div><p>You can find more information on the use of references and tags in the <a href=https://git-scm.com/book/en/v2/Git-Internals-Git-References target=_blank rel=noopener>git documentation</a>.</p><p>Using <code>git cat-file</code>, we can see the contents of the included file to which the &ldquo;secret&rdquo; tag refers to.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit30@bandit:/tmp/bandit30/repo$ git cat-file
-</span></span><span class=line><span class=cl>usage: git cat-file <span class=o>(</span>-t <span class=o>[</span>--allow-unknown-type<span class=o>]</span> <span class=p>|</span> -s <span class=o>[</span>--allow-unknown-type<span class=o>]</span> <span class=p>|</span> -e <span class=p>|</span> -p <span class=p>|</span> &lt;type&gt; <span class=p>|</span> --textconv <span class=p>|</span> --filters<span class=o>)</span> <span class=o>[</span>--path<span class=o>=</span>&lt;path&gt;<span class=o>]</span> &lt;object&gt;
-</span></span><span class=line><span class=cl>   or: git cat-file <span class=o>(</span>--batch <span class=p>|</span> --batch-check<span class=o>)</span> <span class=o>[</span>--follow-symlinks<span class=o>]</span> <span class=o>[</span>--textconv <span class=p>|</span> --filters<span class=o>]</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>&lt;type&gt; can be one of: blob, tree, commit, tag
-</span></span><span class=line><span class=cl>    -t                    show object <span class=nb>type</span>
-</span></span><span class=line><span class=cl>    -s                    show object size
-</span></span><span class=line><span class=cl>    -e                    <span class=nb>exit</span> with zero when there<span class=s1>&#39;s no error
-</span></span></span><span class=line><span class=cl><span class=s1>    -p                    pretty-print object&#39;</span>s content
-</span></span><span class=line><span class=cl>    --textconv            <span class=k>for</span> blob objects, run textconv on object<span class=s1>&#39;s content
-</span></span></span><span class=line><span class=cl><span class=s1>    --filters             for blob objects, run filters on object&#39;</span>s content
-</span></span><span class=line><span class=cl>    --path &lt;blob&gt;         use a specific path <span class=k>for</span> --textconv/--filters
-</span></span><span class=line><span class=cl>    --allow-unknown-type  allow -s and -t to work with broken/corrupt objects
-</span></span><span class=line><span class=cl>    --buffer              buffer --batch output
-</span></span><span class=line><span class=cl>    --batch<span class=o>[=</span>&lt;format&gt;<span class=o>]</span>    show info and content of objects fed from the standard input
-</span></span><span class=line><span class=cl>    --batch-check<span class=o>[=</span>&lt;format&gt;<span class=o>]</span>
-</span></span><span class=line><span class=cl>                          show info about objects fed from the standard input
-</span></span><span class=line><span class=cl>    --follow-symlinks     follow in-tree symlinks <span class=o>(</span>used with --batch or --batch-check<span class=o>)</span>
-</span></span><span class=line><span class=cl>    --batch-all-objects   show all objects with --batch or --batch-check
-</span></span></code></pre></div><p>You can use both the hash as the tag as a reference.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit30@bandit:/tmp/bandit30/repo$ git cat-file -p f17132340e8ee6c159e0a4a6bc6f80e1da3b1aea
-</span></span><span class=line><span class=cl>47##########e5
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>bandit30@bandit:/tmp/bandit30/repo$ git cat-file -p secret
-</span></span><span class=line><span class=cl>47##########e5
-</span></span></code></pre></div><h3 id=level-31---level-32>Level 31 -> Level 32 <a href=#level-31---level-32>¶</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit31@bandit:/tmp$ mkdir /tmp/bandit31
-</span></span><span class=line><span class=cl>bandit31@bandit:/tmp$ <span class=nb>cd</span> /tmp/bandit31
-</span></span><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31$ git clone ssh://bandit31-git@localhost/home/bandit31-git/repo
-</span></span><span class=line><span class=cl>Cloning into <span class=s1>&#39;repo&#39;</span>...
-</span></span><span class=line><span class=cl>Could not create directory <span class=s1>&#39;/home/bandit31/.ssh&#39;</span>.
-</span></span><span class=line><span class=cl>The authenticity of host <span class=s1>&#39;localhost (127.0.0.1)&#39;</span> can<span class=s1>&#39;t be established.
-</span></span></span><span class=line><span class=cl><span class=s1>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
-</span></span></span><span class=line><span class=cl><span class=s1>Are you sure you want to continue connecting (yes/no)? yes
-</span></span></span><span class=line><span class=cl><span class=s1>Failed to add the host to the list of known hosts (/home/bandit31/.ssh/known_hosts).
-</span></span></span><span class=line><span class=cl><span class=s1>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
-</span></span></span><span class=line><span class=cl><span class=s1>
-</span></span></span><span class=line><span class=cl><span class=s1>bandit31-git@localhost&#39;</span>s password: 
-</span></span><span class=line><span class=cl>remote: Counting objects: 4, <span class=k>done</span>.
-</span></span><span class=line><span class=cl>remote: Compressing objects: 100% <span class=o>(</span>3/3<span class=o>)</span>, <span class=k>done</span>.
-</span></span><span class=line><span class=cl>remote: Total <span class=m>4</span> <span class=o>(</span>delta 0<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
-</span></span><span class=line><span class=cl>Receiving objects: 100% <span class=o>(</span>4/4<span class=o>)</span>, <span class=k>done</span>.
-</span></span></code></pre></div><p>This time, we need to <strong>add</strong> something to the repo.</p><p>The <code>.gitignore</code> file specifies intentionally untracked files to ignore. You can use this file to keep metadata, private and/or irrelevant files from ending up in the repo. <code>*.txt</code> means that files with txt as extension won&rsquo;t be tracked.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31/repo$ ls -al
-</span></span><span class=line><span class=cl>total <span class=m>20</span>
-</span></span><span class=line><span class=cl>drwxr-sr-x <span class=m>3</span> bandit31 root <span class=m>4096</span> Jan <span class=m>18</span> 00:01 .
-</span></span><span class=line><span class=cl>drwxr-sr-x <span class=m>3</span> bandit31 root <span class=m>4096</span> Jan <span class=m>18</span> 00:01 ..
-</span></span><span class=line><span class=cl>drwxr-sr-x <span class=m>8</span> bandit31 root <span class=m>4096</span> Jan <span class=m>18</span> 00:01 .git
-</span></span><span class=line><span class=cl>-rw-r--r-- <span class=m>1</span> bandit31 root    <span class=m>6</span> Jan <span class=m>18</span> 00:01 .gitignore
-</span></span><span class=line><span class=cl>-rw-r--r-- <span class=m>1</span> bandit31 root  <span class=m>147</span> Jan <span class=m>18</span> 00:01 README.md
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31/repo$ cat README.md 
-</span></span><span class=line><span class=cl>This <span class=nb>time</span> your task is to push a file to the remote repository.
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>Details:
-</span></span><span class=line><span class=cl>    File name: key.txt
-</span></span><span class=line><span class=cl>    Content: <span class=s1>&#39;May I come in?&#39;</span>
-</span></span><span class=line><span class=cl>    Branch: master
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31/repo$ cat .gitignore
-</span></span><span class=line><span class=cl>*.txt
-</span></span></code></pre></div><p>First, create the file as per the requirements stated above.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31/repo$ <span class=nb>echo</span> <span class=s2>&#34;May I come in?&#34;</span> &gt; key.txt
-</span></span></code></pre></div><p>Add it to the repository. Notice that because of the .gitignore file, we&rsquo;ll need to &ldquo;force&rdquo; git into adding our file.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31/repo$ git status                                                
-</span></span><span class=line><span class=cl>On branch master                                                                              
-</span></span><span class=line><span class=cl>Your branch is up-to-date with <span class=s1>&#39;origin/master&#39;</span>.                                               
-</span></span><span class=line><span class=cl>nothing to commit, working tree clean                                                         
-</span></span><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31/repo$ git add key.txt                                           
-</span></span><span class=line><span class=cl>The following paths are ignored by one of your .gitignore files:                              
-</span></span><span class=line><span class=cl>key.txt                                                                                       
-</span></span><span class=line><span class=cl>Use -f <span class=k>if</span> you really want to add them.                                                        
-</span></span><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31/repo$ git add -f key.txt                                        
-</span></span><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31/repo$ git status                                                
-</span></span><span class=line><span class=cl>On branch master                                                                              
-</span></span><span class=line><span class=cl>Your branch is up-to-date with <span class=s1>&#39;origin/master&#39;</span>. 
-</span></span><span class=line><span class=cl>Changes to be committed:
-</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>        new file:   key.txt
-</span></span></code></pre></div><p>Next, commit our changes and push them to the repository.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31/repo$ git commit -m <span class=s2>&#34;May I come in?&#34;</span>
-</span></span><span class=line><span class=cl><span class=o>[</span>master e5c7ff1<span class=o>]</span> May I come in?
-</span></span><span class=line><span class=cl> <span class=m>1</span> file changed, <span class=m>1</span> insertion<span class=o>(</span>+<span class=o>)</span>
-</span></span><span class=line><span class=cl> create mode <span class=m>100644</span> key.txt
-</span></span><span class=line><span class=cl>bandit31@bandit:/tmp/bandit31/repo$ git push
-</span></span><span class=line><span class=cl>Could not create directory <span class=s1>&#39;/home/bandit31/.ssh&#39;</span>.
-</span></span><span class=line><span class=cl>The authenticity of host <span class=s1>&#39;localhost (127.0.0.1)&#39;</span> can<span class=s1>&#39;t be established.
-</span></span></span><span class=line><span class=cl><span class=s1>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
-</span></span></span><span class=line><span class=cl><span class=s1>Are you sure you want to continue connecting (yes/no)? yes
-</span></span></span><span class=line><span class=cl><span class=s1>Failed to add the host to the list of known hosts (/home/bandit31/.ssh/known_hosts).
-</span></span></span><span class=line><span class=cl><span class=s1>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
-</span></span></span><span class=line><span class=cl><span class=s1>
-</span></span></span><span class=line><span class=cl><span class=s1>bandit31-git@localhost&#39;</span>s password: 
-</span></span><span class=line><span class=cl>Counting objects: 3, <span class=k>done</span>.
-</span></span><span class=line><span class=cl>Delta compression using up to <span class=m>4</span> threads.
-</span></span><span class=line><span class=cl>Compressing objects: 100% <span class=o>(</span>2/2<span class=o>)</span>, <span class=k>done</span>.
-</span></span><span class=line><span class=cl>Writing objects: 100% <span class=o>(</span>3/3<span class=o>)</span>, <span class=m>326</span> bytes <span class=p>|</span> <span class=m>0</span> bytes/s, <span class=k>done</span>.
-</span></span><span class=line><span class=cl>Total <span class=m>3</span> <span class=o>(</span>delta 0<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
-</span></span><span class=line><span class=cl>remote: <span class=c1>### Attempting to validate files... ####</span>
-</span></span><span class=line><span class=cl>remote: 
-</span></span><span class=line><span class=cl>remote: .oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.
-</span></span><span class=line><span class=cl>remote: 
-</span></span><span class=line><span class=cl>remote: Well <span class=k>done</span>! Here is the password <span class=k>for</span> the next level:
-</span></span><span class=line><span class=cl>remote: 56##########5e
-</span></span><span class=line><span class=cl>remote: 
-</span></span><span class=line><span class=cl>remote: .oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.
-</span></span><span class=line><span class=cl>remote: 
-</span></span><span class=line><span class=cl>To ssh://localhost/home/bandit31-git/repo
-</span></span><span class=line><span class=cl> ! <span class=o>[</span>remote rejected<span class=o>]</span> master -&gt; master <span class=o>(</span>pre-receive hook declined<span class=o>)</span>
-</span></span><span class=line><span class=cl>error: failed to push some refs to <span class=s1>&#39;ssh://bandit31-git@localhost/home/bandit31-git/repo&#39;</span>
-</span></span></code></pre></div><p>The challenge creator added a hook that triggers on a repo push, gives us the password if our push fits the criteria and finally rejects our modification so we don&rsquo;t impact the source repository.</p><h3 id=level-32---level-33>Level 32 -> Level 33 <a href=#level-32---level-33>¶</a></h3><blockquote><p>After all this git stuff its time for another escape. Good luck!</p><p>~ OverTheWire.org</p></blockquote><p>Bandit32 seems to be running a special shell. Our challenge is to break out of it.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>$ssh</span> bandit32@bandit.labs.overthewire.org -p <span class=m>2220</span>                                        
-</span></span><span class=line><span class=cl>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
-</span></span><span class=line><span class=cl><span class=o>[</span>...<span class=o>]</span>
-</span></span><span class=line><span class=cl>WELCOME TO THE UPPERCASE SHELL
-</span></span><span class=line><span class=cl>&gt;&gt;
-</span></span></code></pre></div><p>Looking at the passwd file (as Bandit31) gives us a bit more information on the shell Bandit32 runs in. It seems to be a script in the home directory of Bandit32, which we can&rsquo;t read since we don&rsquo;t have the necessary permissions.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit31@bandit:~$ cat /etc/passwd <span class=p>|</span> grep bandit32
-</span></span><span class=line><span class=cl>bandit32❌11032:11032:bandit level 32:/home/bandit32:/home/bandit32/uppershell
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>bandit31@bandit:~$ cat /home/bandit32/uppershell                                              
-</span></span><span class=line><span class=cl>cat: /home/bandit32/uppershell: Permission denied
-</span></span></code></pre></div><p>This shell appears to convert all our commands in uppercase. Since linux is case-sensitive, this means our regular commands don&rsquo;t work.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>&gt;&gt; ls
-</span></span><span class=line><span class=cl>sh: 1: LS: not found
-</span></span><span class=line><span class=cl>&gt;&gt; <span class=nb>pwd</span>
-</span></span><span class=line><span class=cl>sh: 1: PWD: not found
-</span></span><span class=line><span class=cl>&gt;&gt; whoami
-</span></span><span class=line><span class=cl>sh: 1: WHOAMI: not found
-</span></span></code></pre></div><p>It also looks like our commands are treated like strings.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>&gt;&gt; <span class=s2>&#34;pwd&#34;</span>
-</span></span><span class=line><span class=cl>sh: 1: PWD: not found
-</span></span><span class=line><span class=cl>&gt;&gt; <span class=s1>&#39;pwd&#39;</span>
-</span></span><span class=line><span class=cl>sh: 1: PWD: not found
-</span></span><span class=line><span class=cl>&gt;&gt; <span class=s2>&#34;
-</span></span></span><span class=line><span class=cl><span class=s2>sh: 2: Syntax error: Unterminated quoted string
-</span></span></span><span class=line><span class=cl><span class=s2>&gt;&gt; &#39;
-</span></span></span><span class=line><span class=cl><span class=s2>sh: 2: Syntax error: Unterminated quoted string
-</span></span></span><span class=line><span class=cl><span class=s2>&gt;&gt;
-</span></span></span></code></pre></div><p>Let&rsquo;s test some other escape characters.</p><p>It looks like parameter expansion works. Using <code>$0</code> opens Bash as <code>$0</code> expands to the name of the shell or shell script.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>&gt;&gt; ls
-</span></span><span class=line><span class=cl>sh: 1: LS: not found
-</span></span><span class=line><span class=cl>&gt;&gt; <span class=nv>$0</span>
-</span></span><span class=line><span class=cl>$ ls
-</span></span><span class=line><span class=cl>uppershell
-</span></span></code></pre></div><p>It looks like we&rsquo;re in the context of user Bandit33 who&rsquo;s member of the group Bandit32. This means we can read (most of) the files either Bandit32 or Bandit33 have access to.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ id
-</span></span><span class=line><span class=cl><span class=nv>uid</span><span class=o>=</span>11033<span class=o>(</span>bandit33<span class=o>)</span> <span class=nv>gid</span><span class=o>=</span>11032<span class=o>(</span>bandit32<span class=o>)</span> <span class=nv>groups</span><span class=o>=</span>11032<span class=o>(</span>bandit32<span class=o>)</span>
-</span></span></code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ cat /etc/bandit_pass/bandit33
-</span></span><span class=line><span class=cl>c9##########ee
-</span></span></code></pre></div><h3 id=level-33---level-34>Level 33 -> Level 34 <a href=#level-33---level-34>¶</a></h3><p>We&rsquo;ve reached the final level of the Bandit series. 🎉</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>bandit33@bandit:~$ ls
-</span></span><span class=line><span class=cl>README.txt
-</span></span><span class=line><span class=cl>bandit33@bandit:~$ cat README.txt 
-</span></span><span class=line><span class=cl>Congratulations on solving the last level of this game!
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>At this moment, there are no more levels to play in this game. However, we are constantly work
-</span></span><span class=line><span class=cl>ing
-</span></span><span class=line><span class=cl>on new levels and will most likely expand this game with more levels soon.
-</span></span><span class=line><span class=cl>Keep an eye out <span class=k>for</span> an announcement on our usual communication channels!
-</span></span><span class=line><span class=cl>In the meantime, you could play some of our other wargames.
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>If you have an idea <span class=k>for</span> an awesome new level, please <span class=nb>let</span> us know!
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>8 minutes</p></div><article><h1 class=post-title><a href=https://sequr.be/blog/2020/01/bandit-30-34/>Bandit (30 -> 34)</a></h1><div class=post-content><h2 id=info>Info <a href=#info>¶</a></h2><p>From the <a href=https://overthewire.org/wargames/ target=_blank rel=noopener>OverTheWire website</a>:</p><blockquote><p>The wargames offered by the OverTheWire community can help you to learn and practice security concepts in the form of fun-filled games.</p><p>~ OverTheWire.org</p></blockquote><h2 id=bandit>Bandit <a href=#bandit>¶</a></h2><p>Bandit is the first series of challenges and it&rsquo;s recommended to start with these.</p><blockquote><p>The Bandit wargame is aimed at absolute beginners. It will teach the basics needed to be able to play other wargames.</p><p>~ OverTheWire.org</p></blockquote><p>Make sure you following along on the website to get more info on the goal of the challenges and the skills that you&rsquo;ll learn from them.</p><p>Always first try to do a challenge yourself.<br>You&rsquo;ll learn more and might find methodologies or techniques that work better for you.</p><p>This write-up contains the solution of levels 30 to 40.<br>Need to go back for <a href=https://sequr.be/blog/2020/01/bandit-20-30/>levels 20 to 30</a>?</p><h3 id=level-30---31>Level 30 -> 31 <a href=#level-30---31>¶</a></h3><p>Connect with the OverTheWire infrastructure using the credentials retrieved in the previous level.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ ssh bandit30@bandit.labs.overthewire.org -p <span style=color:#ae81ff>2220</span>                
+</span></span><span style=display:flex><span>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+</span></span><span style=display:flex><span>                          
+</span></span><span style=display:flex><span>bandit30@bandit.labs.overthewire.org<span style=color:#960050;background-color:#1e0010>&#39;</span>s password:
+</span></span></code></pre></div><p>We start of (again) with creating a directory to clone the git repo into.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit30@bandit:~$ mkdir /tmp/bandit30
+</span></span><span style=display:flex><span>bandit30@bandit:~$ cd /tmp/bandit30
+</span></span><span style=display:flex><span>bandit30@bandit:/tmp/bandit30$ git clone ssh://bandit30-git@localhost/home/bandit30-git/repo
+</span></span><span style=display:flex><span>Cloning into <span style=color:#e6db74>&#39;repo&#39;</span>...
+</span></span><span style=display:flex><span>Could not create directory <span style=color:#e6db74>&#39;/home/bandit30/.ssh&#39;</span>.
+</span></span><span style=display:flex><span>The authenticity of host <span style=color:#e6db74>&#39;localhost (127.0.0.1)&#39;</span> can<span style=color:#e6db74>&#39;t be established.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Are you sure you want to continue connecting (yes/no)? yes
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Failed to add the host to the list of known hosts (/home/bandit30/.ssh/known_hosts).
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>bandit30-git@localhost&#39;</span>s password: 
+</span></span><span style=display:flex><span>remote: Counting objects: 4, <span style=color:#66d9ef>done</span>.
+</span></span><span style=display:flex><span>remote: Total <span style=color:#ae81ff>4</span> <span style=color:#f92672>(</span>delta 0<span style=color:#f92672>)</span>, reused <span style=color:#ae81ff>0</span> <span style=color:#f92672>(</span>delta 0<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Receiving objects: 100% <span style=color:#f92672>(</span>4/4<span style=color:#f92672>)</span>, <span style=color:#66d9ef>done</span>.
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit30@bandit:/tmp/bandit30$ ls
+</span></span><span style=display:flex><span>repo
+</span></span><span style=display:flex><span>bandit30@bandit:/tmp/bandit30$ cd repo/
+</span></span><span style=display:flex><span>bandit30@bandit:/tmp/bandit30/repo$ ls
+</span></span><span style=display:flex><span>README.md
+</span></span><span style=display:flex><span>bandit30@bandit:/tmp/bandit30/repo$ cat README.md 
+</span></span><span style=display:flex><span>just an epmty file... muahaha
+</span></span></code></pre></div><p>Ben likes to have a laugh…</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit30@bandit:/tmp/bandit30/repo$ git log -p --all
+</span></span><span style=display:flex><span>commit 3aa4c239f729b07deb99a52f125893e162daac9e
+</span></span><span style=display:flex><span>Author: Ben Dover &lt;noone@overthewire.org&gt;
+</span></span><span style=display:flex><span>Date:   Tue Oct <span style=color:#ae81ff>16</span> 14:00:44 <span style=color:#ae81ff>2018</span> +0200
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    initial commit of README.md
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>diff --git a/README.md b/README.md
+</span></span><span style=display:flex><span>new file mode <span style=color:#ae81ff>100644</span>
+</span></span><span style=display:flex><span>index 0000000..029ba42
+</span></span><span style=display:flex><span>--- /dev/null
+</span></span><span style=display:flex><span>+++ b/README.md
+</span></span><span style=display:flex><span>@@ -0,0 +1 @@
+</span></span><span style=display:flex><span>+just an epmty file... muahaha
+</span></span></code></pre></div><p>Let&rsquo;s look around and see if we can find any other interesting files. Especially the <code>.git</code> folder might contain some leads, since this <em>hidden</em> folder contains the configurations and metadata of the repository.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit30@bandit:/tmp/bandit30/repo/.git$ cat packed-refs 
+</span></span><span style=display:flex><span><span style=color:#75715e># pack-refs with: peeled fully-peeled </span>
+</span></span><span style=display:flex><span>3aa4c239f729b07deb99a52f125893e162daac9e refs/remotes/origin/master
+</span></span><span style=display:flex><span>f17132340e8ee6c159e0a4a6bc6f80e1da3b1aea refs/tags/secret
+</span></span></code></pre></div><p>You can find more information on the use of references and tags in the <a href=https://git-scm.com/book/en/v2/Git-Internals-Git-References target=_blank rel=noopener>git documentation</a>.</p><p>Using <code>git cat-file</code>, we can see the contents of the included file to which the &ldquo;secret&rdquo; tag refers to.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit30@bandit:/tmp/bandit30/repo$ git cat-file
+</span></span><span style=display:flex><span>usage: git cat-file <span style=color:#f92672>(</span>-t <span style=color:#f92672>[</span>--allow-unknown-type<span style=color:#f92672>]</span> | -s <span style=color:#f92672>[</span>--allow-unknown-type<span style=color:#f92672>]</span> | -e | -p | &lt;type&gt; | --textconv | --filters<span style=color:#f92672>)</span> <span style=color:#f92672>[</span>--path<span style=color:#f92672>=</span>&lt;path&gt;<span style=color:#f92672>]</span> &lt;object&gt;
+</span></span><span style=display:flex><span>   or: git cat-file <span style=color:#f92672>(</span>--batch | --batch-check<span style=color:#f92672>)</span> <span style=color:#f92672>[</span>--follow-symlinks<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>--textconv | --filters<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;type&gt; can be one of: blob, tree, commit, tag
+</span></span><span style=display:flex><span>    -t                    show object type
+</span></span><span style=display:flex><span>    -s                    show object size
+</span></span><span style=display:flex><span>    -e                    exit with zero when there<span style=color:#e6db74>&#39;s no error
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    -p                    pretty-print object&#39;</span>s content
+</span></span><span style=display:flex><span>    --textconv            <span style=color:#66d9ef>for</span> blob objects, run textconv on object<span style=color:#e6db74>&#39;s content
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    --filters             for blob objects, run filters on object&#39;</span>s content
+</span></span><span style=display:flex><span>    --path &lt;blob&gt;         use a specific path <span style=color:#66d9ef>for</span> --textconv/--filters
+</span></span><span style=display:flex><span>    --allow-unknown-type  allow -s and -t to work with broken/corrupt objects
+</span></span><span style=display:flex><span>    --buffer              buffer --batch output
+</span></span><span style=display:flex><span>    --batch<span style=color:#f92672>[=</span>&lt;format&gt;<span style=color:#f92672>]</span>    show info and content of objects fed from the standard input
+</span></span><span style=display:flex><span>    --batch-check<span style=color:#f92672>[=</span>&lt;format&gt;<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                          show info about objects fed from the standard input
+</span></span><span style=display:flex><span>    --follow-symlinks     follow in-tree symlinks <span style=color:#f92672>(</span>used with --batch or --batch-check<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>    --batch-all-objects   show all objects with --batch or --batch-check
+</span></span></code></pre></div><p>You can use both the hash as the tag as a reference.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit30@bandit:/tmp/bandit30/repo$ git cat-file -p f17132340e8ee6c159e0a4a6bc6f80e1da3b1aea
+</span></span><span style=display:flex><span>47##########e5
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>bandit30@bandit:/tmp/bandit30/repo$ git cat-file -p secret
+</span></span><span style=display:flex><span>47##########e5
+</span></span></code></pre></div><h3 id=level-31---level-32>Level 31 -> Level 32 <a href=#level-31---level-32>¶</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit31@bandit:/tmp$ mkdir /tmp/bandit31
+</span></span><span style=display:flex><span>bandit31@bandit:/tmp$ cd /tmp/bandit31
+</span></span><span style=display:flex><span>bandit31@bandit:/tmp/bandit31$ git clone ssh://bandit31-git@localhost/home/bandit31-git/repo
+</span></span><span style=display:flex><span>Cloning into <span style=color:#e6db74>&#39;repo&#39;</span>...
+</span></span><span style=display:flex><span>Could not create directory <span style=color:#e6db74>&#39;/home/bandit31/.ssh&#39;</span>.
+</span></span><span style=display:flex><span>The authenticity of host <span style=color:#e6db74>&#39;localhost (127.0.0.1)&#39;</span> can<span style=color:#e6db74>&#39;t be established.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Are you sure you want to continue connecting (yes/no)? yes
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Failed to add the host to the list of known hosts (/home/bandit31/.ssh/known_hosts).
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>bandit31-git@localhost&#39;</span>s password: 
+</span></span><span style=display:flex><span>remote: Counting objects: 4, <span style=color:#66d9ef>done</span>.
+</span></span><span style=display:flex><span>remote: Compressing objects: 100% <span style=color:#f92672>(</span>3/3<span style=color:#f92672>)</span>, <span style=color:#66d9ef>done</span>.
+</span></span><span style=display:flex><span>remote: Total <span style=color:#ae81ff>4</span> <span style=color:#f92672>(</span>delta 0<span style=color:#f92672>)</span>, reused <span style=color:#ae81ff>0</span> <span style=color:#f92672>(</span>delta 0<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Receiving objects: 100% <span style=color:#f92672>(</span>4/4<span style=color:#f92672>)</span>, <span style=color:#66d9ef>done</span>.
+</span></span></code></pre></div><p>This time, we need to <strong>add</strong> something to the repo.</p><p>The <code>.gitignore</code> file specifies intentionally untracked files to ignore. You can use this file to keep metadata, private and/or irrelevant files from ending up in the repo. <code>*.txt</code> means that files with txt as extension won&rsquo;t be tracked.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit31@bandit:/tmp/bandit31/repo$ ls -al
+</span></span><span style=display:flex><span>total <span style=color:#ae81ff>20</span>
+</span></span><span style=display:flex><span>drwxr-sr-x <span style=color:#ae81ff>3</span> bandit31 root <span style=color:#ae81ff>4096</span> Jan <span style=color:#ae81ff>18</span> 00:01 .
+</span></span><span style=display:flex><span>drwxr-sr-x <span style=color:#ae81ff>3</span> bandit31 root <span style=color:#ae81ff>4096</span> Jan <span style=color:#ae81ff>18</span> 00:01 ..
+</span></span><span style=display:flex><span>drwxr-sr-x <span style=color:#ae81ff>8</span> bandit31 root <span style=color:#ae81ff>4096</span> Jan <span style=color:#ae81ff>18</span> 00:01 .git
+</span></span><span style=display:flex><span>-rw-r--r-- <span style=color:#ae81ff>1</span> bandit31 root    <span style=color:#ae81ff>6</span> Jan <span style=color:#ae81ff>18</span> 00:01 .gitignore
+</span></span><span style=display:flex><span>-rw-r--r-- <span style=color:#ae81ff>1</span> bandit31 root  <span style=color:#ae81ff>147</span> Jan <span style=color:#ae81ff>18</span> 00:01 README.md
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>bandit31@bandit:/tmp/bandit31/repo$ cat README.md 
+</span></span><span style=display:flex><span>This time your task is to push a file to the remote repository.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Details:
+</span></span><span style=display:flex><span>    File name: key.txt
+</span></span><span style=display:flex><span>    Content: <span style=color:#e6db74>&#39;May I come in?&#39;</span>
+</span></span><span style=display:flex><span>    Branch: master
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>bandit31@bandit:/tmp/bandit31/repo$ cat .gitignore
+</span></span><span style=display:flex><span>*.txt
+</span></span></code></pre></div><p>First, create the file as per the requirements stated above.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit31@bandit:/tmp/bandit31/repo$ echo <span style=color:#e6db74>&#34;May I come in?&#34;</span> &gt; key.txt
+</span></span></code></pre></div><p>Add it to the repository. Notice that because of the .gitignore file, we&rsquo;ll need to &ldquo;force&rdquo; git into adding our file.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit31@bandit:/tmp/bandit31/repo$ git status                                                
+</span></span><span style=display:flex><span>On branch master                                                                              
+</span></span><span style=display:flex><span>Your branch is up-to-date with <span style=color:#e6db74>&#39;origin/master&#39;</span>.                                               
+</span></span><span style=display:flex><span>nothing to commit, working tree clean                                                         
+</span></span><span style=display:flex><span>bandit31@bandit:/tmp/bandit31/repo$ git add key.txt                                           
+</span></span><span style=display:flex><span>The following paths are ignored by one of your .gitignore files:                              
+</span></span><span style=display:flex><span>key.txt                                                                                       
+</span></span><span style=display:flex><span>Use -f <span style=color:#66d9ef>if</span> you really want to add them.                                                        
+</span></span><span style=display:flex><span>bandit31@bandit:/tmp/bandit31/repo$ git add -f key.txt                                        
+</span></span><span style=display:flex><span>bandit31@bandit:/tmp/bandit31/repo$ git status                                                
+</span></span><span style=display:flex><span>On branch master                                                                              
+</span></span><span style=display:flex><span>Your branch is up-to-date with <span style=color:#e6db74>&#39;origin/master&#39;</span>. 
+</span></span><span style=display:flex><span>Changes to be committed:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>(</span>use <span style=color:#e6db74>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        new file:   key.txt
+</span></span></code></pre></div><p>Next, commit our changes and push them to the repository.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit31@bandit:/tmp/bandit31/repo$ git commit -m <span style=color:#e6db74>&#34;May I come in?&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>master e5c7ff1<span style=color:#f92672>]</span> May I come in?
+</span></span><span style=display:flex><span> <span style=color:#ae81ff>1</span> file changed, <span style=color:#ae81ff>1</span> insertion<span style=color:#f92672>(</span>+<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span> create mode <span style=color:#ae81ff>100644</span> key.txt
+</span></span><span style=display:flex><span>bandit31@bandit:/tmp/bandit31/repo$ git push
+</span></span><span style=display:flex><span>Could not create directory <span style=color:#e6db74>&#39;/home/bandit31/.ssh&#39;</span>.
+</span></span><span style=display:flex><span>The authenticity of host <span style=color:#e6db74>&#39;localhost (127.0.0.1)&#39;</span> can<span style=color:#e6db74>&#39;t be established.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Are you sure you want to continue connecting (yes/no)? yes
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Failed to add the host to the list of known hosts (/home/bandit31/.ssh/known_hosts).
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>bandit31-git@localhost&#39;</span>s password: 
+</span></span><span style=display:flex><span>Counting objects: 3, <span style=color:#66d9ef>done</span>.
+</span></span><span style=display:flex><span>Delta compression using up to <span style=color:#ae81ff>4</span> threads.
+</span></span><span style=display:flex><span>Compressing objects: 100% <span style=color:#f92672>(</span>2/2<span style=color:#f92672>)</span>, <span style=color:#66d9ef>done</span>.
+</span></span><span style=display:flex><span>Writing objects: 100% <span style=color:#f92672>(</span>3/3<span style=color:#f92672>)</span>, <span style=color:#ae81ff>326</span> bytes | <span style=color:#ae81ff>0</span> bytes/s, <span style=color:#66d9ef>done</span>.
+</span></span><span style=display:flex><span>Total <span style=color:#ae81ff>3</span> <span style=color:#f92672>(</span>delta 0<span style=color:#f92672>)</span>, reused <span style=color:#ae81ff>0</span> <span style=color:#f92672>(</span>delta 0<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>remote: <span style=color:#75715e>### Attempting to validate files... ####</span>
+</span></span><span style=display:flex><span>remote: 
+</span></span><span style=display:flex><span>remote: .oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.
+</span></span><span style=display:flex><span>remote: 
+</span></span><span style=display:flex><span>remote: Well <span style=color:#66d9ef>done</span>! Here is the password <span style=color:#66d9ef>for</span> the next level:
+</span></span><span style=display:flex><span>remote: 56##########5e
+</span></span><span style=display:flex><span>remote: 
+</span></span><span style=display:flex><span>remote: .oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.
+</span></span><span style=display:flex><span>remote: 
+</span></span><span style=display:flex><span>To ssh://localhost/home/bandit31-git/repo
+</span></span><span style=display:flex><span> ! <span style=color:#f92672>[</span>remote rejected<span style=color:#f92672>]</span> master -&gt; master <span style=color:#f92672>(</span>pre-receive hook declined<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>error: failed to push some refs to <span style=color:#e6db74>&#39;ssh://bandit31-git@localhost/home/bandit31-git/repo&#39;</span>
+</span></span></code></pre></div><p>The challenge creator added a hook that triggers on a repo push, gives us the password if our push fits the criteria and finally rejects our modification so we don&rsquo;t impact the source repository.</p><h3 id=level-32---level-33>Level 32 -> Level 33 <a href=#level-32---level-33>¶</a></h3><blockquote><p>After all this git stuff its time for another escape. Good luck!</p><p>~ OverTheWire.org</p></blockquote><p>Bandit32 seems to be running a special shell. Our challenge is to break out of it.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ssh bandit32@bandit.labs.overthewire.org -p <span style=color:#ae81ff>2220</span>                                        
+</span></span><span style=display:flex><span>This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>WELCOME TO THE UPPERCASE SHELL
+</span></span><span style=display:flex><span>&gt;&gt;
+</span></span></code></pre></div><p>Looking at the passwd file (as Bandit31) gives us a bit more information on the shell Bandit32 runs in. It seems to be a script in the home directory of Bandit32, which we can&rsquo;t read since we don&rsquo;t have the necessary permissions.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit31@bandit:~$ cat /etc/passwd | grep bandit32
+</span></span><span style=display:flex><span>bandit32❌11032:11032:bandit level 32:/home/bandit32:/home/bandit32/uppershell
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>bandit31@bandit:~$ cat /home/bandit32/uppershell                                              
+</span></span><span style=display:flex><span>cat: /home/bandit32/uppershell: Permission denied
+</span></span></code></pre></div><p>This shell appears to convert all our commands in uppercase. Since linux is case-sensitive, this means our regular commands don&rsquo;t work.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>&gt;&gt; ls
+</span></span><span style=display:flex><span>sh: 1: LS: not found
+</span></span><span style=display:flex><span>&gt;&gt; pwd
+</span></span><span style=display:flex><span>sh: 1: PWD: not found
+</span></span><span style=display:flex><span>&gt;&gt; whoami
+</span></span><span style=display:flex><span>sh: 1: WHOAMI: not found
+</span></span></code></pre></div><p>It also looks like our commands are treated like strings.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>&gt;&gt; <span style=color:#e6db74>&#34;pwd&#34;</span>
+</span></span><span style=display:flex><span>sh: 1: PWD: not found
+</span></span><span style=display:flex><span>&gt;&gt; <span style=color:#e6db74>&#39;pwd&#39;</span>
+</span></span><span style=display:flex><span>sh: 1: PWD: not found
+</span></span><span style=display:flex><span>&gt;&gt; <span style=color:#e6db74>&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>sh: 2: Syntax error: Unterminated quoted string
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>&gt;&gt; &#39;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>sh: 2: Syntax error: Unterminated quoted string
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>&gt;&gt;
+</span></span></span></code></pre></div><p>Let&rsquo;s test some other escape characters.</p><p>It looks like parameter expansion works. Using <code>$0</code> opens Bash as <code>$0</code> expands to the name of the shell or shell script.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>&gt;&gt; ls
+</span></span><span style=display:flex><span>sh: 1: LS: not found
+</span></span><span style=display:flex><span>&gt;&gt; $0
+</span></span><span style=display:flex><span>$ ls
+</span></span><span style=display:flex><span>uppershell
+</span></span></code></pre></div><p>It looks like we&rsquo;re in the context of user Bandit33 who&rsquo;s member of the group Bandit32. This means we can read (most of) the files either Bandit32 or Bandit33 have access to.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ id
+</span></span><span style=display:flex><span>uid<span style=color:#f92672>=</span>11033<span style=color:#f92672>(</span>bandit33<span style=color:#f92672>)</span> gid<span style=color:#f92672>=</span>11032<span style=color:#f92672>(</span>bandit32<span style=color:#f92672>)</span> groups<span style=color:#f92672>=</span>11032<span style=color:#f92672>(</span>bandit32<span style=color:#f92672>)</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ cat /etc/bandit_pass/bandit33
+</span></span><span style=display:flex><span>c9##########ee
+</span></span></code></pre></div><h3 id=level-33---level-34>Level 33 -> Level 34 <a href=#level-33---level-34>¶</a></h3><p>We&rsquo;ve reached the final level of the Bandit series. 🎉</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>bandit33@bandit:~$ ls
+</span></span><span style=display:flex><span>README.txt
+</span></span><span style=display:flex><span>bandit33@bandit:~$ cat README.txt 
+</span></span><span style=display:flex><span>Congratulations on solving the last level of this game!
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>At this moment, there are no more levels to play in this game. However, we are constantly work
+</span></span><span style=display:flex><span>ing
+</span></span><span style=display:flex><span>on new levels and will most likely expand this game with more levels soon.
+</span></span><span style=display:flex><span>Keep an eye out <span style=color:#66d9ef>for</span> an announcement on our usual communication channels!
+</span></span><span style=display:flex><span>In the meantime, you could play some of our other wargames.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>If you have an idea <span style=color:#66d9ef>for</span> an awesome new level, please let us know!
 </span></span></code></pre></div><p>And here ends the <a href=https://overthewire.org/wargames/bandit target=_blank rel=noopener>Bandit</a> challenge.</p><p>Up next: <a href=https://overthewire.org/wargames/leviathan/ target=_blank rel=noopener>Leviathan</a>!</p></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/bandit/>Bandit</a></span>
 <span class=tag><a href=https://sequr.be/tags/over-the-wire/>Over The Wire</a></span>
 <span class=tag><a href=https://sequr.be/tags/overthewire/>OverTheWire</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg><span class=tag><a href=https://sequr.be/categories/overthewire/>OverTheWire</a></span>

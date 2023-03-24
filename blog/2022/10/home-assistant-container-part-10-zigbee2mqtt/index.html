@@ -6,69 +6,69 @@ The Zigbee coordinator is at the heart of the Zigbee network and allows intercon
 Another popular alternative is <a href=https://www.zigbee2mqtt.io/guide/usage/integrations/home_assistant.html title=Zigbee2MQTT target=_blank rel=noopener>Zigbee2MQTT</a> which makes use of Home Assistant&rsquo;s <a href=https://www.home-assistant.io/docs/mqtt/discovery/ title="MQTT Discovery" target=_blank rel=noopener>MQTT Discovery</a> to create devices and entities in Home Assistant.</p><p>Which coordinator you use is up to you.
 I advise to check the <a href=https://zigbee.blakadder.com/ title="Zigbee Device Compatibility Repository by Blakadder" target=_blank rel=noopener>Zigbee Device Compatibility Repository</a> by Blakadder to check which coordinator supports the device you plan to buy.</p><p>This post will discuss the installation of Zigbee2MQTT as it makes use off a Docker container for the coordinator (we already installed the <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-4-mosquitto-docker-container/ title="Part 4: Mosquitto Docker Container">MQTT broker</a>).</p><p><strong>Note:</strong> This post got delayed somewhat because I had to wait for my <a href=https://s.click.aliexpress.com/e/_DDZbXfZ title="Robotsky USB Extension Cable USB 3.0" target=_blank rel=noopener>USB extension</a> cable to arrive.
 Without it, my Zigbee controller was experiencing interference from my 2.4GHz WiFi on my miniPC.</p><h2 id=install-zigbee2mqtt-container>Install Zigbee2MQTT container <a href=#install-zigbee2mqtt-container>¶</a></h2><h3 id=locate-zigbee-coordinator>Locate Zigbee coordinator <a href=#locate-zigbee-coordinator>¶</a></h3><p>In our Docker compose config, we&rsquo;ll need to assign the Zigbee coordinator, which&rsquo;ll be connected via USB, to the Docker container.</p><p>Plug in your Zigbee coordinator (e.g. Conbee II, Sonof Zigbee 3.0 Plus, &mldr;) into your machine.
-Then run the following command to get the unique path to the device.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ls -l /dev/serial/by-id/
-</span></span><span class=line><span class=cl>usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_eexxxxxxxxxxxxxxxxxxxxxxxxxxxx52-if00-port0 -&gt; ../../ttyUSB0
-</span></span></code></pre></div><p>We&rsquo;ll use this unique <code>by-id</code> path in our config later instead of the typical <code>/dev/ttyUSB0</code> bevause there&rsquo;s always a risk of the device getting a new TTY assigned after a reboot, espcially with other devices pluggin in as well.</p><h3 id=docker-compose>Docker-compose <a href=#docker-compose>¶</a></h3><p>We expand our <code>docker-compose.yaml</code> with the config for the Zigbee2MQTT container.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>services</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>[</span><span class=l>...]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee2mqtt</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>container_name</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>koenkk/zigbee2mqtt</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>restart</span><span class=p>:</span><span class=w> </span><span class=l>unless-stopped</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ports</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=s2>&#34;8099:8099/tcp&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>environment</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>TZ=Europe/Brussels</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>volumes</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>/opt/zigbee2mqtt/data:/app/data</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>/run/udev:/run/udev:ro</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>devices</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>/dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_eexxxxxxxxxxxxxxxxxxxxxxxxxxxx52-if00-port0:/dev/ttyACM0</span><span class=w>
-</span></span></span></code></pre></div><p>Note that I changed the port mapping for this container.
+Then run the following command to get the unique path to the device.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>ls -l /dev/serial/by-id/
+</span></span><span style=display:flex><span>usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_eexxxxxxxxxxxxxxxxxxxxxxxxxxxx52-if00-port0 -&gt; ../../ttyUSB0
+</span></span></code></pre></div><p>We&rsquo;ll use this unique <code>by-id</code> path in our config later instead of the typical <code>/dev/ttyUSB0</code> bevause there&rsquo;s always a risk of the device getting a new TTY assigned after a reboot, espcially with other devices pluggin in as well.</p><h3 id=docker-compose>Docker-compose <a href=#docker-compose>¶</a></h3><p>We expand our <code>docker-compose.yaml</code> with the config for the Zigbee2MQTT container.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>services</span>:
+</span></span><span style=display:flex><span>  [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>container_name</span>: <span style=color:#ae81ff>zigbee2mqtt</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: <span style=color:#ae81ff>koenkk/zigbee2mqtt</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>restart</span>: <span style=color:#ae81ff>unless-stopped</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ports</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;8099:8099/tcp&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>environment</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>TZ=Europe/Brussels</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>volumes</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/opt/zigbee2mqtt/data:/app/data</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/run/udev:/run/udev:ro</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>devices</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_eexxxxxxxxxxxxxxxxxxxxxxxxxxxx52-if00-port0:/dev/ttyACM0</span>
+</span></span></code></pre></div><p>Note that I changed the port mapping for this container.
 Port 8080 is already in use by <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-3-mariadb-and-influxdb/ title="Part 3: MariaDB and InfluxDB">adminer</a> so I changed the Zigbee2MQTT front-end port to 8099 (see below) and mapped that one in my Docker configuration.</p><p>We won&rsquo;t start our container just yet, as we first want to setup our configuration.</p><h3 id=create-mqtt-user>Create MQTT user <a href=#create-mqtt-user>¶</a></h3><p>When we set up the <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-4-mosquitto-docker-container/ title="Part 4: Mosquitto Docker Container">Mosquitto MQTT broker</a>, I said I prefer to create a MQTT user per service.
-So let&rsquo;s create a user for our Z2M container.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker <span class=nb>exec</span> -it mosquitto mosquitto_passwd /mosquitto/config/mqttuser z2m_mqtt
-</span></span><span class=line><span class=cl>Password:          <span class=c1># Enter a password</span>
-</span></span><span class=line><span class=cl>Reenter password:  <span class=c1># Repeat the password</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>cat mosquitto/config/mqttuser
-</span></span><span class=line><span class=cl><span class=o>[</span>...<span class=o>]</span>
-</span></span><span class=line><span class=cl>z2m_mqtt:<span class=nv>$7$101$1</span>xcB1yrF********<span class=nv>$O$XR</span>******************2/N************************************************************g<span class=o>==</span>
+So let&rsquo;s create a user for our Z2M container.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>docker exec -it mosquitto mosquitto_passwd /mosquitto/config/mqttuser z2m_mqtt
+</span></span><span style=display:flex><span>Password:          <span style=color:#75715e># Enter a password</span>
+</span></span><span style=display:flex><span>Reenter password:  <span style=color:#75715e># Repeat the password</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>cat mosquitto/config/mqttuser
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>z2m_mqtt:$7$101$1xcB1yrF********$O$XR******************2/N************************************************************g<span style=color:#f92672>==</span>
 </span></span></code></pre></div><h3 id=zigbee2mqtt-config>Zigbee2MQTT config <a href=#zigbee2mqtt-config>¶</a></h3><p>To get a copy of the default config, run <code>sudo wget https://raw.githubusercontent.com/Koenkk/zigbee2mqtt/master/data/configuration.yaml</code> in the folder where the config will be stored (<code>/opt/zigbee2mqtt/data</code>).
-Then open and edit it using <code>sudo nano /opt/zigbee2mqtt/data/configuration.yaml</code>.</p><p>We&rsquo;ll tell Z2M to connect to our <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-4-mosquitto-docker-container/ title="Part 4: Mosquitto Docker Container">MQTT broker</a>, use the syntax Home Assistant device detection understands, set up the webserver, and let Z2M generate some keys used to setup the Zigbee network.</p><p>More info on what the settings in this config do, can be found in the <a href=https://www.zigbee2mqtt.io/guide/configuration/ title="Zigbee2MQTT documentation" target=_blank rel=noopener>Z2M docs</a>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># Adapter settings</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>serial</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=l>/dev/ttyACM0</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># MQTT</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>mqtt</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>base_topic</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>server</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;!secret server&#39;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>user</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;!secret user&#39;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>password</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;!secret password&#39;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>client_id</span><span class=p>:</span><span class=w> </span><span class=l>zigbee</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Zigbee network</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>permit_join</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w> </span><span class=c># Do not allow random devices to connect automatically</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Webserver</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>frontend</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>8099</span><span class=w> </span><span class=c># Custom port</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;http://&lt;ip.of.our.box&gt;:8099&#39;</span><span class=w> </span><span class=c># Update IP here</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Devices and groups</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Extract config to separate files</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>devices</span><span class=p>:</span><span class=w> </span><span class=l>devices.yaml</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>groups</span><span class=p>:</span><span class=w> </span><span class=l>groups.yaml</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Home Assistant integration</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>homeassistant</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>advanced</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># Zigbee network - auto-generate new keys</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>pan_id</span><span class=p>:</span><span class=w> </span><span class=l>GENERATE</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>network_key</span><span class=p>:</span><span class=w> </span><span class=l>GENERATE</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># Zigbee network - set channel to avoid interference with 2.4GHz WiFi</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>channel</span><span class=p>:</span><span class=w> </span><span class=m>24</span><span class=w>
-</span></span></span></code></pre></div><p>With this configuration in place, we can start the container using <code>docker-compose up -d zigbee2mqtt</code>.</p><p>If you check the logs via Portainer or <code>docker-compose logs zigbee2mqtt</code>, you&rsquo;ll see our container start up nicely:</p><pre tabindex=0><code>Using &#39;/app/data&#39; as data directory
+Then open and edit it using <code>sudo nano /opt/zigbee2mqtt/data/configuration.yaml</code>.</p><p>We&rsquo;ll tell Z2M to connect to our <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-4-mosquitto-docker-container/ title="Part 4: Mosquitto Docker Container">MQTT broker</a>, use the syntax Home Assistant device detection understands, set up the webserver, and let Z2M generate some keys used to setup the Zigbee network.</p><p>More info on what the settings in this config do, can be found in the <a href=https://www.zigbee2mqtt.io/guide/configuration/ title="Zigbee2MQTT documentation" target=_blank rel=noopener>Z2M docs</a>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># Adapter settings</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>serial</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>port</span>: <span style=color:#ae81ff>/dev/ttyACM0</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># MQTT</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>mqtt</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>base_topic</span>: <span style=color:#ae81ff>zigbee2mqtt</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>server</span>: <span style=color:#e6db74>&#39;!secret server&#39;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>user</span>: <span style=color:#e6db74>&#39;!secret user&#39;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>password</span>: <span style=color:#e6db74>&#39;!secret password&#39;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>client_id</span>: <span style=color:#ae81ff>zigbee</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Zigbee network</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>permit_join</span>: <span style=color:#66d9ef>false</span> <span style=color:#75715e># Do not allow random devices to connect automatically</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Webserver</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>frontend</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>port</span>: <span style=color:#ae81ff>8099</span> <span style=color:#75715e># Custom port</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>url</span>: <span style=color:#e6db74>&#39;http://&lt;ip.of.our.box&gt;:8099&#39;</span> <span style=color:#75715e># Update IP here</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Devices and groups</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Extract config to separate files</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>devices</span>: <span style=color:#ae81ff>devices.yaml</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>groups</span>: <span style=color:#ae81ff>groups.yaml</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Home Assistant integration</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>homeassistant</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>advanced</span>:
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Zigbee network - auto-generate new keys</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>pan_id</span>: <span style=color:#ae81ff>GENERATE</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>network_key</span>: <span style=color:#ae81ff>GENERATE</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Zigbee network - set channel to avoid interference with 2.4GHz WiFi</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>channel</span>: <span style=color:#ae81ff>24</span>
+</span></span></code></pre></div><p>With this configuration in place, we can start the container using <code>docker-compose up -d zigbee2mqtt</code>.</p><p>If you check the logs via Portainer or <code>docker-compose logs zigbee2mqtt</code>, you&rsquo;ll see our container start up nicely:</p><pre tabindex=0><code>Using &#39;/app/data&#39; as data directory
 Zigbee2MQTT:info  2022-10-04 12:09:47: Logging to console and directory: &#39;/app/data/log/2022-10-04.12-09-47&#39; filename: log.txt
 Zigbee2MQTT:info  2022-10-04 12:09:47: Starting Zigbee2MQTT version 1.28.0 (commit #03ba647)
 Zigbee2MQTT:info  2022-10-04 12:09:47: Starting zigbee-herdsman (0.14.62)
@@ -81,213 +81,213 @@ Zigbee2MQTT:info  2022-10-04 12:09:48: Connected to MQTT server
 Zigbee2MQTT:info  2022-10-04 12:09:48: MQTT publish: topic &#39;zigbee2mqtt/bridge/state&#39;, payload &#39;{&#34;state&#34;:&#34;online&#34;}&#39;
 Zigbee2MQTT:info  2022-10-04 12:09:48: Started frontend on port 0.0.0.0:8099
 Zigbee2MQTT:info  2022-10-04 12:09:48: MQTT publish: topic &#39;zigbee2mqtt/bridge/state&#39;, payload &#39;{&#34;state&#34;:&#34;online&#34;}&#39;
-</code></pre><h2 id=home-assistant>Home Assistant <a href=#home-assistant>¶</a></h2><h3 id=sidebar>Sidebar <a href=#sidebar>¶</a></h3><p>Repeating what we did in <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-3-mariadb-and-influxdb/ title="Part 3: MariaDB and InfluxDB">Part 3</a>, <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-5-node-red/ title="Part 5: Node-RED">Part 5</a>, <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-6-editing-configuration.yaml-from-within-home-assistant/ title="Part 6: Editing configuration.yaml from within Home Assistant">Part 6</a>, <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-7-backing-up-home-assistant-container/ title="Part 7: Backing up Home Assistant Container">Part 7</a>, and <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-9-esphome/ title="Part 9: ESPHome">Part 9</a>, we add an entry for ESPHome to the sidebar of our Home Assistant dashboard using <code>panel-iframe</code>.</p><p>Add the following lines to <code>configuration.yaml</code> and restart Home Assistant.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>panel_iframe</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>portainer</span><span class=p>:</span><span class=w>     </span><span class=c># part 3</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=l>...]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>nodered</span><span class=p>:</span><span class=w>       </span><span class=c># part 5</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=l>...]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>configurator</span><span class=p>:</span><span class=w>  </span><span class=c># part 6</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=l>...]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>duplicati</span><span class=p>:</span><span class=w>     </span><span class=c># part 7</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=l>...]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>esphome</span><span class=p>:</span><span class=w>       </span><span class=c># part 9</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=l>...]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee2mqtt</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>title</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:zigbee</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=l>http://192.168.10.106:8099</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>require_admin</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
-</span></span></span></code></pre></div><figure class=center><img src=z2mdashboard.png alt="Zigbee2MQTT dashboard"><figcaption class=center>Zigbee2MQTT dashboard without devices</figcaption></figure><p>Pressing the <code>Permit join</code> button on the top-right will temporarily allow any Zigbee device set to pairing mode to be picked up by our coordinator.</p><figure class=center><img src=z2mjoin.png alt="Permit Zigbee to join"><figcaption class=center>Permit Zigbee to join</figcaption></figure><h3 id=controlling-z2m>Controlling Z2M <a href=#controlling-z2m>¶</a></h3><p>Since Zigbee2MQTT&rsquo;s configuration can be adapted over MQTT, we can control Z2M not only from the Frontend we just exposed, but also from within our dashboard.
+</code></pre><h2 id=home-assistant>Home Assistant <a href=#home-assistant>¶</a></h2><h3 id=sidebar>Sidebar <a href=#sidebar>¶</a></h3><p>Repeating what we did in <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-3-mariadb-and-influxdb/ title="Part 3: MariaDB and InfluxDB">Part 3</a>, <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-5-node-red/ title="Part 5: Node-RED">Part 5</a>, <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-6-editing-configuration.yaml-from-within-home-assistant/ title="Part 6: Editing configuration.yaml from within Home Assistant">Part 6</a>, <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-7-backing-up-home-assistant-container/ title="Part 7: Backing up Home Assistant Container">Part 7</a>, and <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-9-esphome/ title="Part 9: ESPHome">Part 9</a>, we add an entry for ESPHome to the sidebar of our Home Assistant dashboard using <code>panel-iframe</code>.</p><p>Add the following lines to <code>configuration.yaml</code> and restart Home Assistant.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>panel_iframe</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>portainer</span>:     <span style=color:#75715e># part 3</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>nodered</span>:       <span style=color:#75715e># part 5</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>configurator</span>:  <span style=color:#75715e># part 6</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>duplicati</span>:     <span style=color:#75715e># part 7</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>esphome</span>:       <span style=color:#75715e># part 9</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>title</span>: <span style=color:#ae81ff>Zigbee2MQTT</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:zigbee</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>url</span>: <span style=color:#ae81ff>http://192.168.10.106:8099</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>require_admin</span>: <span style=color:#66d9ef>true</span>
+</span></span></code></pre></div><figure class=center><img src=z2mdashboard.png alt="Zigbee2MQTT dashboard"><figcaption class=center>Zigbee2MQTT dashboard without devices</figcaption></figure><p>Pressing the <code>Permit join</code> button on the top-right will temporarily allow any Zigbee device set to pairing mode to be picked up by our coordinator.</p><figure class=center><img src=z2mjoin.png alt="Permit Zigbee to join"><figcaption class=center>Permit Zigbee to join</figcaption></figure><h3 id=controlling-z2m>Controlling Z2M <a href=#controlling-z2m>¶</a></h3><p>Since Zigbee2MQTT&rsquo;s configuration can be adapted over MQTT, we can control Z2M not only from the Frontend we just exposed, but also from within our dashboard.
 This is also explained in the <a href=https://www.zigbee2mqtt.io/guide/usage/integrations/home_assistant.html#controlling-zigbee2mqtt-via-home-assistant title="Controlling Z2M via Home Assistant" target=_blank rel=noopener>Z2M Home Assistant integration docs</a>.</p><p>First, we add some more YAML to our <code>configuration.yaml</code> via the <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-6-editing-configuration.yaml-from-within-home-assistant/ title="Part 6: Editing configuration.yaml from within Home Assistant">Configurator</a>.
 Copy and paste this code add the end of the file.
-If you&rsquo;re used to splitting up your config and/or working with packages, you can put it in a <code>zigbee2mqtt.yaml</code> package file as well.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># Input select for Zigbee2MQTT debug level</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>input_select</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee2mqtt_log_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT Log Level</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>options</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>debug</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>info</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>warn</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>error</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>initial</span><span class=p>:</span><span class=w> </span><span class=l>info</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:format-list-bulleted</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Input number for joining time remaining (in minutes)</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>input_number</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee2mqtt_join_minutes</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Zigbee2MQTT join minutes&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>initial</span><span class=p>:</span><span class=w> </span><span class=m>2</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=m>5</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>step</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>mode</span><span class=p>:</span><span class=w> </span><span class=l>slider</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Input text to input Zigbee2MQTT friendly_name for scripts</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>input_text</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee2mqtt_old_name</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT Old Name</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>initial</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee2mqtt_new_name</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT New Name</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>initial</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee2mqtt_remove</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT Remove</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>initial</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Input boolean to set the force remove flag for devices</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>input_boolean</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee2mqtt_force_remove</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT Force Remove</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>initial</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:alert-remove</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Scripts for renaming &amp; removing devices</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>script</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee2mqtt_rename</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>alias</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT Rename</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>sequence</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>mqtt.publish</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>data_template</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>topic</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt/bridge/request/device/rename</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>payload_template</span><span class=p>:</span><span class=w> </span><span class=p>&gt;-</span><span class=sd>
-</span></span></span><span class=line><span class=cl><span class=sd>          {
-</span></span></span><span class=line><span class=cl><span class=sd>            &#34;from&#34;: &#34;{{ states.input_text.zigbee2mqtt_old_name.state | string }}&#34;,
-</span></span></span><span class=line><span class=cl><span class=sd>            &#34;to&#34;: &#34;{{ states.input_text.zigbee2mqtt_new_name.state | string }}&#34;
-</span></span></span><span class=line><span class=cl><span class=sd>          }</span><span class=w>          
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee2mqtt_remove</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>alias</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT Remove</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>sequence</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>mqtt.publish</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>data_template</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>topic</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt/bridge/request/device/remove</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>payload_template</span><span class=p>:</span><span class=w> </span><span class=p>&gt;-</span><span class=sd>
-</span></span></span><span class=line><span class=cl><span class=sd>          {
-</span></span></span><span class=line><span class=cl><span class=sd>            &#34;id&#34;: &#34;{{ states.input_text.zigbee2mqtt_remove.state | string }}&#34;,
-</span></span></span><span class=line><span class=cl><span class=sd>            &#34;force&#34;: {% if states.input_boolean.zigbee2mqtt_force_remove.state == &#34;off&#34; %}false{% else %}true{% endif %}
-</span></span></span><span class=line><span class=cl><span class=sd>          }</span><span class=w>          
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Timer for joining time remaining (254 sec)</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>timer</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>zigbee_permit_join</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Time remaining</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>duration</span><span class=p>:</span><span class=w> </span><span class=m>254</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>mqtt</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>sensor</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Sensor for monitoring the bridge state</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT Bridge state</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt_bridge_state_sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;zigbee2mqtt/bridge/state&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:router-wireless</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Sensor for Showing the Zigbee2MQTT Version</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT Version</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt_version_sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;zigbee2mqtt/bridge/info&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value_json.version }}&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:zigbee</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Sensor for Showing the Coordinator Version</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT Coordinator Version</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt_coordinator_version_sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;zigbee2mqtt/bridge/info&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ value_json.coordinator.meta.revision }}&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:chip</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2mqtt Networkmap</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt_networkmap_sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c># if you change base_topic of Zigbee2mqtt, change state_topic accordingly</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt/bridge/networkmap/raw</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=p>&gt;-</span><span class=sd>
-</span></span></span><span class=line><span class=cl><span class=sd>        {{ now().strftime(&#39;%Y-%m-%d %H:%M:%S&#39;) }}</span><span class=w>        
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c># again, if you change base_topic of Zigbee2mqtt, change json_attributes_topic accordingly</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>json_attributes_topic</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt/bridge/networkmap/raw</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># Switch for enabling joining</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>switch</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Zigbee2MQTT Main join&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>unique_id</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt_main_join_switch</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>state_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;zigbee2mqtt/bridge/info&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;{{ value_json.permit_join | lower }}&#39;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>command_topic</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;zigbee2mqtt/bridge/request/permit_join&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>payload_on</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;true&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>payload_off</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;false&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>automation</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># Automation for sending MQTT message on input select change</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>alias</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT Log Level</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>initial_state</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;on&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>trigger</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>state</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>input_select.zigbee2mqtt_log_level</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>action</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>mqtt.publish</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>data</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>payload_template</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ states(&#39;input_select.zigbee2mqtt_log_level&#39;) }}&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>topic</span><span class=p>:</span><span class=w> </span><span class=l>zigbee2mqtt/bridge/request/config/log_level</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># Automation to start timer when enable join is turned on</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>zigbee_join_enabled</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>alias</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee Join Enabled</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>trigger</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>state</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>switch.zigbee2mqtt_main_join</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>to</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;on&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>action</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>timer.start</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>timer.zigbee_permit_join</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>data_template</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>duration</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ &#39;00:0%i:00&#39; % (states(&#39;input_number.zigbee2mqtt_join_minutes&#39;) | int ) }}&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># Automation to stop timer when switch turned off and turn off switch when timer finished</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>zigbee_join_disabled</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>alias</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee Join Disabled</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>trigger</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>event</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>event_type</span><span class=p>:</span><span class=w> </span><span class=l>timer.finished</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>event_data</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>timer.zigbee_permit_join</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>state</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>switch.zigbee2mqtt_main_join</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>to</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;off&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>action</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>timer.cancel</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>data</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>timer.zigbee_permit_join</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>switch.turn_off</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>switch.zigbee2mqtt_main_join</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;zigbee2mqtt_create_notification_on_successful_interview&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>alias</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee Device Joined Notification</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>trigger</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>mqtt</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>topic</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;zigbee2mqtt/bridge/event&#39;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>condition</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>condition</span><span class=p>:</span><span class=w> </span><span class=l>template</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>value_template</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;{{trigger.payload_json.type == &#34;device_interview&#34; and trigger.payload_json.data.status == &#34;successful&#34; and trigger.payload_json.data.supported}}&#39;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>action</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>persistent_notification.create</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>data_template</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>title</span><span class=p>:</span><span class=w> </span><span class=l>Device joined the Zigbee2MQTT network</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>message</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Name: {{trigger.payload_json.data.friendly_name}},
-</span></span></span><span class=line><span class=cl><span class=s2>                    Vendor: {{trigger.payload_json.data.definition.vendor}},
-</span></span></span><span class=line><span class=cl><span class=s2>                    Model: {{trigger.payload_json.data.definition.model}},
-</span></span></span><span class=line><span class=cl><span class=s2>                    Description: {{trigger.payload_json.data.definition.description}}&#34;</span><span class=w>
-</span></span></span></code></pre></div><p>Check your YAML config in the developer tools and restart Home Assistant.</p><p>Once that&rsquo;s done, you can add a custom card to your Dashboard containing the following entries:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>title</span><span class=p>:</span><span class=w> </span><span class=l>Zigbee2MQTT</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>entities</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>show_header_toggle</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>entities</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.zigbee2mqtt_bridge_state</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.zigbee2mqtt_version</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>sensor.zigbee2mqtt_coordinator_version</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>input_select.zigbee2mqtt_log_level</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>divider</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>switch.zigbee2mqtt_main_join</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>input_number.zigbee2mqtt_join_minutes</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>timer.zigbee_permit_join</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>divider</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>input_text.zigbee2mqtt_old_name</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>input_text.zigbee2mqtt_new_name</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>script.zigbee2mqtt_rename</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>divider</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>input_text.zigbee2mqtt_remove</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>input_boolean.zigbee2mqtt_force_remove</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>entity</span><span class=p>:</span><span class=w> </span><span class=l>script.zigbee2mqtt_remove</span><span class=w>
-</span></span></span></code></pre></div><figure class=center><img src=hacard.png alt="Manage Zigbee2MQTT from Home Assistant"><figcaption class=center>Manage Z2M from Home Assistant</figcaption></figure><h3 id=network-map>Network map <a href=#network-map>¶</a></h3><p>Another nice thing to add to Home Assistant is a map of your connect Zigbee devices.</p><p>Since we don&rsquo;t have any devices connected yet, this map will be fairly empty.
+If you&rsquo;re used to splitting up your config and/or working with packages, you can put it in a <code>zigbee2mqtt.yaml</code> package file as well.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># Input select for Zigbee2MQTT debug level</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>input_select</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_log_level</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Log Level</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>options</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>debug</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>info</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>warn</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>error</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#ae81ff>info</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:format-list-bulleted</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Input number for joining time remaining (in minutes)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>input_number</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_join_minutes</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Zigbee2MQTT join minutes&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>min</span>: <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>max</span>: <span style=color:#ae81ff>5</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>step</span>: <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>slider</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Input text to input Zigbee2MQTT friendly_name for scripts</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>input_text</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_old_name</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Old Name</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#e6db74>&#34;&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_new_name</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT New Name</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#e6db74>&#34;&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_remove</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Remove</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#e6db74>&#34;&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Input boolean to set the force remove flag for devices</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>input_boolean</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_force_remove</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Force Remove</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:alert-remove</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Scripts for renaming &amp; removing devices</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>script</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_rename</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee2MQTT Rename</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sequence</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>service</span>: <span style=color:#ae81ff>mqtt.publish</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>data_template</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>topic</span>: <span style=color:#ae81ff>zigbee2mqtt/bridge/request/device/rename</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>payload_template</span>: &gt;-<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          {
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;from&#34;: &#34;{{ states.input_text.zigbee2mqtt_old_name.state | string }}&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;to&#34;: &#34;{{ states.input_text.zigbee2mqtt_new_name.state | string }}&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          }</span>          
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_remove</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee2MQTT Remove</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sequence</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>service</span>: <span style=color:#ae81ff>mqtt.publish</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>data_template</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>topic</span>: <span style=color:#ae81ff>zigbee2mqtt/bridge/request/device/remove</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>payload_template</span>: &gt;-<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          {
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;id&#34;: &#34;{{ states.input_text.zigbee2mqtt_remove.state | string }}&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;force&#34;: {% if states.input_boolean.zigbee2mqtt_force_remove.state == &#34;off&#34; %}false{% else %}true{% endif %}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          }</span>          
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Timer for joining time remaining (254 sec)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>timer</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee_permit_join</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Time remaining</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>duration</span>: <span style=color:#ae81ff>254</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>mqtt</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>sensor</span>:
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Sensor for monitoring the bridge state</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Bridge state</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>unique_id</span>: <span style=color:#ae81ff>zigbee2mqtt_bridge_state_sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_topic</span>: <span style=color:#e6db74>&#34;zigbee2mqtt/bridge/state&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:router-wireless</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Sensor for Showing the Zigbee2MQTT Version</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Version</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>unique_id</span>: <span style=color:#ae81ff>zigbee2mqtt_version_sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_topic</span>: <span style=color:#e6db74>&#34;zigbee2mqtt/bridge/info&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>value_template</span>: <span style=color:#e6db74>&#34;{{ value_json.version }}&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:zigbee</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Sensor for Showing the Coordinator Version</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Coordinator Version</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>unique_id</span>: <span style=color:#ae81ff>zigbee2mqtt_coordinator_version_sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_topic</span>: <span style=color:#e6db74>&#34;zigbee2mqtt/bridge/info&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>value_template</span>: <span style=color:#e6db74>&#34;{{ value_json.coordinator.meta.revision }}&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:chip</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2mqtt Networkmap</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>unique_id</span>: <span style=color:#ae81ff>zigbee2mqtt_networkmap_sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#75715e># if you change base_topic of Zigbee2mqtt, change state_topic accordingly</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_topic</span>: <span style=color:#ae81ff>zigbee2mqtt/bridge/networkmap/raw</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>value_template</span>: &gt;-<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        {{ now().strftime(&#39;%Y-%m-%d %H:%M:%S&#39;) }}</span>        
+</span></span><span style=display:flex><span>      <span style=color:#75715e># again, if you change base_topic of Zigbee2mqtt, change json_attributes_topic accordingly</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>json_attributes_topic</span>: <span style=color:#ae81ff>zigbee2mqtt/bridge/networkmap/raw</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Switch for enabling joining</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>switch</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Zigbee2MQTT Main join&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>unique_id</span>: <span style=color:#ae81ff>zigbee2mqtt_main_join_switch</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_topic</span>: <span style=color:#e6db74>&#34;zigbee2mqtt/bridge/info&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>value_template</span>: <span style=color:#e6db74>&#39;{{ value_json.permit_join | lower }}&#39;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>command_topic</span>: <span style=color:#e6db74>&#34;zigbee2mqtt/bridge/request/permit_join&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>payload_on</span>: <span style=color:#e6db74>&#34;true&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>payload_off</span>: <span style=color:#e6db74>&#34;false&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>automation</span>:
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Automation for sending MQTT message on input select change</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee2MQTT Log Level</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial_state</span>: <span style=color:#e6db74>&#34;on&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>trigger</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>state</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>input_select.zigbee2mqtt_log_level</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>action</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>mqtt.publish</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>payload_template</span>: <span style=color:#e6db74>&#34;{{ states(&#39;input_select.zigbee2mqtt_log_level&#39;) }}&#34;</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>topic</span>: <span style=color:#ae81ff>zigbee2mqtt/bridge/request/config/log_level</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Automation to start timer when enable join is turned on</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>id</span>: <span style=color:#ae81ff>zigbee_join_enabled</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee Join Enabled</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>trigger</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>state</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>switch.zigbee2mqtt_main_join</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>to</span>: <span style=color:#e6db74>&#34;on&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>action</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>service</span>: <span style=color:#ae81ff>timer.start</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>timer.zigbee_permit_join</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>data_template</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>duration</span>: <span style=color:#e6db74>&#34;{{ &#39;00:0%i:00&#39; % (states(&#39;input_number.zigbee2mqtt_join_minutes&#39;) | int ) }}&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Automation to stop timer when switch turned off and turn off switch when timer finished</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>id</span>: <span style=color:#ae81ff>zigbee_join_disabled</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee Join Disabled</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>trigger</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>event</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>event_type</span>: <span style=color:#ae81ff>timer.finished</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>event_data</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>timer.zigbee_permit_join</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>state</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>switch.zigbee2mqtt_main_join</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>to</span>: <span style=color:#e6db74>&#34;off&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>action</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>timer.cancel</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>timer.zigbee_permit_join</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>switch.turn_off</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>switch.zigbee2mqtt_main_join</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>id</span>: <span style=color:#e6db74>&#34;zigbee2mqtt_create_notification_on_successful_interview&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee Device Joined Notification</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>trigger</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>mqtt</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>topic</span>: <span style=color:#e6db74>&#39;zigbee2mqtt/bridge/event&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>condition</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>condition</span>: <span style=color:#ae81ff>template</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>value_template</span>: <span style=color:#e6db74>&#39;{{trigger.payload_json.type == &#34;device_interview&#34; and trigger.payload_json.data.status == &#34;successful&#34; and trigger.payload_json.data.supported}}&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>action</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>persistent_notification.create</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>data_template</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>title</span>: <span style=color:#ae81ff>Device joined the Zigbee2MQTT network</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>message</span>: <span style=color:#e6db74>&#34;Name: {{trigger.payload_json.data.friendly_name}},
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    Vendor: {{trigger.payload_json.data.definition.vendor}},
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    Model: {{trigger.payload_json.data.definition.model}},
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    Description: {{trigger.payload_json.data.definition.description}}&#34;</span>
+</span></span></code></pre></div><p>Check your YAML config in the developer tools and restart Home Assistant.</p><p>Once that&rsquo;s done, you can add a custom card to your Dashboard containing the following entries:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>title</span>: <span style=color:#ae81ff>Zigbee2MQTT</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>type</span>: <span style=color:#ae81ff>entities</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>show_header_toggle</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>entities</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>sensor.zigbee2mqtt_bridge_state</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>sensor.zigbee2mqtt_version</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>sensor.zigbee2mqtt_coordinator_version</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_select.zigbee2mqtt_log_level</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>divider</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>switch.zigbee2mqtt_main_join</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_number.zigbee2mqtt_join_minutes</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>timer.zigbee_permit_join</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>divider</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_text.zigbee2mqtt_old_name</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_text.zigbee2mqtt_new_name</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>script.zigbee2mqtt_rename</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>divider</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_text.zigbee2mqtt_remove</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_boolean.zigbee2mqtt_force_remove</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>script.zigbee2mqtt_remove</span>
+</span></span></code></pre></div><figure class=center><img src=hacard.png alt="Manage Zigbee2MQTT from Home Assistant"><figcaption class=center>Manage Z2M from Home Assistant</figcaption></figure><h3 id=network-map>Network map <a href=#network-map>¶</a></h3><p>Another nice thing to add to Home Assistant is a map of your connect Zigbee devices.</p><p>Since we don&rsquo;t have any devices connected yet, this map will be fairly empty.
 However, you&rsquo;ll enjoy seeing your network grow each time you add a new device :)</p><p>This will require you to add a <a href=https://github.com/azuwis/zigbee2mqtt-networkmap/ title="Z2M network map custom card" target=_blank rel=noopener>custom card</a>, either manually or using <a href=https://hacs.xyz/ title="Home Assistant Community Store (HACS)" target=_blank rel=noopener>HACS</a>.
 I suggest you have a look at the documentation of both to decide which method you prefer.</p><figure class=center><img src=hamap.png alt="Zigbee2MQTT network map"><figcaption class=center>Zigbee2MQTT network map</figcaption></figure><p>Don&rsquo;t see the map or got an error about the custom card not existing?
 Clear your cache and refresh the page before trying again.</p></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/home-automation/>Home Automation</a></span>

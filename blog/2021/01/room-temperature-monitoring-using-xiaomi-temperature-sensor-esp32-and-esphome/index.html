@@ -11,130 +11,130 @@ They come in different shapes and sizes.<ul><li>Small square with LCD <a href=ht
 Once this flashing is done, you&rsquo;ll be able to push any future updates Over-The-Air (OTA).</p><h3 id=esphome>ESPHome <a href=#esphome>¶</a></h3><p>We&rsquo;ll be writing our code for the ESP32 in <a href=https://esphome.io title=ESPHome target=_blank rel=noopener>ESPHome</a>.
 So make sure you&rsquo;ve installed the ESPHome Add-on in Home Assistant.<br>The ESPHome website has a <a href=https://esphome.io/guides/getting_started_hassio.html title="ESPHome - Getting Started with ESPHome and Home Assistant" target=_blank rel=noopener>tutorial</a> on installing this add-on in Home Assistant.</p><h3 id=flashing-bluetooth-discovery-firmware>Flashing bluetooth discovery firmware <a href=#flashing-bluetooth-discovery-firmware>¶</a></h3><ol><li><p>In ESPHome, create a new device by clicking the big <code>+</code> button.<br>The details you enter here don&rsquo;t matter too much. Just make sure you give it a reasonable name (this will also be used to name the config file).
 E.g., <code>livingroom_esp32</code></p></li><li><p>Now edit the device and overwrite the config with the following code.
-Change the back to what you originally named the device.<br>You can enter the WiFi credentials directly in the config, or make use of the secrets file (see below).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>substitutions</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>esphome_name</span><span class=p>:</span><span class=w> </span><span class=l>livingroom_esp32</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>esphome</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>${esphome_name}</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>ESP32</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>board</span><span class=p>:</span><span class=w> </span><span class=l>mhetesp32devkit</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>wifi</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ssid</span><span class=p>:</span><span class=w> </span>!<span class=l>secret wifi_ssid</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>password</span><span class=p>:</span><span class=w> </span>!<span class=l>secret wifi_pass</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>api</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>reboot_timeout</span><span class=p>:</span><span class=w> </span><span class=l>60min</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>password</span><span class=p>:</span><span class=w> </span>!<span class=l>secret esphome_api_pass</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Sync time with HA</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>time</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>homeassistant</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Optional</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>#web_server:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>#    port: 80</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>ota</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>password</span><span class=p>:</span><span class=w> </span>!<span class=l>secret esphome_ota_pass</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>logger</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Enable Bluetooth scanning for this ESP32</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>esp32_ble_tracker</span><span class=p>:</span><span class=w>
-</span></span></span></code></pre></div><p>Save and Close the editor.</p></li><li><p>Now click the 3 dots in the upper right corner of your device and click <code>Compile</code>.<br>This will compile the code into a firmware binary that we can download to our computer.</p></li><li><p>While the code is compiling, download and install the <a href=https://github.com/esphome/esphome-flasher/releases title=ESPHome-Flasher target=_blank rel=noopener>ESPHome-Flasher</a> for your system.
+Change the back to what you originally named the device.<br>You can enter the WiFi credentials directly in the config, or make use of the secrets file (see below).</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>substitutions</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>esphome_name</span>: <span style=color:#ae81ff>livingroom_esp32</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>esphome</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>${esphome_name}</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>ESP32</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>board</span>: <span style=color:#ae81ff>mhetesp32devkit</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>wifi</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ssid</span>: !<span style=color:#ae81ff>secret wifi_ssid</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>password</span>: !<span style=color:#ae81ff>secret wifi_pass</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>api</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>reboot_timeout</span>: <span style=color:#ae81ff>60min</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>password</span>: !<span style=color:#ae81ff>secret esphome_api_pass</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Sync time with HA</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>time</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>homeassistant</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Optional</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#web_server:</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#    port: 80</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>ota</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>password</span>: !<span style=color:#ae81ff>secret esphome_ota_pass</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>logger</span>:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Enable Bluetooth scanning for this ESP32</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>esp32_ble_tracker</span>:
+</span></span></code></pre></div><p>Save and Close the editor.</p></li><li><p>Now click the 3 dots in the upper right corner of your device and click <code>Compile</code>.<br>This will compile the code into a firmware binary that we can download to our computer.</p></li><li><p>While the code is compiling, download and install the <a href=https://github.com/esphome/esphome-flasher/releases title=ESPHome-Flasher target=_blank rel=noopener>ESPHome-Flasher</a> for your system.
 This software will be used for the initial flashing over USB. Future updates will be done Over-The-Air (OTA).</p></li><li><p>We&rsquo;ll now flash the compiled firmware to the ESP32.</p><ol><li>Connect the ESP32 using a micro-USB cable to your computer</li><li>Open ESPHome-Flasher</li><li>Click the refresh button at the top-right</li><li>Select the COM port your ESP32 is connected to</li><li>Browse to the firmware we&rsquo;ve just compiled and download to our computer</li><li>Click <code>Flash ESP</code></li></ol><p>If the flashing software is unable to put the ESP32 in <em>flash mode</em>, hold down the <em>Boot</em> button on the ESP32 while it&rsquo;s trying to flash.<br>Once the flashing has started, you can let go of the <em>Boot</em> button.</p></li><li><p>Once it&rsquo;s done flashing, the ESP32 will connect to your WiFi network and you&rsquo;ll be able to control the ESP32 Over-The-Air using ESPHome.</p></li></ol><h3 id=flashing-sensor-firmware>Flashing sensor firmware <a href=#flashing-sensor-firmware>¶</a></h3><p>You can now disconnect the ESP32 and install it where it will be able to receive the bluetooth data of your sensors.
 Power it using a phone charger, like the one in the Shopping List above.</p><ol><li>Back in the ESPHome dashboard, you can now click the <code>LOGS</code> button to view the output of the ESP32 board.<br>In the past you&rsquo;d see broadcast messages containing temperature and humidity information, including the device&rsquo;s MAC address.
 Nowadays you&rsquo;ll need to look for lines <code>Found device XX:XX:XX:XX:XX:XX (...) Name: 'xxxxxxxxxx'</code>.
 You&rsquo;ll want to note down the MAC address of the ATC device (if flashed) or with the original name (e.g., LYWSD03MMC).<br><figure class=center><img src=esphome_bletracker.png alt="BLE_tracker showing discovered devices"><figcaption class=center>BLE_tracker output</figcaption></figure><br><strong>Note:</strong> To make identifying the correct Xiaomi device easier, make sure the others are out of bluetooth range or are turned off.
-You may also want to label each sensor after you&rsquo;ve identified it.</li><li>We&rsquo;ll now edit the device&rsquo;s code again and add the sensor entities for the Xiaomi sensor(s) we&rsquo;ll be monitoring.<br>Open the config editor and paste the following code below the code we already had:<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># Add this to the substitions block:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># substitutions:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>sensor_name_lywsd03</span><span class=p>:</span><span class=w> </span><span class=l>Living room</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>sensor_name_lywsd02</span><span class=p>:</span><span class=w> </span><span class=l>Kitchen</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>sensor_name_cgg1</span><span class=p>:</span><span class=w> </span><span class=l>Master Bedroom</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>sensor_name_lywsdcgq</span><span class=p>:</span><span class=w> </span><span class=l>Office</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>switch</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>gpio</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${esphome_name} - Onboard LED&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>pin</span><span class=p>:</span><span class=w> </span><span class=m>2</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>inverted</span><span class=p>:</span><span class=w> </span><span class=kc>True</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>restart</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${esphome_name} - Restart&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>restart_switch</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>sensor</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># General</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>uptime</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${esphome_name} - Uptime Sensor&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>wifi_signal</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${esphome_name} - WiFi Signal&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>update_interval</span><span class=p>:</span><span class=w> </span><span class=l>60s</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># LYWSD03MMC - Advertising Type: Mi Like</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>xiaomi_lywsd03mmc</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>mac_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;XX:XX:XX:XX:XX:XX&#34;</span><span class=w> </span><span class=c># Replace with MAC Address of sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>bindkey</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#34;</span><span class=w> </span><span class=c># Replace with bind key, use a dummy value when flashed with custom firmware</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>temperature</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Temperature&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>humidity</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Humidity&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Battery Level&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># LYWSD03MMC - Advertising Type: Custom</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>atc_mithermometer</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>mac_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;XX:XX:XX:XX:XX:XX&#34;</span><span class=w> </span><span class=c># Replace with MAC Address of sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>temperature</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Temperature&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>humidity</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Humidity&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Battery-Level&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_voltage</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Battery-Voltage&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># LYWSD02</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>xiaomi_lywsd02</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>mac_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;XX:XX:XX:XX:XX:XX&#34;</span><span class=w> </span><span class=c># Replace with MAC Address of sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>temperature</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd02} Temperature&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>humidity</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd02} Humidity&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>		</span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd02} Battery Level&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># CGG1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>xiaomi_cgg1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>mac_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;XX:XX:XX:XX:XX:XX&#34;</span><span class=w> </span><span class=c># Replace with MAC Address of sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>bindkey</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#34;</span><span class=w> </span><span class=c># Replace with bind key, requires different ESPHome_version</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>temperature</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_cgg1} Temperature&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>humidity</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_cgg1} Humidity&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_cgg1} Battery Level&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># LYWSDCGQ</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>xiaomi_lywsdcgq</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>mac_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;XX:XX:XX:XX:XX:XX&#34;</span><span class=w> </span><span class=c># Replace with MAC Address of sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>temperature</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsdcgq} Temperature&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>humidity</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsdcgq} Humidity&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsdcgq} Battery Level&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Remove or add extra sensors by deleting/copying any of the blocks above.</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Change MAC address, bindkey and sensor names</span><span class=w>
-</span></span></span></code></pre></div></li><li>Press the <code>Upload</code> bottom at the bottom right of the editor.<br>This will save, compile and upload the new firmware to the ESP32 (OTA).</li></ol><h3 id=storing-wifi-creds-and-otaapi-passwords-in-secret-file>Storing WiFi creds and OTA/API passwords in secret file <a href=#storing-wifi-creds-and-otaapi-passwords-in-secret-file>¶</a></h3><p>Just like with Home Assistant, ESPHome has a <code>secrets.yaml</code> in which you can store stuff like WiFi credentials.<br>This allows you to keep secret data away from your config files and also adds consistency accross your devices.</p><p>To make things even easier, you can reference your Home Assistant <code>secrets.yaml</code> from the ESPHome&rsquo;s one, allowing you to keep everything in one central location.</p><p>Create a file <code>/config/esphome/secrets.yaml</code> with the following content:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>&lt;&lt;</span><span class=p>:</span><span class=w> </span>!<span class=l>include ../secrets.yaml</span><span class=w>
-</span></span></span></code></pre></div><p>Now in <code>/config/secrets.yaml</code> you can add your WiFi credentials etc.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>wifi_ssid</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;MyVerySecretWiFiNetwork&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>wifi_pass</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;MyverySecretWiFiPassword&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>esphome_ota_pass</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;SecretEsphomeOtaPass&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>esphome_api_pass</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;SecretEsphomeApiPass&#34;</span><span class=w>
-</span></span></span></code></pre></div><p>You can now reference these secrets from your config using e.g. <code>ssid: !secret wifi_ssid</code>.</p><h2 id=adding-the-sensors-in-home-assistant>Adding the sensors in Home Assistant <a href=#adding-the-sensors-in-home-assistant>¶</a></h2><p>Adding the sensors to Home Assistant is really easy.
+You may also want to label each sensor after you&rsquo;ve identified it.</li><li>We&rsquo;ll now edit the device&rsquo;s code again and add the sensor entities for the Xiaomi sensor(s) we&rsquo;ll be monitoring.<br>Open the config editor and paste the following code below the code we already had:<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># Add this to the substitions block:</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># substitutions:</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sensor_name_lywsd03</span>: <span style=color:#ae81ff>Living room</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sensor_name_lywsd02</span>: <span style=color:#ae81ff>Kitchen</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sensor_name_cgg1</span>: <span style=color:#ae81ff>Master Bedroom</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sensor_name_lywsdcgq</span>: <span style=color:#ae81ff>Office</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>switch</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>gpio</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${esphome_name} - Onboard LED&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>pin</span>: <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>inverted</span>: <span style=color:#66d9ef>True</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>restart</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${esphome_name} - Restart&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>id</span>: <span style=color:#ae81ff>restart_switch</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>sensor</span>:
+</span></span><span style=display:flex><span>    <span style=color:#75715e># General</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>uptime</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${esphome_name} - Uptime Sensor&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>wifi_signal</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${esphome_name} - WiFi Signal&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>update_interval</span>: <span style=color:#ae81ff>60s</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># LYWSD03MMC - Advertising Type: Mi Like</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>xiaomi_lywsd03mmc</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mac_address</span>: <span style=color:#e6db74>&#34;XX:XX:XX:XX:XX:XX&#34;</span> <span style=color:#75715e># Replace with MAC Address of sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>bindkey</span>: <span style=color:#e6db74>&#34;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#34;</span> <span style=color:#75715e># Replace with bind key, use a dummy value when flashed with custom firmware</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>temperature</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Temperature&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>humidity</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Humidity&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_level</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Battery Level&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># LYWSD03MMC - Advertising Type: Custom</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>atc_mithermometer</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mac_address</span>: <span style=color:#e6db74>&#34;XX:XX:XX:XX:XX:XX&#34;</span> <span style=color:#75715e># Replace with MAC Address of sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>temperature</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Temperature&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>humidity</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Humidity&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_level</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Battery-Level&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_voltage</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Battery-Voltage&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># LYWSD02</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>xiaomi_lywsd02</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mac_address</span>: <span style=color:#e6db74>&#34;XX:XX:XX:XX:XX:XX&#34;</span> <span style=color:#75715e># Replace with MAC Address of sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>temperature</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd02} Temperature&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>humidity</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd02} Humidity&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_level</span>:
+</span></span><span style=display:flex><span>		<span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd02} Battery Level&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># CGG1</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>xiaomi_cgg1</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mac_address</span>: <span style=color:#e6db74>&#34;XX:XX:XX:XX:XX:XX&#34;</span> <span style=color:#75715e># Replace with MAC Address of sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>bindkey</span>: <span style=color:#e6db74>&#34;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#34;</span> <span style=color:#75715e># Replace with bind key, requires different ESPHome_version</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>temperature</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_cgg1} Temperature&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>humidity</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_cgg1} Humidity&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_level</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_cgg1} Battery Level&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># LYWSDCGQ</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>xiaomi_lywsdcgq</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mac_address</span>: <span style=color:#e6db74>&#34;XX:XX:XX:XX:XX:XX&#34;</span> <span style=color:#75715e># Replace with MAC Address of sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>temperature</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsdcgq} Temperature&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>humidity</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsdcgq} Humidity&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_level</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsdcgq} Battery Level&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Remove or add extra sensors by deleting/copying any of the blocks above.</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Change MAC address, bindkey and sensor names</span>
+</span></span></code></pre></div></li><li>Press the <code>Upload</code> bottom at the bottom right of the editor.<br>This will save, compile and upload the new firmware to the ESP32 (OTA).</li></ol><h3 id=storing-wifi-creds-and-otaapi-passwords-in-secret-file>Storing WiFi creds and OTA/API passwords in secret file <a href=#storing-wifi-creds-and-otaapi-passwords-in-secret-file>¶</a></h3><p>Just like with Home Assistant, ESPHome has a <code>secrets.yaml</code> in which you can store stuff like WiFi credentials.<br>This allows you to keep secret data away from your config files and also adds consistency accross your devices.</p><p>To make things even easier, you can reference your Home Assistant <code>secrets.yaml</code> from the ESPHome&rsquo;s one, allowing you to keep everything in one central location.</p><p>Create a file <code>/config/esphome/secrets.yaml</code> with the following content:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>&lt;&lt;</span>: !<span style=color:#ae81ff>include ../secrets.yaml</span>
+</span></span></code></pre></div><p>Now in <code>/config/secrets.yaml</code> you can add your WiFi credentials etc.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>wifi_ssid</span>: <span style=color:#e6db74>&#34;MyVerySecretWiFiNetwork&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>wifi_pass</span>: <span style=color:#e6db74>&#34;MyverySecretWiFiPassword&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>esphome_ota_pass</span>: <span style=color:#e6db74>&#34;SecretEsphomeOtaPass&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>esphome_api_pass</span>: <span style=color:#e6db74>&#34;SecretEsphomeApiPass&#34;</span>
+</span></span></code></pre></div><p>You can now reference these secrets from your config using e.g. <code>ssid: !secret wifi_ssid</code>.</p><h2 id=adding-the-sensors-in-home-assistant>Adding the sensors in Home Assistant <a href=#adding-the-sensors-in-home-assistant>¶</a></h2><p>Adding the sensors to Home Assistant is really easy.
 If the sensor for some reason doesn&rsquo;t show up yet in the guide below, give Home Assistant a reboot and wait a few minutes.</p><ol><li>In Home Assistant, go to Configuration > Integrations.</li><li>If the ESP32 isn&rsquo;t automatically discovered yet by Home Assistant, click the big <code>+</code> button to add a new integration.<br>Choose ESPHome from the list.</li><li>Enter the IP address or hostname of your ESP32 board, keep the port in its default value.</li><li>Enter your API and/or OTA password.</li><li>Add the device to a room if you wish to do so.</li></ol><p>Within the Configuration page you should now see an entry for your device (livingroom_esp32) under ESPHome.<br>Clicking this device will show you the different sensors for the temperature, humidity and battery level.
 You should also have a switch to turn on the onboard LED (useful to identify the device) and to reboot it.
 You may also have a sensor for the WiFi signal strength and device uptime.</p><p>It may take a while before sensor data will appear for the device.<br>Since the sensors are battery powered, it may take until a certain temperature change (or the next update interval).</p><p><figure class=center><img src=xiaomi_ha_esphome.png alt="ESPHome entities in Home Assistant"><figcaption class=center>ESPHome entities in Home Assistant</figcaption></figure><figure class=center><img src=xiaomi_ha_esphome_temp.png alt="Temperature readings"><figcaption class=center>Temperature readings</figcaption></figure></p><h2 id=device-specific-configurations>Device specific configurations <a href=#device-specific-configurations>¶</a></h2><h3 id=getting-the-bindkey-of-the-lywsd03mmc-and-flashing-custom-firmware>Getting the bindkey of the LYWSD03MMC and flashing custom firmware <a href=#getting-the-bindkey-of-the-lywsd03mmc-and-flashing-custom-firmware>¶</a></h3><p>Sadly enough, more recent models of the Xiaomi (LYWSD03MMC) sensors come with a new firmware that encrypts the data send over bluetooth.
@@ -147,130 +147,130 @@ Open this link in the default/Chrome browser of your phone/tablet.</p></li><li><
 The name should match the device ID from the shopping list above (e.g., <code>LYWSD03MMC</code>).<br>Once connected, the &ldquo;Temp/Humi&rdquo; field &ndash; located about halfway the webpage &ndash; should be displaying sensor readings.
 At the bottom of the page, the logs should also show the device having connected.</p></li><li><p>Press the <code>Do activation</code> button.<br>A Mi Token and Mi Bind Key should appear a bit below the &ldquo;Temp/Humi&rdquo; field of the previous step.<br>Note these down (or copy them into an email, Google Keep note, &mldr;) in a way that you can easily get to them from your computer/laptop.<br>This token and key are what you need to import the Xiaomi sensor into Home Assistant without flashing the custom firmware.</p><p><strong>If you don&rsquo;t want to flash the Xiaomi sensor with the custom firmware, stop here and continue with the next part.</strong></p></li><li><p>Below the &ldquo;Do activation&rdquo; button, there&rsquo;s a <code>Choose File</code> button.<br>Press this button and select the <code>ATC_MiThermometer.bin</code> you downloaded earlier.<br>Make sure to select the correct file here, or you may/will brick the sensor!</p></li><li><p>Press the <code>Start Flashing</code> button.<br>You&rsquo;ll see that status of the flashing appearing below the button.
 Don&rsquo;t use the phone for now, it&rsquo;ll only take a minute or so.</p></li><li><p>Once the update is succesful, press the <code>Connect</code> button again and look for the flashed sensor.<br>The device should now appear as <code>ATC_xxxxxx</code>.
-The logs at the bottom of the page should show you that you&rsquo;ve connected to the device.</p></li><li><p>Using the newly acquired features, we can now change some settings on the device.<br>Note that the changes don&rsquo;t always go through to the device, so press each button like 5 times to make sure it was set succesfully.</p><ol><li>set the <code>Advertising Type</code> to <code>Mi Like</code><br><strong>Note</strong>: Since ESPHome <a href=https://github.com/esphome/esphome/pull/1291 title="ESPHome on GitHub - Add support for ATC_MiThermometer #1291" target=_blank rel=noopener>v1.16.0</a> <code>Advertising Type: Custom</code> is supported.</li><li>set the <code>Advertising Interval</code> to your liking. Shorter interval means shorter battery life but less detailed measurements.</li></ol></li></ol><h3 id=getting-the-bindkey-of-the-cgg1>Getting the bindkey of the CGG1 <a href=#getting-the-bindkey-of-the-cgg1>¶</a></h3><figure class=center><img src=xiaomi_sensor_CGG1.png alt="Xiaomi CGG1"><figcaption class=center>Xiaomi CGG1</figcaption></figure><h4 id=mihome-mod-app>MiHome Mod app <a href=#mihome-mod-app>¶</a></h4><p><strong>Note:</strong> These steps must be followed with an Android device</p><ol><li>Download the <a href=https://www.kapiba.ru/2017/11/mi-home.html title="MiHome Mod" target=_blank rel=noopener>MiHome mod</a> apk.<br>The site is in Russian, so use Google Translate to translate if needed.</li><li>Configure your device to allow installation of untrusted sources.</li><li>While installing the app, grant permission to the local device storage</li><li>Once you open the app, a new folder will be created: <code>/devicestorage/vevs</code>.</li><li>Close the app and create a new folder within this folder: <code>/devicestorage/vevs/logs</code></li><li>Open the app again and login with your Mi account.</li><li>Add the CGG1 in the app.</li><li>The bindkey is now stored on your device.<br>Transfer <code>/devicestorage/vevs/logs/misc/pairings.txt</code> to your computer (over USB/bluetooth).</li><li>Extract the bindkey from the file you just transfered.</li></ol><p>The <code>pairings.txt</code> will look like this:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>Did:		blt.4.xxxxxxxxxxxxx
-</span></span><span class=line><span class=cl>Token:		xxxxxxxxxxxxxxxxxxxxxxxx
-</span></span><span class=line><span class=cl>Bindkey:		xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-</span></span><span class=line><span class=cl>Mac:		xx:xx:xx:xx:xx:xx
+The logs at the bottom of the page should show you that you&rsquo;ve connected to the device.</p></li><li><p>Using the newly acquired features, we can now change some settings on the device.<br>Note that the changes don&rsquo;t always go through to the device, so press each button like 5 times to make sure it was set succesfully.</p><ol><li>set the <code>Advertising Type</code> to <code>Mi Like</code><br><strong>Note</strong>: Since ESPHome <a href=https://github.com/esphome/esphome/pull/1291 title="ESPHome on GitHub - Add support for ATC_MiThermometer #1291" target=_blank rel=noopener>v1.16.0</a> <code>Advertising Type: Custom</code> is supported.</li><li>set the <code>Advertising Interval</code> to your liking. Shorter interval means shorter battery life but less detailed measurements.</li></ol></li></ol><h3 id=getting-the-bindkey-of-the-cgg1>Getting the bindkey of the CGG1 <a href=#getting-the-bindkey-of-the-cgg1>¶</a></h3><figure class=center><img src=xiaomi_sensor_CGG1.png alt="Xiaomi CGG1"><figcaption class=center>Xiaomi CGG1</figcaption></figure><h4 id=mihome-mod-app>MiHome Mod app <a href=#mihome-mod-app>¶</a></h4><p><strong>Note:</strong> These steps must be followed with an Android device</p><ol><li>Download the <a href=https://www.kapiba.ru/2017/11/mi-home.html title="MiHome Mod" target=_blank rel=noopener>MiHome mod</a> apk.<br>The site is in Russian, so use Google Translate to translate if needed.</li><li>Configure your device to allow installation of untrusted sources.</li><li>While installing the app, grant permission to the local device storage</li><li>Once you open the app, a new folder will be created: <code>/devicestorage/vevs</code>.</li><li>Close the app and create a new folder within this folder: <code>/devicestorage/vevs/logs</code></li><li>Open the app again and login with your Mi account.</li><li>Add the CGG1 in the app.</li><li>The bindkey is now stored on your device.<br>Transfer <code>/devicestorage/vevs/logs/misc/pairings.txt</code> to your computer (over USB/bluetooth).</li><li>Extract the bindkey from the file you just transfered.</li></ol><p>The <code>pairings.txt</code> will look like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt><span style=display:flex><span>Did:		blt.4.xxxxxxxxxxxxx
+</span></span><span style=display:flex><span>Token:		xxxxxxxxxxxxxxxxxxxxxxxx
+</span></span><span style=display:flex><span>Bindkey:		xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+</span></span><span style=display:flex><span>Mac:		xx:xx:xx:xx:xx:xx
 </span></span></code></pre></div><h4 id=esphome-1>ESPHome <a href=#esphome-1>¶</a></h4><p><del>To use this bindkey in your configuration, you&rsquo;ll need to load an adapted version of ESPHome.</del></p><p><strong>Update 2021-05-18</strong>: Flameeyes&rsquo; code has been imported into the main ESPHome code base since <a href=https://esphome.io/changelog/v1.17.0.html#release-1-17-1-may-5 title="ESPHome - Changelog release 1.17.1" target=_blank rel=noopener>ESPHome v1.17.1</a>.
-It&rsquo;s no longer necessary to move to Flameeyes&rsquo; codebase to configure the <code>bindkey</code> in your ESPHome config.</p><ol><li>Open the Supervisor Dashboard in Home Assistnat</li><li>Click the ESPHome add-on and go to the Configuration tab</li><li>Under &ldquo;esphome_version&rdquo; enter <code>Flameeyes:cgg1-enc</code><br><figure class=center><img src=esphome_version.png alt="ESPHome_version: Flameeyes:cgg1-enc"><figcaption class=center>Change esphome_version</figcaption></figure><br>In the YAML this would look like:<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>ssl</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>certfile</span><span class=p>:</span><span class=w> </span><span class=l>fullchain.pem</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>keyfile</span><span class=p>:</span><span class=w> </span><span class=l>privkey.pem</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>esphome_version</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;Flameeyes:cgg1-enc&#39;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>relative_url</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;&#39;</span><span class=w>
-</span></span></span></code></pre></div></li><li>Save and restart the add-on</li></ol><p>You can now add a <code>bindkey</code> to the config/firmware.</p><h4 id=update-esp32><del>Update ESP32</del> <a href=#update-esp32>¶</a></h4><p>If you already had your ESP32 configured, you&rsquo;ll need to update it to the custom ESPHome_version.</p><ol><li>Open the ESPHome dashboard.</li><li>You&rsquo;ll see the Update symbol at the top-right of the device&rsquo;s entry.</li><li>To update, click the 3 dots at the top-right of your screen and click &ldquo;Update All&rdquo;.<br><figure class=center><img src=esphome_update.png alt="ESPHome - Update all"><figcaption class=center>Update All</figcaption></figure></li></ol><h3 id=setting-the-clock-on-the-lywsd02>Setting the clock on the LYWSD02 <a href=#setting-the-clock-on-the-lywsd02>¶</a></h3><figure class=center><img src=xiaomi_sensor_LYWSD02.png alt="Xiaomi LYWSD02"><figcaption class=center>Xiaomi LYWSD02</figcaption></figure><p>The LYWSD02 also displays the current time.</p><p>Normally you need to install the MiHome app to sync the time.
+It&rsquo;s no longer necessary to move to Flameeyes&rsquo; codebase to configure the <code>bindkey</code> in your ESPHome config.</p><ol><li>Open the Supervisor Dashboard in Home Assistnat</li><li>Click the ESPHome add-on and go to the Configuration tab</li><li>Under &ldquo;esphome_version&rdquo; enter <code>Flameeyes:cgg1-enc</code><br><figure class=center><img src=esphome_version.png alt="ESPHome_version: Flameeyes:cgg1-enc"><figcaption class=center>Change esphome_version</figcaption></figure><br>In the YAML this would look like:<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>ssl</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>certfile</span>: <span style=color:#ae81ff>fullchain.pem</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>keyfile</span>: <span style=color:#ae81ff>privkey.pem</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>esphome_version</span>: <span style=color:#e6db74>&#39;Flameeyes:cgg1-enc&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>relative_url</span>: <span style=color:#e6db74>&#39;&#39;</span>
+</span></span></code></pre></div></li><li>Save and restart the add-on</li></ol><p>You can now add a <code>bindkey</code> to the config/firmware.</p><h4 id=update-esp32><del>Update ESP32</del> <a href=#update-esp32>¶</a></h4><p>If you already had your ESP32 configured, you&rsquo;ll need to update it to the custom ESPHome_version.</p><ol><li>Open the ESPHome dashboard.</li><li>You&rsquo;ll see the Update symbol at the top-right of the device&rsquo;s entry.</li><li>To update, click the 3 dots at the top-right of your screen and click &ldquo;Update All&rdquo;.<br><figure class=center><img src=esphome_update.png alt="ESPHome - Update all"><figcaption class=center>Update All</figcaption></figure></li></ol><h3 id=setting-the-clock-on-the-lywsd02>Setting the clock on the LYWSD02 <a href=#setting-the-clock-on-the-lywsd02>¶</a></h3><figure class=center><img src=xiaomi_sensor_LYWSD02.png alt="Xiaomi LYWSD02"><figcaption class=center>Xiaomi LYWSD02</figcaption></figure><p>The LYWSD02 also displays the current time.</p><p>Normally you need to install the MiHome app to sync the time.
 But installing a Chinese app just to sync the time on your sensors, might seem a bit useless.
-Luckily, another fantastic Github user, saso5, created a simple web app that allows you to set the time on your LYWSD02.</p><ul><li>Visit <a href=https://saso5.github.io/LYWSD02-clock-sync/ target=_blank rel=noopener>https://saso5.github.io/LYWSD02-clock-sync/</a> with the same device you used to flash your LYWSD03.</li><li>Pick your timezone (between UTC/GMT-12 and UTC/GMT+14)</li><li>Click the <code>Update time</code> button</li><li>Select the LYWSD02 in the popup that appears and click <code>Connect</code></li></ul><p>The time on your LYWSD02 should now be correct.</p><p>Make sure you close the browser tab and disconnect your device from the Xiaomi.<br>Otherwise your device will &ldquo;claim&rdquo; the Bluetooth connection and the ESP32 won&rsquo;t be able to connect.</p><p>There&rsquo;s a <a href=https://github.com/esphome/feature-requests/issues/643 title="Set clock on Xiaomi LYWSD02 #643 on GitHub" target=_blank rel=noopener>feature request</a> on the ESPHome GitHub to have the LYWSD02 sync with an SNTP server.</p><h2 id=full-esp32-configuration>Full ESP32 configuration <a href=#full-esp32-configuration>¶</a></h2><p>The complete configuration file looks like this:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>substitutions</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>esphome_name</span><span class=p>:</span><span class=w> </span><span class=l>livingroom_esp32</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>sensor_name_lywsd03</span><span class=p>:</span><span class=w> </span><span class=l>Living room</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>sensor_name_lywsd02</span><span class=p>:</span><span class=w> </span><span class=l>Kitchen</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>sensor_name_cgg1</span><span class=p>:</span><span class=w> </span><span class=l>Master Bedroom</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>sensor_name_lywsdcgq</span><span class=p>:</span><span class=w> </span><span class=l>Office</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>esphome</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>${esphome_name}</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>ESP32</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>board</span><span class=p>:</span><span class=w> </span><span class=l>mhetesp32devkit</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>wifi</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ssid</span><span class=p>:</span><span class=w> </span>!<span class=l>secret wifi_ssid</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>password</span><span class=p>:</span><span class=w> </span>!<span class=l>secret wifi_pass</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>api</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>reboot_timeout</span><span class=p>:</span><span class=w> </span><span class=l>60min</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>password</span><span class=p>:</span><span class=w> </span>!<span class=l>secret esphome_api_pass</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>ota</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>password</span><span class=p>:</span><span class=w> </span>!<span class=l>secret esphome_ota_pass</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Sync time with HA</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>time</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>homeassistant</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Optional</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>#web_server:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>#    port: 80</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>logger</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Enable Bluetooth scanning for this ESP32</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>esp32_ble_tracker</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>switch</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>gpio</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${esphome_name} - Onboard LED&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>pin</span><span class=p>:</span><span class=w> </span><span class=m>2</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>inverted</span><span class=p>:</span><span class=w> </span><span class=kc>True</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>restart</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${esphome_name} - Restart&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>restart_switch</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>sensor</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># General</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>uptime</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${esphome_name} - Uptime Sensor&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>wifi_signal</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${esphome_name} - WiFi Signal&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>update_interval</span><span class=p>:</span><span class=w> </span><span class=l>60s</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># LYWSD03MMC - Advertising Type: Mi Like</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>xiaomi_lywsd03mmc</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>mac_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;XX:XX:XX:XX:XX:XX&#34;</span><span class=w> </span><span class=c># Replace with MAC Address of sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>bindkey</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#34;</span><span class=w> </span><span class=c># Replace with bind key, use a dummy value when flashed with custom firmware</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>temperature</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Temperature&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>humidity</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Humidity&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Battery Level&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># LYWSD03MMC - Advertising Type: Custom</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>atc_mithermometer</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>mac_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;XX:XX:XX:XX:XX:XX&#34;</span><span class=w> </span><span class=c># Replace with MAC Address of sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>temperature</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Temperature&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>humidity</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Humidity&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Battery-Level&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_voltage</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd03} - Battery-Voltage&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># LYWSD02</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>xiaomi_lywsd02</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>mac_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;XX:XX:XX:XX:XX:XX&#34;</span><span class=w> </span><span class=c># Replace with MAC Address of sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>temperature</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd02} Temperature&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>humidity</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd02} Humidity&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsd02} Battery Level&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    	
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># CGG1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>xiaomi_cgg1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>mac_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;XX:XX:XX:XX:XX:XX&#34;</span><span class=w> </span><span class=c># Replace with MAC Address of sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>bindkey</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#34;</span><span class=w> </span><span class=c># Replace with bind key, requires different ESPHome_version</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>temperature</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_cgg1} Temperature&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>humidity</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_cgg1} Humidity&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_cgg1} Battery Level&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    	
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># LYWSDCGQ</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>xiaomi_lywsdcgq</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>mac_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;XX:XX:XX:XX:XX:XX&#34;</span><span class=w> </span><span class=c># Replace with MAC Address of sensor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>temperature</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsdcgq} Temperature&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>humidity</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsdcgq} Humidity&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>battery_level</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${sensor_name_lywsdcgq} Battery Level&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Remove or add extra sensors by deleting/copying any of the blocks above.</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Change MAC address, bindkey and sensor names</span><span class=w>
-</span></span></span></code></pre></div><h2 id=changelog>Changelog <a href=#changelog>¶</a></h2><ul><li>2020-02-09 - Newer versions of CGG1 have encrypted Bluetooth messages. Flameeyes:cgg1-enc firmware adds support for bindkey.</li><li>2021-02-14 - ESPHome v1.16.0 adds support for ATC_MiThermometer using Advertising Type: Custom</li><li>2021-05-18 - Flameeyes:cgg1-enc merged into main ESPHome codebase to support CGG1 with bindkey. ATC_MiThermometer fork adds extra features.</li></ul></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/home-automation/>Home Automation</a></span>
+Luckily, another fantastic Github user, saso5, created a simple web app that allows you to set the time on your LYWSD02.</p><ul><li>Visit <a href=https://saso5.github.io/LYWSD02-clock-sync/ target=_blank rel=noopener>https://saso5.github.io/LYWSD02-clock-sync/</a> with the same device you used to flash your LYWSD03.</li><li>Pick your timezone (between UTC/GMT-12 and UTC/GMT+14)</li><li>Click the <code>Update time</code> button</li><li>Select the LYWSD02 in the popup that appears and click <code>Connect</code></li></ul><p>The time on your LYWSD02 should now be correct.</p><p>Make sure you close the browser tab and disconnect your device from the Xiaomi.<br>Otherwise your device will &ldquo;claim&rdquo; the Bluetooth connection and the ESP32 won&rsquo;t be able to connect.</p><p>There&rsquo;s a <a href=https://github.com/esphome/feature-requests/issues/643 title="Set clock on Xiaomi LYWSD02 #643 on GitHub" target=_blank rel=noopener>feature request</a> on the ESPHome GitHub to have the LYWSD02 sync with an SNTP server.</p><h2 id=full-esp32-configuration>Full ESP32 configuration <a href=#full-esp32-configuration>¶</a></h2><p>The complete configuration file looks like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>substitutions</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>esphome_name</span>: <span style=color:#ae81ff>livingroom_esp32</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sensor_name_lywsd03</span>: <span style=color:#ae81ff>Living room</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sensor_name_lywsd02</span>: <span style=color:#ae81ff>Kitchen</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sensor_name_cgg1</span>: <span style=color:#ae81ff>Master Bedroom</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sensor_name_lywsdcgq</span>: <span style=color:#ae81ff>Office</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>esphome</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>${esphome_name}</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>ESP32</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>board</span>: <span style=color:#ae81ff>mhetesp32devkit</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>wifi</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ssid</span>: !<span style=color:#ae81ff>secret wifi_ssid</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>password</span>: !<span style=color:#ae81ff>secret wifi_pass</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>api</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>reboot_timeout</span>: <span style=color:#ae81ff>60min</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>password</span>: !<span style=color:#ae81ff>secret esphome_api_pass</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>ota</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>password</span>: !<span style=color:#ae81ff>secret esphome_ota_pass</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Sync time with HA</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>time</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>homeassistant</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Optional</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#web_server:</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#    port: 80</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>logger</span>:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Enable Bluetooth scanning for this ESP32</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>esp32_ble_tracker</span>:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>switch</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>gpio</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${esphome_name} - Onboard LED&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>pin</span>: <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>inverted</span>: <span style=color:#66d9ef>True</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>restart</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${esphome_name} - Restart&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>id</span>: <span style=color:#ae81ff>restart_switch</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>sensor</span>:
+</span></span><span style=display:flex><span>    <span style=color:#75715e># General</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>uptime</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${esphome_name} - Uptime Sensor&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>wifi_signal</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${esphome_name} - WiFi Signal&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>update_interval</span>: <span style=color:#ae81ff>60s</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e># LYWSD03MMC - Advertising Type: Mi Like</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>xiaomi_lywsd03mmc</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mac_address</span>: <span style=color:#e6db74>&#34;XX:XX:XX:XX:XX:XX&#34;</span> <span style=color:#75715e># Replace with MAC Address of sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>bindkey</span>: <span style=color:#e6db74>&#34;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#34;</span> <span style=color:#75715e># Replace with bind key, use a dummy value when flashed with custom firmware</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>temperature</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Temperature&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>humidity</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Humidity&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_level</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Battery Level&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># LYWSD03MMC - Advertising Type: Custom</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>atc_mithermometer</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mac_address</span>: <span style=color:#e6db74>&#34;XX:XX:XX:XX:XX:XX&#34;</span> <span style=color:#75715e># Replace with MAC Address of sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>temperature</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Temperature&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>humidity</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Humidity&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_level</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Battery-Level&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_voltage</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd03} - Battery-Voltage&#34;</span>
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>    <span style=color:#75715e># LYWSD02</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>xiaomi_lywsd02</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mac_address</span>: <span style=color:#e6db74>&#34;XX:XX:XX:XX:XX:XX&#34;</span> <span style=color:#75715e># Replace with MAC Address of sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>temperature</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd02} Temperature&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>humidity</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd02} Humidity&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_level</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsd02} Battery Level&#34;</span>
+</span></span><span style=display:flex><span>    	
+</span></span><span style=display:flex><span>    <span style=color:#75715e># CGG1</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>xiaomi_cgg1</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mac_address</span>: <span style=color:#e6db74>&#34;XX:XX:XX:XX:XX:XX&#34;</span> <span style=color:#75715e># Replace with MAC Address of sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>bindkey</span>: <span style=color:#e6db74>&#34;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#34;</span> <span style=color:#75715e># Replace with bind key, requires different ESPHome_version</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>temperature</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_cgg1} Temperature&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>humidity</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_cgg1} Humidity&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_level</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_cgg1} Battery Level&#34;</span>
+</span></span><span style=display:flex><span>    	
+</span></span><span style=display:flex><span>    <span style=color:#75715e># LYWSDCGQ</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>xiaomi_lywsdcgq</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mac_address</span>: <span style=color:#e6db74>&#34;XX:XX:XX:XX:XX:XX&#34;</span> <span style=color:#75715e># Replace with MAC Address of sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>temperature</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsdcgq} Temperature&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>humidity</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsdcgq} Humidity&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>battery_level</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${sensor_name_lywsdcgq} Battery Level&#34;</span>
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Remove or add extra sensors by deleting/copying any of the blocks above.</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Change MAC address, bindkey and sensor names</span>
+</span></span></code></pre></div><h2 id=changelog>Changelog <a href=#changelog>¶</a></h2><ul><li>2020-02-09 - Newer versions of CGG1 have encrypted Bluetooth messages. Flameeyes:cgg1-enc firmware adds support for bindkey.</li><li>2021-02-14 - ESPHome v1.16.0 adds support for ATC_MiThermometer using Advertising Type: Custom</li><li>2021-05-18 - Flameeyes:cgg1-enc merged into main ESPHome codebase to support CGG1 with bindkey. ATC_MiThermometer fork adds extra features.</li></ul></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/home-automation/>Home Automation</a></span>
 <span class=tag><a href=https://sequr.be/tags/home-assistant/>Home Assistant</a></span>
 <span class=tag><a href=https://sequr.be/tags/xiaomi/>Xiaomi</a></span>
 <span class=tag><a href=https://sequr.be/tags/temperature/>temperature</a></span>

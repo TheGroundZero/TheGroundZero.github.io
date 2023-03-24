@@ -5,158 +5,158 @@ I decided to go the DIY route and build something myself using the <a href=https
 The <a href=https://s.click.aliexpress.com/e/_ALbejF title="AM312 PIR motion sensor" target=_blank rel=noopener>motion sensors</a> are a nice-to-have feature.<br>I&rsquo;d also advise getting some <a href=https://s.click.aliexpress.com/e/_AeCWtP title="Aluminium LED strip channel" target=_blank rel=noopener>aluminium channel</a> to mount the strips in and to help cool the LEDs.</p><p>Optionally, you can add a <a href=https://s.click.aliexpress.com/e/_9hKMCd title="Aluminum electrolytic capacitor" target=_blank rel=noopener>capacitor</a> for smoothing any power spikes, some [terminals][terminal] to make connecting wires easier,
 <a href=https://s.click.aliexpress.com/e/_AWUypr title="Female header pins" target=_blank rel=noopener>header pins</a> for mounting the ESP, and a <a href=https://www.aliexpress.com/item/1005002438981213.html title="Single-sided PCB perfboard" target=_blank rel=noopener>perfboard</a> to install everything together.<br>Also useful are <a href=https://s.click.aliexpress.com/e/_APRd0D title="Self-adhesive cable ties" target=_blank rel=noopener>adhesive cable ties</a> and these <a href=https://s.click.aliexpress.com/e/_AlAYhX title="Wire connectors, Wago style" target=_blank rel=noopener>Wago knockoffs</a> for cable management, and <a href=https://s.click.aliexpress.com/e/_9jtitX title="Double-sided transparant reusable tape" target=_blank rel=noopener>double-sided tape</a> to mount everything.<br>Finally, some lengths of nicely coloured <a href=https://s.click.aliexpress.com/e/_AnUt57 title="18AWG flexible silicone wire" target=_blank rel=noopener>18 AWG wire</a> or <a href=https://www.aliexpress.com/item/32821229368.html title="18 AWG electrical wire tinned copper insulated PVC" target=_blank rel=noopener>red-black wire</a>,
 and a 5V <a href=https://www.aliexpress.com/item/4000557935321.html title="5V 3A power supply" target=_blank rel=noopener>power supply</a> sized according to your LED strip installation will be quite useful as well.</p><p>To put everything together, I also designed a small 3D printable box.
-The design isn&rsquo;t perfect however, I&rsquo;ve had to enlarge some holes and the margins for the posts are quite tight.<br>The print consists of 3 parts: the <a href=https://www.tinkercad.com/things/jkIJ8GsHkwZ-leds-box title="3D print box" target=_blank rel=noopener>main chassis</a>, the mount for the <a href=https://www.tinkercad.com/things/6EUeUkkMWOB-leds-relay-platform title="3D print relay platform" target=_blank rel=noopener>relay board</a>, and the mount for the <a href=https://www.tinkercad.com/things/3EkucY8PzBs-leds-7x5-platform title="3D print perfboard platform" target=_blank rel=noopener>perfboard</a> with the ESP32.<br>I also have a 3D printed <a href=https://www.tinkercad.com/things/iVqFABKP8ah-am312-housing-with-cover title="3D printed holder for AM312" target=_blank rel=noopener>housing for the motion sensor</a>.</p><h2 id=wiring-it-all-together>Wiring it all together <a href=#wiring-it-all-together>¶</a></h2><p>For the wiring we need to take into account the following:</p><ul><li>Power<ul><li>The ESP32 needs 5V power</li><li>The relays board needs 5V power</li><li>The LEDs need 5V power</li><li>The motion sensors need 3.3V power</li><li>Power for the LEDs needs to go through the relays, so we can turn them on/off</li><li>We do not want to run the 5V/GND from the LED strip through the board, otherwise we&rsquo;ll fry it</li></ul></li><li>Connections<ul><li>The relays board needs a signal for each channel you want to control</li><li>Each motion sensor gives an input to the ESP32</li><li>The LED strip has a data input</li></ul></li></ul><figure class=center><img src=wiring_diagram.png alt="Wiring diagram"><figcaption class=center>Wiring diagram</figcaption></figure><h2 id=coding>Coding <a href=#coding>¶</a></h2><h3 id=esphome>ESPHome <a href=#esphome>¶</a></h3><p>Now the last thing we need is the ESPHome code to make this all function.</p><p>Note that I&rsquo;m using 2 motion sensors and am controlling 2 LED strips (+ respective relays channels).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>substitutions</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># These substitions combined with the &#39;common&#39; dir are based on Frenck&#39;s ESPHome setup</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># https://github.com/frenck/home-assistant-config/tree/master/esphome/common</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>slug</span><span class=p>:</span><span class=w> </span><span class=l>esp32-ledstrip-relays</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>ESP32 LEDstrip with relays</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>description</span><span class=p>:</span><span class=w> </span><span class=l>LEDstrips attached to relays to reducde power consumption</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>room</span><span class=p>:</span><span class=w> </span><span class=l>Bedroom</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>packages</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>&lt;&lt;</span><span class=p>:</span><span class=w> </span>!<span class=l>include_dir_named common</span><span class=w> </span><span class=c># Contains WiFi settings, API, OTA, restart button, time settings</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>board: !include boards/esp32_doit-dev1.yaml # Note</span><span class=p>:</span><span class=w> </span><span class=l>the definition of boards has changed</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>status_led</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>pin</span><span class=p>:</span><span class=w> </span><span class=l>GPIO2</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>switch</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>gpio</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${name} - Onboard LED&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pin</span><span class=p>:</span><span class=w> </span><span class=l>GPIO2</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>inverted</span><span class=p>:</span><span class=w> </span><span class=kc>False</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>gpio</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${room} Relay 1&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pin</span><span class=p>:</span><span class=w> </span><span class=l>GPIO21</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>inverted</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>restore_mode</span><span class=p>:</span><span class=w> </span><span class=l>ALWAYS_OFF</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>mbr_relay_1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>gpio</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${room} Relay 2&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pin</span><span class=p>:</span><span class=w> </span><span class=l>GPIO22</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>inverted</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>restore_mode</span><span class=p>:</span><span class=w> </span><span class=l>ALWAYS_OFF</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>mbr_relay_2</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>binary_sensor</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>gpio</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pin</span><span class=p>:</span><span class=w> </span><span class=l>GPIO32</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${room} PIR 1&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>motion</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>mbr_pir_1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>gpio</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pin</span><span class=p>:</span><span class=w> </span><span class=l>GPIO25</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${room} PIR 2&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>device_class</span><span class=p>:</span><span class=w> </span><span class=l>motion</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>mbr_pir_2</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>light</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>fastled_clockless</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>chipset</span><span class=p>:</span><span class=w> </span><span class=l>WS2812B</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pin</span><span class=p>:</span><span class=w> </span><span class=l>GPIO27</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>num_leds</span><span class=p>:</span><span class=w> </span><span class=m>30</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>rgb_order</span><span class=p>:</span><span class=w> </span><span class=l>GRB</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${room} LED 1&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>mbr_led_1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>&lt;&lt;</span><span class=p>:</span><span class=w> </span>!<span class=l>include components/light_effects.yaml</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>fastled_clockless</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>chipset</span><span class=p>:</span><span class=w> </span><span class=l>WS2812B</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pin</span><span class=p>:</span><span class=w> </span><span class=l>GPIO12</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>num_leds</span><span class=p>:</span><span class=w> </span><span class=m>30</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>rgb_order</span><span class=p>:</span><span class=w> </span><span class=l>GRB</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${room} LED 2&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>mbr_led_2</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>&lt;&lt;</span><span class=p>:</span><span class=w> </span>!<span class=l>include components/light_effects.yaml</span><span class=w>
-</span></span></span></code></pre></div><p>You&rsquo;ll notice I grouped the light effects in a single file so I don&rsquo;t have to repeat this for every LEDstrip I setup.
-Here&rsquo;s the contents of that file:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nn>---</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># ESPHome Light Effects</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># https://esphome.io/components/light/index.html#light-effects</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>#</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>effects</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>addressable_color_wipe</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Police Wipe</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>colors</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>red</span><span class=p>:</span><span class=w> </span><span class=m>100</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>green</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>blue</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>num_leds</span><span class=p>:</span><span class=w> </span><span class=m>10</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>red</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>green</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>blue</span><span class=p>:</span><span class=w> </span><span class=m>100</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>num_leds</span><span class=p>:</span><span class=w> </span><span class=m>10</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>add_led_interval</span><span class=p>:</span><span class=w> </span><span class=l>100ms</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>reverse</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>strobe</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Police Strobe</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>colors</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>state</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>brightness</span><span class=p>:</span><span class=w> </span><span class=m>100</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>red</span><span class=p>:</span><span class=w> </span><span class=m>100</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>green</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>blue</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>duration</span><span class=p>:</span><span class=w> </span><span class=l>500ms</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>state</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>duration</span><span class=p>:</span><span class=w> </span><span class=l>100ms</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>state</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>brightness</span><span class=p>:</span><span class=w> </span><span class=m>100</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>red</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>green</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>blue</span><span class=p>:</span><span class=w> </span><span class=m>100</span><span class=l>%</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>duration</span><span class=p>:</span><span class=w> </span><span class=l>500ms</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>state</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>duration</span><span class=p>:</span><span class=w> </span><span class=l>100ms</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>addressable_rainbow</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>addressable_fireworks</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>addressable_random_twinkle</span><span class=p>:</span><span class=w>
-</span></span></span></code></pre></div><h3 id=home-assistant>Home Assistant <a href=#home-assistant>¶</a></h3><p>I&rsquo;ve actually <em>programmed</em> my triggers for turning the LEDs on and off in Node-RED, but this is fairly easy to do with Home Assistant Automations as well.</p><p>We want to turn on the LED when motion is detected. To do this, we also need to turn on the relays.
+The design isn&rsquo;t perfect however, I&rsquo;ve had to enlarge some holes and the margins for the posts are quite tight.<br>The print consists of 3 parts: the <a href=https://www.tinkercad.com/things/jkIJ8GsHkwZ-leds-box title="3D print box" target=_blank rel=noopener>main chassis</a>, the mount for the <a href=https://www.tinkercad.com/things/6EUeUkkMWOB-leds-relay-platform title="3D print relay platform" target=_blank rel=noopener>relay board</a>, and the mount for the <a href=https://www.tinkercad.com/things/3EkucY8PzBs-leds-7x5-platform title="3D print perfboard platform" target=_blank rel=noopener>perfboard</a> with the ESP32.<br>I also have a 3D printed <a href=https://www.tinkercad.com/things/iVqFABKP8ah-am312-housing-with-cover title="3D printed holder for AM312" target=_blank rel=noopener>housing for the motion sensor</a>.</p><h2 id=wiring-it-all-together>Wiring it all together <a href=#wiring-it-all-together>¶</a></h2><p>For the wiring we need to take into account the following:</p><ul><li>Power<ul><li>The ESP32 needs 5V power</li><li>The relays board needs 5V power</li><li>The LEDs need 5V power</li><li>The motion sensors need 3.3V power</li><li>Power for the LEDs needs to go through the relays, so we can turn them on/off</li><li>We do not want to run the 5V/GND from the LED strip through the board, otherwise we&rsquo;ll fry it</li></ul></li><li>Connections<ul><li>The relays board needs a signal for each channel you want to control</li><li>Each motion sensor gives an input to the ESP32</li><li>The LED strip has a data input</li></ul></li></ul><figure class=center><img src=wiring_diagram.png alt="Wiring diagram"><figcaption class=center>Wiring diagram</figcaption></figure><h2 id=coding>Coding <a href=#coding>¶</a></h2><h3 id=esphome>ESPHome <a href=#esphome>¶</a></h3><p>Now the last thing we need is the ESPHome code to make this all function.</p><p>Note that I&rsquo;m using 2 motion sensors and am controlling 2 LED strips (+ respective relays channels).</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>substitutions</span>:
+</span></span><span style=display:flex><span>  <span style=color:#75715e># These substitions combined with the &#39;common&#39; dir are based on Frenck&#39;s ESPHome setup</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># https://github.com/frenck/home-assistant-config/tree/master/esphome/common</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>slug</span>: <span style=color:#ae81ff>esp32-ledstrip-relays</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ESP32 LEDstrip with relays</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>description</span>: <span style=color:#ae81ff>LEDstrips attached to relays to reducde power consumption</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>room</span>: <span style=color:#ae81ff>Bedroom</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>packages</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;&lt;</span>: !<span style=color:#ae81ff>include_dir_named common</span> <span style=color:#75715e># Contains WiFi settings, API, OTA, restart button, time settings</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>board: !include boards/esp32_doit-dev1.yaml # Note</span>: <span style=color:#ae81ff>the definition of boards has changed</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>status_led</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>pin</span>: <span style=color:#ae81ff>GPIO2</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>switch</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>gpio</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${name} - Onboard LED&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>pin</span>: <span style=color:#ae81ff>GPIO2</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>inverted</span>: <span style=color:#66d9ef>False</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>gpio</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${room} Relay 1&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>pin</span>: <span style=color:#ae81ff>GPIO21</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>inverted</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>restore_mode</span>: <span style=color:#ae81ff>ALWAYS_OFF</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>id</span>: <span style=color:#ae81ff>mbr_relay_1</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>gpio</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${room} Relay 2&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>pin</span>: <span style=color:#ae81ff>GPIO22</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>inverted</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>restore_mode</span>: <span style=color:#ae81ff>ALWAYS_OFF</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>id</span>: <span style=color:#ae81ff>mbr_relay_2</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>binary_sensor</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>gpio</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>pin</span>: <span style=color:#ae81ff>GPIO32</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${room} PIR 1&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>device_class</span>: <span style=color:#ae81ff>motion</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>id</span>: <span style=color:#ae81ff>mbr_pir_1</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>gpio</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>pin</span>: <span style=color:#ae81ff>GPIO25</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${room} PIR 2&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>device_class</span>: <span style=color:#ae81ff>motion</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>id</span>: <span style=color:#ae81ff>mbr_pir_2</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>light</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>fastled_clockless</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>chipset</span>: <span style=color:#ae81ff>WS2812B</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>pin</span>: <span style=color:#ae81ff>GPIO27</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>num_leds</span>: <span style=color:#ae81ff>30</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>rgb_order</span>: <span style=color:#ae81ff>GRB</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${room} LED 1&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>id</span>: <span style=color:#ae81ff>mbr_led_1</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;&lt;</span>: !<span style=color:#ae81ff>include components/light_effects.yaml</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>fastled_clockless</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>chipset</span>: <span style=color:#ae81ff>WS2812B</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>pin</span>: <span style=color:#ae81ff>GPIO12</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>num_leds</span>: <span style=color:#ae81ff>30</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>rgb_order</span>: <span style=color:#ae81ff>GRB</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${room} LED 2&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>id</span>: <span style=color:#ae81ff>mbr_led_2</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;&lt;</span>: !<span style=color:#ae81ff>include components/light_effects.yaml</span>
+</span></span></code></pre></div><p>You&rsquo;ll notice I grouped the light effects in a single file so I don&rsquo;t have to repeat this for every LEDstrip I setup.
+Here&rsquo;s the contents of that file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#75715e># ESPHome Light Effects</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://esphome.io/components/light/index.html#light-effects</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>effects</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>addressable_color_wipe</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Police Wipe</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>colors</span>:
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>red</span>: <span style=color:#ae81ff>100</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>green</span>: <span style=color:#ae81ff>0</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>blue</span>: <span style=color:#ae81ff>0</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>num_leds</span>: <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>red</span>: <span style=color:#ae81ff>0</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>green</span>: <span style=color:#ae81ff>0</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>blue</span>: <span style=color:#ae81ff>100</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>num_leds</span>: <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>add_led_interval</span>: <span style=color:#ae81ff>100ms</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>reverse</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>strobe</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Police Strobe</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>colors</span>:
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>state</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>brightness</span>: <span style=color:#ae81ff>100</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>red</span>: <span style=color:#ae81ff>100</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>green</span>: <span style=color:#ae81ff>0</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>blue</span>: <span style=color:#ae81ff>0</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>duration</span>: <span style=color:#ae81ff>500ms</span>
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>state</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>duration</span>: <span style=color:#ae81ff>100ms</span>
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>state</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>brightness</span>: <span style=color:#ae81ff>100</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>red</span>: <span style=color:#ae81ff>0</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>green</span>: <span style=color:#ae81ff>0</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>blue</span>: <span style=color:#ae81ff>100</span><span style=color:#ae81ff>%</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>duration</span>: <span style=color:#ae81ff>500ms</span>
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>state</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>duration</span>: <span style=color:#ae81ff>100ms</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>addressable_rainbow</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>addressable_fireworks</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>addressable_random_twinkle</span>:
+</span></span></code></pre></div><h3 id=home-assistant>Home Assistant <a href=#home-assistant>¶</a></h3><p>I&rsquo;ve actually <em>programmed</em> my triggers for turning the LEDs on and off in Node-RED, but this is fairly easy to do with Home Assistant Automations as well.</p><p>We want to turn on the LED when motion is detected. To do this, we also need to turn on the relays.
 As long as motion is detected, the LED stays on.
-If no motion is detected, we wait a bit longer and then turn off the LED strip and the relays.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>alias</span><span class=p>:</span><span class=w> </span><span class=l>Motion automated lights (LED1)</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>description</span><span class=p>:</span><span class=w> </span><span class=p>&gt;-</span><span class=sd>
-</span></span></span><span class=line><span class=cl><span class=sd>  Turn on LED1 when PIR1 is trigged. Turn off when there&#39;s been no motion for 10
-</span></span></span><span class=line><span class=cl><span class=sd>  seconds.</span><span class=w>  
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>mode</span><span class=p>:</span><span class=w> </span><span class=l>restart</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>trigger</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>state</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>entity_id</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>binary_sensor.mbr_pir_1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>to</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;on&#39;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>condition</span><span class=p>:</span><span class=w> </span><span class=p>[]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>action</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>switch.turn_on</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>data</span><span class=p>:</span><span class=w> </span>{}<span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>target</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>switch.mbr_relay_1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>light.turn_on</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>data</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>transition</span><span class=p>:</span><span class=w> </span><span class=m>2</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>color_name</span><span class=p>:</span><span class=w> </span><span class=l>blue</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>brightness_pct</span><span class=p>:</span><span class=w> </span><span class=m>50</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>target</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>light.mbr_led_1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>wait_for_trigger</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>platform</span><span class=p>:</span><span class=w> </span><span class=l>state</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>entity_id</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=l>binary_sensor.mbr_pir_1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>to</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;off&#39;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>for</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>hours</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>minutes</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>seconds</span><span class=p>:</span><span class=w> </span><span class=m>10</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>light.turn_off</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>data</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>transition</span><span class=p>:</span><span class=w> </span><span class=m>2</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>target</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>light.mbr_led_1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>delay</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>hours</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>minutes</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>seconds</span><span class=p>:</span><span class=w> </span><span class=m>3</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>milliseconds</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>switch.turn_off</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>data</span><span class=p>:</span><span class=w> </span>{}<span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>target</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>entity_id</span><span class=p>:</span><span class=w> </span><span class=l>switch.mbr_relay_1</span><span class=w>
-</span></span></span></code></pre></div><p>Copy and modify this automation for each PIR-LED-relay combination you have.
+If no motion is detected, we wait a bit longer and then turn off the LED strip and the relays.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Motion automated lights (LED1)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>description</span>: &gt;-<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  Turn on LED1 when PIR1 is trigged. Turn off when there&#39;s been no motion for 10
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  seconds.</span>  
+</span></span><span style=display:flex><span><span style=color:#f92672>mode</span>: <span style=color:#ae81ff>restart</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>trigger</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>state</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>entity_id</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>binary_sensor.mbr_pir_1</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>to</span>: <span style=color:#e6db74>&#39;on&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>condition</span>: []
+</span></span><span style=display:flex><span><span style=color:#f92672>action</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>switch.turn_on</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>data</span>: {}
+</span></span><span style=display:flex><span>    <span style=color:#f92672>target</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>switch.mbr_relay_1</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>light.turn_on</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>transition</span>: <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>color_name</span>: <span style=color:#ae81ff>blue</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>brightness_pct</span>: <span style=color:#ae81ff>50</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>target</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>light.mbr_led_1</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>wait_for_trigger</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>state</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>entity_id</span>:
+</span></span><span style=display:flex><span>          - <span style=color:#ae81ff>binary_sensor.mbr_pir_1</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>to</span>: <span style=color:#e6db74>&#39;off&#39;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>for</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>hours</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>minutes</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>seconds</span>: <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>light.turn_off</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>transition</span>: <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>target</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>light.mbr_led_1</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>delay</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>hours</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>minutes</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>seconds</span>: <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>milliseconds</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>switch.turn_off</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>data</span>: {}
+</span></span><span style=display:flex><span>    <span style=color:#f92672>target</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>switch.mbr_relay_1</span>
+</span></span></code></pre></div><p>Copy and modify this automation for each PIR-LED-relay combination you have.
 You could probably turn this into a blueprint as well.</p><p>[TODO] Add pictures of my setup. I&rsquo;ll add these one day, promise!</p></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/home-automation/>Home Automation</a></span>
 <span class=tag><a href=https://sequr.be/tags/home-assistant/>Home Assistant</a></span>
 <span class=tag><a href=https://sequr.be/tags/esphome/>ESPHome</a></span>

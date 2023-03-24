@@ -7,78 +7,78 @@ In case an upgrade fails, we can restore Home Assistant using the backup file to
 This folder is exposed to our Docker volume at <code>/opt/homeassistant/config</code>.
 So a backup of this folder, would keep our HA data safe.</p><p>Because a running Home Assistant could cause inconsistencies in the backed up data, it&rsquo;s a good idea to temporarily stop the HA Container while copying the data.
 We can achieve this using a small script, which we could even run periodically.</p><p>We use <code>rsync</code> to copy the data, as it has some nice features which are ideal for doing periodic automated backups.
-You may need to install it on your system first.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo apt update
-</span></span><span class=line><span class=cl>sudo apt install rsync
-</span></span></code></pre></div><p>Next we write our script to perform the backup.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo nano /opt/homeassistant/backup.sh
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Copy/paste the lines between the &#39;---&#39; and save with Ctrl+X</span>
-</span></span><span class=line><span class=cl><span class=c1># Also copy the &#39;shebang&#39; starting with #!</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># ---</span>
-</span></span><span class=line><span class=cl><span class=c1>#!/bin/bash</span>
-</span></span><span class=line><span class=cl><span class=nb>readonly</span> <span class=nv>SOURCE_DIR</span><span class=o>=</span><span class=s2>&#34;/opt/homeassistant/config&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>readonly</span> <span class=nv>BACKUP_DIR</span><span class=o>=</span><span class=s2>&#34;/mnt/backup/homeassistant&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>readonly</span> <span class=nv>BACKUP_PATH</span><span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>BACKUP_DIR</span><span class=si>}</span><span class=s2>/</span><span class=k>$(</span>date <span class=s1>&#39;+%F&#39;</span><span class=k>)</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>readonly</span> <span class=nv>LATEST_LINK</span><span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>BACKUP_DIR</span><span class=si>}</span><span class=s2>/latest&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>mkdir -p <span class=s2>&#34;</span><span class=si>${</span><span class=nv>BACKUP_DIR</span><span class=si>}</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>docker stop homeassistant
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>rsync -a --delete <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>  <span class=s2>&#34;</span><span class=si>${</span><span class=nv>SOURCE_DIR</span><span class=si>}</span><span class=s2>/&#34;</span> <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>  --link-dest <span class=s2>&#34;</span><span class=si>${</span><span class=nv>LATEST_LINK</span><span class=si>}</span><span class=s2>&#34;</span> <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>  <span class=s2>&#34;</span><span class=si>${</span><span class=nv>BACKUP_PATH</span><span class=si>}</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>rm -rf <span class=s2>&#34;</span><span class=si>${</span><span class=nv>LATEST_LINK</span><span class=si>}</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl>ln -s <span class=s2>&#34;</span><span class=si>${</span><span class=nv>BACKUP_PATH</span><span class=si>}</span><span class=s2>&#34;</span> <span class=s2>&#34;</span><span class=si>${</span><span class=nv>LATEST_LINK</span><span class=si>}</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>docker start homeassistant
-</span></span><span class=line><span class=cl><span class=c1># ---</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Make file executable</span>
-</span></span><span class=line><span class=cl>sudo chmod u+x /opt/homeassistant/homeassistant/backup.sh
+You may need to install it on your system first.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>sudo apt update
+</span></span><span style=display:flex><span>sudo apt install rsync
+</span></span></code></pre></div><p>Next we write our script to perform the backup.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>sudo nano /opt/homeassistant/backup.sh
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Copy/paste the lines between the &#39;---&#39; and save with Ctrl+X</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Also copy the &#39;shebang&#39; starting with #!</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># ---</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#!/bin/bash</span>
+</span></span><span style=display:flex><span>readonly SOURCE_DIR<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;/opt/homeassistant/config&#34;</span>
+</span></span><span style=display:flex><span>readonly BACKUP_DIR<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;/mnt/backup/homeassistant&#34;</span>
+</span></span><span style=display:flex><span>readonly BACKUP_PATH<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>BACKUP_DIR<span style=color:#e6db74>}</span><span style=color:#e6db74>/</span><span style=color:#66d9ef>$(</span>date <span style=color:#e6db74>&#39;+%F&#39;</span><span style=color:#66d9ef>)</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>readonly LATEST_LINK<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>BACKUP_DIR<span style=color:#e6db74>}</span><span style=color:#e6db74>/latest&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>mkdir -p <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>BACKUP_DIR<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>docker stop homeassistant
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>rsync -a --delete <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>SOURCE_DIR<span style=color:#e6db74>}</span><span style=color:#e6db74>/&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --link-dest <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>LATEST_LINK<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>BACKUP_PATH<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>rm -rf <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>LATEST_LINK<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>ln -s <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>BACKUP_PATH<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>LATEST_LINK<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>docker start homeassistant
+</span></span><span style=display:flex><span><span style=color:#75715e># ---</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Make file executable</span>
+</span></span><span style=display:flex><span>sudo chmod u+x /opt/homeassistant/homeassistant/backup.sh
 </span></span></code></pre></div><p>The content of the Home Assistant configuration directory will be compared to our <code>latest</code> backup directory, which actually is a symbolic link to the most recent back-up folder.
 New and modified files existing in the source directory will be copied to the backup directory, which is timestamped.
 Files deleted in the source directory will also be removed in the backup directory (<code>--delete</code>).
-Finally, files that didn&rsquo;t change between two back-ups will be visible in the back-up directory through hards links pointing to the originally backed up file (<code>--link-dest</code>).</p><p>On the first run, we won&rsquo;t have a <code>latest</code> directory to compare against, so rsync will do a full backup.</p><p>Once rsync has finished backing up, we remove the <code>latest</code> link and replace it with a link to the backup we just completed.</p><figure class=center><img src=rsyncbackup.png alt="Backup and latest link"><figcaption class=center>Our first backup and the &rsquo;latest&rsquo; link</figcaption></figure><h3 id=automatic-backups>Automatic backups <a href=#automatic-backups>¶</a></h3><p>We can now have this backup run automatically using a cronjob.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo crontab -e
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Add the following lines at the end of the file</span>
-</span></span><span class=line><span class=cl><span class=m>30</span> <span class=m>23</span> * * <span class=m>6</span> /opt/homeassistant/homeassistant/backup.sh &gt; /dev/null
-</span></span><span class=line><span class=cl><span class=m>45</span> <span class=m>23</span> * * <span class=m>6</span> docker start homeassistant &gt; /dev/null
+Finally, files that didn&rsquo;t change between two back-ups will be visible in the back-up directory through hards links pointing to the originally backed up file (<code>--link-dest</code>).</p><p>On the first run, we won&rsquo;t have a <code>latest</code> directory to compare against, so rsync will do a full backup.</p><p>Once rsync has finished backing up, we remove the <code>latest</code> link and replace it with a link to the backup we just completed.</p><figure class=center><img src=rsyncbackup.png alt="Backup and latest link"><figcaption class=center>Our first backup and the &rsquo;latest&rsquo; link</figcaption></figure><h3 id=automatic-backups>Automatic backups <a href=#automatic-backups>¶</a></h3><p>We can now have this backup run automatically using a cronjob.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>sudo crontab -e
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Add the following lines at the end of the file</span>
+</span></span><span style=display:flex><span><span style=color:#ae81ff>30</span> <span style=color:#ae81ff>23</span> * * <span style=color:#ae81ff>6</span> /opt/homeassistant/homeassistant/backup.sh &gt; /dev/null
+</span></span><span style=display:flex><span><span style=color:#ae81ff>45</span> <span style=color:#ae81ff>23</span> * * <span style=color:#ae81ff>6</span> docker start homeassistant &gt; /dev/null
 </span></span></code></pre></div><p>The commands above will run the backup every Saturday at 23:30 (11:30 PM).
 We also add a fail-safe that will start the Home Assistant Docker container at 23:45 should the backup script have failed somehow.<br>The output of the scripts is sent to the void of <code>/dev/null</code>, however error messages will be logged.</p><h2 id=backing-up-via-duplicati>Backing up via Duplicati <a href=#backing-up-via-duplicati>¶</a></h2><p><a href=http://www.duplicati.com/ title=Duplicati target=_blank rel=noopener>Duplicati</a> is a nice tool to do scheduled backups.
 It not only allows you to store backups on a local or attached drive, but even to many differen cloud storage locations.
 And backups can be restored on a file-level, so you don&rsquo;t have to overwrite everything if you ever need to restore a system.
-Duplicati even gives you the option to encrypt your backups. Useful for when you backup to a remote system.</p><h3 id=docker-composeyaml>docker-compose.yaml <a href=#docker-composeyaml>¶</a></h3><p>Duplicati is a Docker container, so we again add an entry to our <code>docker-compose.yaml</code>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>services</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>[</span><span class=l>...]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>duplicati</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>container_name</span><span class=p>:</span><span class=w> </span><span class=l>duplicati</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>duplicati/duplicati</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>restart</span><span class=p>:</span><span class=w> </span><span class=l>unless-stopped</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ports</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=s2>&#34;8200:8200/tcp&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>environment</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>TZ=Europe/Brussels</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>volumes</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>/opt/duplicati/data:/data</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>/mnt/backup/duplicati:/backups</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>/opt:/source</span><span class=w>
-</span></span></span></code></pre></div><p>Running <code>docker-compose up -d</code> launches the Duplicati container which will host a web portal at <code>http://&lt;ip.of.our.box>:8200</code>.</p><h3 id=home-assistant-sidebar>Home Assistant sidebar <a href=#home-assistant-sidebar>¶</a></h3><p>We&rsquo;ve done it <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-3-mariadb-and-influxdb/ title="Part 3: MariaDB and InfluxDB">a few</a> <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-5-node-red/ title="Part 5: Node-RED">times</a> <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-6-editing-configuration.yaml-from-within-home-assistant/ title="Part 6: Editing configuration.yaml from within Home Assistant">before</a>.
-Add an entry for Duplicati to the sidebar of our Home Assistant dashboard using the <code>panel-iframe</code>.</p><p>Add the following lines to <code>configuration.yaml</code> (via the terminal or using <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-6-editing-configuration.yaml-from-within-home-assistant/ title="Part 6: Editing configuration.yaml from within Home Assistant">Configurator</a>):</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>panel_iframe</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>portainer</span><span class=p>:</span><span class=w>     </span><span class=c># part 3</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=l>...]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>nodered</span><span class=p>:</span><span class=w>       </span><span class=c># part 5</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=l>...]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>configurator</span><span class=p>:</span><span class=w>  </span><span class=c># part 6</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=l>...]</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>duplicati</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>title</span><span class=p>:</span><span class=w> </span><span class=l>Duplicati</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>mdi:backup-restore</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=l>http://192.168.10.106:8200</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>require_admin</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
-</span></span></span></code></pre></div><p>After restarting Home Assistant, we&rsquo;re able to open Duplicati from within the Home Assistant dashboard.</p><h3 id=configure-backup>Configure backup <a href=#configure-backup>¶</a></h3><p>We can now open the Duplicati web portal via <code>http://&lt;ip.of.our.box>:8200</code> or via the Home Assistant sidebar and add a new backup.</p><p>Enter the details if your backup.
+Duplicati even gives you the option to encrypt your backups. Useful for when you backup to a remote system.</p><h3 id=docker-composeyaml>docker-compose.yaml <a href=#docker-composeyaml>¶</a></h3><p>Duplicati is a Docker container, so we again add an entry to our <code>docker-compose.yaml</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>services</span>:
+</span></span><span style=display:flex><span>  [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>duplicati</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>container_name</span>: <span style=color:#ae81ff>duplicati</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: <span style=color:#ae81ff>duplicati/duplicati</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>restart</span>: <span style=color:#ae81ff>unless-stopped</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ports</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;8200:8200/tcp&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>environment</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>TZ=Europe/Brussels</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>volumes</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/opt/duplicati/data:/data</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/mnt/backup/duplicati:/backups</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/opt:/source</span>
+</span></span></code></pre></div><p>Running <code>docker-compose up -d</code> launches the Duplicati container which will host a web portal at <code>http://&lt;ip.of.our.box>:8200</code>.</p><h3 id=home-assistant-sidebar>Home Assistant sidebar <a href=#home-assistant-sidebar>¶</a></h3><p>We&rsquo;ve done it <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-3-mariadb-and-influxdb/ title="Part 3: MariaDB and InfluxDB">a few</a> <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-5-node-red/ title="Part 5: Node-RED">times</a> <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-6-editing-configuration.yaml-from-within-home-assistant/ title="Part 6: Editing configuration.yaml from within Home Assistant">before</a>.
+Add an entry for Duplicati to the sidebar of our Home Assistant dashboard using the <code>panel-iframe</code>.</p><p>Add the following lines to <code>configuration.yaml</code> (via the terminal or using <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-6-editing-configuration.yaml-from-within-home-assistant/ title="Part 6: Editing configuration.yaml from within Home Assistant">Configurator</a>):</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>panel_iframe</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>portainer</span>:     <span style=color:#75715e># part 3</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>nodered</span>:       <span style=color:#75715e># part 5</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>configurator</span>:  <span style=color:#75715e># part 6</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>duplicati</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>title</span>: <span style=color:#ae81ff>Duplicati</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:backup-restore</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>url</span>: <span style=color:#ae81ff>http://192.168.10.106:8200</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>require_admin</span>: <span style=color:#66d9ef>true</span>
+</span></span></code></pre></div><p>After restarting Home Assistant, we&rsquo;re able to open Duplicati from within the Home Assistant dashboard.</p><h3 id=configure-backup>Configure backup <a href=#configure-backup>¶</a></h3><p>We can now open the Duplicati web portal via <code>http://&lt;ip.of.our.box>:8200</code> or via the Home Assistant sidebar and add a new backup.</p><p>Enter the details if your backup.
 For example:</p><ol><li>General<ul><li>Name: Home Assistant</li><li>Encryption: No encryption</li></ul></li><li>Destination<ul><li>Storage Type: Local folder or drive</li><li>Manually type path: <code>/backups/homeassistant/</code><br>Test connection and create the directory.</li></ul></li><li>Source Data<ul><li>Source data: <code>/source/homeassistant/</code></li></ul></li><li>Schedule<ul><li>Automaticall run backups</li><li>Next time: next Wednesday at 23:30</li><li>Run again every: 1 weeks</li><li>Allowed days: Wed</li></ul></li><li>Options<ul><li>Backup retention: Smart backup retention</li></ul></li></ol><p>Once you saved the configuration, you can <code>Run now</code> to make a first backup and confirm everything works as expected.</p><figure class=center><img src=duplicatibackup.png alt="Duplicati dashboard"><figcaption class=center>Backing up Home Assistant</figcaption></figure><h2 id=upgrade>Upgrade <a href=#upgrade>¶</a></h2><p>We now have 3 methods of backing up our Home Assistant install.
 So we should be safe to <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-8-update-home-assistant-container/ title="Part 8: Update Home Assistant Container">update Home Assistant</a> to the latest version.</p></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/home-automation/>Home Automation</a></span>
 <span class=tag><a href=https://sequr.be/tags/home-assistant/>Home Assistant</a></span>

