@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/sequr
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://sequr.be
+  * I am sequr (https://keybase.io/sequr) on keybase.
+  * I have a public key ASB95OjvR5seIgCuBpXpfmVv4uv3fSNEgVXc76ofXJAk7Ao
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "01207de4e8ef479b1e2200ae0695e97e656fe2ebf77d23448155dcefaa1f5c9024ec0a",
+      "host": "keybase.io",
+      "kid": "01207de4e8ef479b1e2200ae0695e97e656fe2ebf77d23448155dcefaa1f5c9024ec0a",
+      "uid": "327f80312008733bb1ac40cb6a1b7719",
+      "username": "sequr"
+    },
+    "merkle_root": {
+      "ctime": 1613394097,
+      "hash": "6298fb582f052d0189bd3e0802221748010372565d6436571e878ddbfed3fb3219a4ec684dfa9f9dea950cbd9bbdf9c554a50d3c2e38ddcd2313e8bb9feeb6c2",
+      "hash_meta": "4bb7a0e77724138dfc18dc792b067fb0e6d41a54a203c9e1986ff98d8219f40a",
+      "seqno": 19117173
+    },
+    "service": {
+      "entropy": "kq8b7obbEdp8tb/7XD221wLt",
+      "hostname": "sequr.be",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "5.6.0"
+  },
+  "ctime": 1613394152,
+  "expire_in": 504576000,
+  "prev": "58e37ffef8860021556e2e9ff640b5c7e5891591512b33fe5856a2607c0e9ee9",
+  "seqno": 9,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgfeTo70ebHiIArgaV6X5lb+Lr930jRIFV3O+qH1yQJOwKp3BheWxvYWTESpcCCcQgWON//viGACFVbi6f9kC1x+WJFZFRKzP+WFaiYHwOnunEILCHMxRVpX573FnU1pN5dFutdXPd7HcXMj9vtYd3u9QfAgHCo3NpZ8RA10Eq6Ar7aqXjPM4iXs9kgmdouhiytWywfgX4EpQ0gb4zDTJlUH17RxghgHYIskx8mNXv/ehPyZNkxvXOeNy5DqhzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEILLxD8bdKke0rPEyjwyfChwRS5dLPmtB19jm2AxtOLwFo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/sequr
+
+==================================================================
