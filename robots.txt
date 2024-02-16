@@ -1,1 +1,26 @@
-User-agent: *
+# Amazon
+User-agent: Amazonbot
+# Meta / Facebook
+User-agent: FacebookBot
+# Webz.io
+User-agent: Omgilibot
+# OpenAI’s web crawler: GPT3.5, GPT4, ChatGPT
+User-agent: GPTBot
+# ChatGPT plugins
+User-agent: ChatGPT-User
+# Google's web crawler: Bard, VertexAI, Gemini
+User-agent: Google-Extended
+# Claude
+User-agent: anthropic-ai
+User-agent: Claude-Web
+# Common Crawl
+User-agent: CCBot
+# Perplexity.ai
+User-agent: Perplexity
+# Cohere
+User-agent: cohere-ai
+Disallow: /
+
+Sitemap: https://sequr.be/sitemap.xml
+Sitemap: https://sequr.be/en/sitemap.xml
+Sitemap: https://sequr.be/nl/sitemap.xml
