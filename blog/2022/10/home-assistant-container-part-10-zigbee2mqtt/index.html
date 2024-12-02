@@ -1,0 +1,321 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="In this tenth part of the Home Assistant Container series we&rsquo;ll set up a Zigbee network using Zigbee2MQTT"><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Home Automation,Home Assistant,Container,Docker,zigbee,Zigbee2MQTT,MQTT,Z2M"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/blog/2022/10/home-assistant-container-part-10-zigbee2mqtt/><title>Home Assistant Container Part 10: Zigbee2MQTT :: Sequr
+</title><link rel=stylesheet href=https://sequr.be/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css integrity="sha256-JEGDzeGjjgsI+CwReRGBKI+arBzJYYzW9OnncQxXaLo=" crossorigin=anonymous><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=stylesheet type=text/css href=https://sequr.be/css/background.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content><meta itemprop=name content="Home Assistant Container Part 10: Zigbee2MQTT"><meta itemprop=description content="In this tenth part of the Home Assistant Container series we’ll set up a Zigbee network using Zigbee2MQTT"><meta itemprop=datePublished content="2022-10-04T00:00:00+00:00"><meta itemprop=dateModified content="2023-11-20T00:00:00+00:00"><meta itemprop=wordCount content="1646"><meta itemprop=image content="https://sequr.be/blog/2022/10/home-assistant-container-part-10-zigbee2mqtt/cover.png"><meta itemprop=keywords content="Home Automation,Home Assistant,Container,Docker,Zigbee,Zigbee2MQTT,MQTT,Z2M"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/blog/2022/10/home-assistant-container-part-10-zigbee2mqtt/cover.png"><meta name=twitter:title content="Home Assistant Container Part 10: Zigbee2MQTT"><meta name=twitter:description content="In this tenth part of the Home Assistant Container series we’ll set up a Zigbee network using Zigbee2MQTT"><meta property="article:section" content="Home Automation"><meta property="article:section" content="HA Container"><meta property="article:published_time" content="2022-10-04 00:00:00 +0000 UTC"><link rel=webmention href=https://webmention.io/sequr.be/webmention></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/ style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
+<span class=logo__text>lynx sequr.be</span>
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li></ul></nav><span class=menu-trigger><svg viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class="post h-entry"><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+8 minutes</p></div><article><h1 class="post-title p-name"><a href=https://sequr.be/blog/2022/10/home-assistant-container-part-10-zigbee2mqtt/ class=u-url>Home Assistant Container Part 10: Zigbee2MQTT</a></h1><hr><aside id=toc><div class=toc-title>Table of Contents</div><nav id=TableOfContents><ul><li><a href=#intro>Intro</a></li><li><a href=#install-zigbee2mqtt-container>Install Zigbee2MQTT container</a><ul><li><a href=#locate-zigbee-coordinator>Locate Zigbee coordinator</a></li><li><a href=#docker-compose>Docker-compose</a></li><li><a href=#create-mqtt-user>Create MQTT user</a></li><li><a href=#zigbee2mqtt-config>Zigbee2MQTT config</a><ul><li><a href=#secrets-file>Secrets file</a></li></ul></li><li><a href=#start-container>Start container</a></li></ul></li><li><a href=#home-assistant>Home Assistant</a><ul><li><a href=#sidebar>Sidebar</a></li><li><a href=#controlling-z2m>Controlling Z2M</a></li><li><a href=#network-map>Network map</a></li></ul></li></ul></nav></aside><hr><div class="post-content e-content"><h2 id=intro>Intro <a href=#intro>¶</a></h2><p>Zigbee is a wireless protocol, like WiFi, but developed specifically for (battery powered) Internet-of-Things devices.
+Devices connect in a mesh network, where mains powered devices (e.g. light bulbs and smart plugs) act as repeaters to extend the range of the network.
+The Zigbee coordinator is at the heart of the Zigbee network and allows interconnectivity with non-Zigbee devices.</p><p>Home Assistant offers 2 Zigbee integrations: the built-in <a href=https://www.home-assistant.io/integrations/zha/ title="Zigbee Home Automation - ZHA" target=_blank rel=noopener>ZHA</a>, and <a href=https://www.home-assistant.io/integrations/deconz/ title=deCONZ target=_blank rel=noopener>deCONZ</a> which works via an add-on.
+Another popular alternative is <a href=https://www.zigbee2mqtt.io/guide/usage/integrations/home_assistant.html title=Zigbee2MQTT target=_blank rel=noopener>Zigbee2MQTT</a> which makes use of Home Assistant&rsquo;s <a href=https://www.home-assistant.io/docs/mqtt/discovery/ title="MQTT Discovery" target=_blank rel=noopener>MQTT Discovery</a> to create devices and entities in Home Assistant.</p><p>Which coordinator you use is up to you.
+I advise to check the <a href=https://zigbee.blakadder.com/ title="Zigbee Device Compatibility Repository by Blakadder" target=_blank rel=noopener>Zigbee Device Compatibility Repository</a> by Blakadder to check which coordinator supports the device you plan to buy.</p><p>This post will discuss the installation of Zigbee2MQTT as it makes use off a Docker container for the coordinator (we already installed the <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-4-mosquitto-docker-container/ title="Part 4: Mosquitto Docker Container">MQTT broker</a>).</p><p><strong>Note:</strong> This post got delayed somewhat because I had to wait for my <a href=https://s.click.aliexpress.com/e/_DDZbXfZ title="Robotsky USB Extension Cable USB 3.0" target=_blank rel=noopener>USB extension</a> cable to arrive.
+Without it, my Zigbee controller was experiencing interference from my 2.4GHz WiFi on my miniPC.</p><h2 id=install-zigbee2mqtt-container>Install Zigbee2MQTT container <a href=#install-zigbee2mqtt-container>¶</a></h2><h3 id=locate-zigbee-coordinator>Locate Zigbee coordinator <a href=#locate-zigbee-coordinator>¶</a></h3><p>In our Docker compose config, we&rsquo;ll need to assign the Zigbee coordinator, which&rsquo;ll be connected via USB, to the Docker container.</p><p>Plug in your Zigbee coordinator (e.g. Conbee II, Sonof Zigbee 3.0 Plus, &mldr;) into your machine.
+Then run the following command to get the unique path to the device.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>ls -l /dev/serial/by-id/
+</span></span><span style=display:flex><span>usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_eexxx52-if00-port0 -&gt; ../../ttyUSB0
+</span></span></code></pre></div><p>We&rsquo;ll use this unique <code>by-id</code> path in our config later instead of the typical <code>/dev/ttyUSB0</code> bevause there&rsquo;s always a risk of the device getting a new TTY assigned after a reboot, espcially with other devices pluggin in as well.</p><h3 id=docker-compose>Docker-compose <a href=#docker-compose>¶</a></h3><p>We expand our <code>docker-compose.yaml</code> with the config for the Zigbee2MQTT container.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>services</span>:
+</span></span><span style=display:flex><span>  [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>container_name</span>: <span style=color:#ae81ff>zigbee2mqtt</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: <span style=color:#ae81ff>koenkk/zigbee2mqtt</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>restart</span>: <span style=color:#ae81ff>unless-stopped</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ports</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;8099:8099/tcp&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>environment</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>TZ=Europe/Brussels</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>volumes</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/opt/zigbee2mqtt/data:/app/data</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/run/udev:/run/udev:ro</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>devices</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>/dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_eexxx52-if00-port0:/dev/ttyACM0</span>
+</span></span></code></pre></div><p>Note that I changed the port mapping for this container.
+Port 8080 is already in use by <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-3-mariadb-and-influxdb/ title="Part 3: MariaDB and InfluxDB">adminer</a> so I changed the Zigbee2MQTT front-end port to 8099 (see below) and mapped that one in my Docker configuration.</p><p>We won&rsquo;t start our container just yet, as we first want to setup our configuration.</p><h3 id=create-mqtt-user>Create MQTT user <a href=#create-mqtt-user>¶</a></h3><p>When we set up the <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-4-mosquitto-docker-container/ title="Part 4: Mosquitto Docker Container">Mosquitto MQTT broker</a>, I said I prefer to create a MQTT user per service.
+So let&rsquo;s create a user for our Z2M container.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>docker exec -it mosquitto mosquitto_passwd /mosquitto/config/mqttuser z2m_mqtt
+</span></span><span style=display:flex><span>Password:          <span style=color:#75715e># Enter a password</span>
+</span></span><span style=display:flex><span>Reenter password:  <span style=color:#75715e># Repeat the password</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>cat mosquitto/config/mqttuser
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>z2m_mqtt:$7$101$1xcB1yrF********$O$XR******************2/N************************************************************g<span style=color:#f92672>==</span>
+</span></span></code></pre></div><h3 id=zigbee2mqtt-config>Zigbee2MQTT config <a href=#zigbee2mqtt-config>¶</a></h3><p>To get a copy of the default config, run <code>sudo wget https://raw.githubusercontent.com/Koenkk/zigbee2mqtt/master/data/configuration.yaml</code> in the folder where the config will be stored (<code>/opt/zigbee2mqtt/data</code>).
+Then open and edit it using <code>sudo nano /opt/zigbee2mqtt/data/configuration.yaml</code>.</p><p>We&rsquo;ll tell Z2M to connect to our <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-4-mosquitto-docker-container/ title="Part 4: Mosquitto Docker Container">MQTT broker</a>, use the syntax Home Assistant device detection understands, set up the webserver, and let Z2M generate some keys used to setup the Zigbee network.</p><p>More info on what the settings in this config do, can be found in the <a href=https://www.zigbee2mqtt.io/guide/configuration/ title="Zigbee2MQTT documentation" target=_blank rel=noopener>Z2M docs</a>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># Adapter settings</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>serial</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>port</span>: <span style=color:#ae81ff>/dev/ttyACM0</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># MQTT</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>mqtt</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>base_topic</span>: <span style=color:#ae81ff>zigbee2mqtt</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>server</span>: <span style=color:#e6db74>&#39;!secret server&#39;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>user</span>: <span style=color:#e6db74>&#39;!secret user&#39;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>password</span>: <span style=color:#e6db74>&#39;!secret password&#39;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>client_id</span>: <span style=color:#ae81ff>zigbee</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Zigbee network</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>permit_join</span>: <span style=color:#66d9ef>false</span> <span style=color:#75715e># Do not allow random devices to connect automatically</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Webserver</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>frontend</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>port</span>: <span style=color:#ae81ff>8099</span> <span style=color:#75715e># Custom port</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>url</span>: <span style=color:#e6db74>&#39;http://&lt;ip.of.our.box&gt;:8099&#39;</span> <span style=color:#75715e># Update IP here</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Devices and groups</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Extract config to separate files</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>devices</span>: <span style=color:#ae81ff>devices.yaml</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>groups</span>: <span style=color:#ae81ff>groups.yaml</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Home Assistant integration</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>homeassistant</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>advanced</span>:
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Zigbee network - auto-generate new keys</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>pan_id</span>: <span style=color:#ae81ff>GENERATE</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>network_key</span>: <span style=color:#ae81ff>GENERATE</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Zigbee network - set channel to avoid interference with 2.4GHz WiFi</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>channel</span>: <span style=color:#ae81ff>24</span>
+</span></span></code></pre></div><h4 id=secrets-file>Secrets file <a href=#secrets-file>¶</a></h4><p>You may have noticed the three <code>!secret</code> entries in the config above.
+Those reference values we store in <code>secret.yaml</code> on the same level as our <code>configuration.yaml</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>server</span>: <span style=color:#e6db74>&#39;mqtt://ip.of.mosquitto.container&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>user</span>: <span style=color:#e6db74>&#39;z2m_mqtt&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>password</span>: <span style=color:#e6db74>&#39;MyVerySequrPassword&#39;</span>
+</span></span></code></pre></div><h3 id=start-container>Start container <a href=#start-container>¶</a></h3><p>With this configuration in place, we can start the container using <code>docker-compose up -d zigbee2mqtt</code>.</p><p>If you check the logs via Portainer or <code>docker-compose logs zigbee2mqtt</code>, you&rsquo;ll see our container start up nicely:</p><pre tabindex=0><code class=language-log data-lang=log>Using &#39;/app/data&#39; as data directory
+Zigbee2MQTT:info  2022-10-04 12:09:47: Logging to console and directory: &#39;/app/data/log/2022-10-04.12-09-47&#39; filename: log.txt
+Zigbee2MQTT:info  2022-10-04 12:09:47: Starting Zigbee2MQTT version 1.28.0 (commit #03ba647)
+Zigbee2MQTT:info  2022-10-04 12:09:47: Starting zigbee-herdsman (0.14.62)
+Zigbee2MQTT:info  2022-10-04 12:09:48: zigbee-herdsman started (resumed)
+Zigbee2MQTT:info  2022-10-04 12:09:48: Coordinator firmware version: &#39;{&#34;meta&#34;:{&#34;maintrel&#34;:1,&#34;majorrel&#34;:2,&#34;minorrel&#34;:7,&#34;product&#34;:1,&#34;revision&#34;:20220219,&#34;transportrev&#34;:2},&#34;type&#34;:&#34;zStack3x0&#34;}&#39;
+Zigbee2MQTT:info  2022-10-04 12:09:48: Currently 0 devices are joined:
+Zigbee2MQTT:info  2022-10-04 12:09:48: Zigbee: disabling joining new devices.
+Zigbee2MQTT:info  2022-10-04 12:09:48: Connecting to MQTT server at mqtt://&lt;ip.of.our.box&gt;:1883
+Zigbee2MQTT:info  2022-10-04 12:09:48: Connected to MQTT server
+Zigbee2MQTT:info  2022-10-04 12:09:48: MQTT publish: topic &#39;zigbee2mqtt/bridge/state&#39;, payload &#39;{&#34;state&#34;:&#34;online&#34;}&#39;
+Zigbee2MQTT:info  2022-10-04 12:09:48: Started frontend on port 0.0.0.0:8099
+Zigbee2MQTT:info  2022-10-04 12:09:48: MQTT publish: topic &#39;zigbee2mqtt/bridge/state&#39;, payload &#39;{&#34;state&#34;:&#34;online&#34;}&#39;
+</code></pre><h2 id=home-assistant>Home Assistant <a href=#home-assistant>¶</a></h2><h3 id=sidebar>Sidebar <a href=#sidebar>¶</a></h3><p>Repeating what we did in <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-3-mariadb-and-influxdb/ title="Part 3: MariaDB and InfluxDB">Part 3</a>, <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-5-node-red/ title="Part 5: Node-RED">Part 5</a>, <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-6-editing-configuration.yaml-from-within-home-assistant/ title="Part 6: Editing configuration.yaml from within Home Assistant">Part 6</a>, <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-7-backing-up-home-assistant-container/ title="Part 7: Backing up Home Assistant Container">Part 7</a>, and <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-9-esphome/ title="Part 9: ESPHome">Part 9</a>, we add an entry for ESPHome to the sidebar of our Home Assistant dashboard using <code>panel-iframe</code>.</p><p>Add the following lines to <code>configuration.yaml</code> and restart Home Assistant.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>panel_iframe</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>portainer</span>:     <span style=color:#75715e># part 3</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>nodered</span>:       <span style=color:#75715e># part 5</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>configurator</span>:  <span style=color:#75715e># part 6</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>duplicati</span>:     <span style=color:#75715e># part 7</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>esphome</span>:       <span style=color:#75715e># part 9</span>
+</span></span><span style=display:flex><span>    [<span style=color:#ae81ff>...]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>title</span>: <span style=color:#ae81ff>Zigbee2MQTT</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:zigbee</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>url</span>: <span style=color:#ae81ff>http://192.168.10.106:8099</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>require_admin</span>: <span style=color:#66d9ef>true</span>
+</span></span></code></pre></div><figure class=center><img src=z2mdashboard.png alt="Zigbee2MQTT dashboard"><figcaption class=center>Zigbee2MQTT dashboard without devices</figcaption></figure><p>Pressing the <code>Permit join</code> button on the top-right will temporarily allow any Zigbee device set to pairing mode to be picked up by our coordinator.</p><figure class=center><img src=z2mjoin.png alt="Permit Zigbee to join"><figcaption class=center>Permit Zigbee to join</figcaption></figure><h3 id=controlling-z2m>Controlling Z2M <a href=#controlling-z2m>¶</a></h3><p>Since Zigbee2MQTT&rsquo;s configuration can be adapted over MQTT, we can control Z2M not only from the Frontend we just exposed, but also from within our dashboard.
+This is also explained in the <a href=https://www.zigbee2mqtt.io/guide/usage/integrations/home_assistant.html#controlling-zigbee2mqtt-via-home-assistant title="Controlling Z2M via Home Assistant" target=_blank rel=noopener>Z2M Home Assistant integration docs</a>.</p><p>First, we add some more YAML to our <code>configuration.yaml</code> via the <a href=https://sequr.be/blog/2022/09/home-assistant-container-part-6-editing-configuration.yaml-from-within-home-assistant/ title="Part 6: Editing configuration.yaml from within Home Assistant">Configurator</a>.
+Copy and paste this code add the end of the file.
+If you&rsquo;re used to splitting up your config and/or working with packages, you can put it in a <code>zigbee2mqtt.yaml</code> package file as well.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># Input select for Zigbee2MQTT debug level</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>input_select</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_log_level</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Log Level</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>options</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>debug</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>info</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>warn</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>error</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#ae81ff>info</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:format-list-bulleted</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Input number for joining time remaining (in minutes)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>input_number</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_join_minutes</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Zigbee2MQTT join minutes&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>min</span>: <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>max</span>: <span style=color:#ae81ff>5</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>step</span>: <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>slider</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Input text to input Zigbee2MQTT friendly_name for scripts</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>input_text</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_old_name</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Old Name</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#e6db74>&#34;&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_new_name</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT New Name</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#e6db74>&#34;&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_remove</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Remove</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#e6db74>&#34;&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Input boolean to set the force remove flag for devices</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>input_boolean</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_force_remove</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Force Remove</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:alert-remove</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Scripts for renaming &amp; removing devices</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>script</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_rename</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee2MQTT Rename</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sequence</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>service</span>: <span style=color:#ae81ff>mqtt.publish</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>data_template</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>topic</span>: <span style=color:#ae81ff>zigbee2mqtt/bridge/request/device/rename</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>payload_template</span>: &gt;-<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          {
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;from&#34;: &#34;{{ states.input_text.zigbee2mqtt_old_name.state | string }}&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;to&#34;: &#34;{{ states.input_text.zigbee2mqtt_new_name.state | string }}&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          }</span>          
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee2mqtt_remove</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee2MQTT Remove</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sequence</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>service</span>: <span style=color:#ae81ff>mqtt.publish</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>data_template</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>topic</span>: <span style=color:#ae81ff>zigbee2mqtt/bridge/request/device/remove</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>payload_template</span>: &gt;-<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          {
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;id&#34;: &#34;{{ states.input_text.zigbee2mqtt_remove.state | string }}&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;force&#34;: {% if states.input_boolean.zigbee2mqtt_force_remove.state == &#34;off&#34; %}false{% else %}true{% endif %}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          }</span>          
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Timer for joining time remaining (254 sec)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>timer</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zigbee_permit_join</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Time remaining</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>duration</span>: <span style=color:#ae81ff>254</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>mqtt</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>sensor</span>:
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Sensor for monitoring the bridge state</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Bridge state</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>unique_id</span>: <span style=color:#ae81ff>zigbee2mqtt_bridge_state_sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_topic</span>: <span style=color:#e6db74>&#34;zigbee2mqtt/bridge/state&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:router-wireless</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Sensor for Showing the Zigbee2MQTT Version</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Version</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>unique_id</span>: <span style=color:#ae81ff>zigbee2mqtt_version_sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_topic</span>: <span style=color:#e6db74>&#34;zigbee2mqtt/bridge/info&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>value_template</span>: <span style=color:#e6db74>&#34;{{ value_json.version }}&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:zigbee</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Sensor for Showing the Coordinator Version</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2MQTT Coordinator Version</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>unique_id</span>: <span style=color:#ae81ff>zigbee2mqtt_coordinator_version_sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_topic</span>: <span style=color:#e6db74>&#34;zigbee2mqtt/bridge/info&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>value_template</span>: <span style=color:#e6db74>&#34;{{ value_json.coordinator.meta.revision }}&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:chip</span>
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Zigbee2mqtt Networkmap</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>unique_id</span>: <span style=color:#ae81ff>zigbee2mqtt_networkmap_sensor</span>
+</span></span><span style=display:flex><span>      <span style=color:#75715e># if you change base_topic of Zigbee2mqtt, change state_topic accordingly</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_topic</span>: <span style=color:#ae81ff>zigbee2mqtt/bridge/networkmap/raw</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>value_template</span>: &gt;-<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        {{ now().strftime(&#39;%Y-%m-%d %H:%M:%S&#39;) }}</span>        
+</span></span><span style=display:flex><span>      <span style=color:#75715e># again, if you change base_topic of Zigbee2mqtt, change json_attributes_topic accordingly</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>json_attributes_topic</span>: <span style=color:#ae81ff>zigbee2mqtt/bridge/networkmap/raw</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Switch for enabling joining</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>switch</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Zigbee2MQTT Main join&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>unique_id</span>: <span style=color:#ae81ff>zigbee2mqtt_main_join_switch</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_topic</span>: <span style=color:#e6db74>&#34;zigbee2mqtt/bridge/info&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>value_template</span>: <span style=color:#e6db74>&#39;{{ value_json.permit_join | lower }}&#39;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>command_topic</span>: <span style=color:#e6db74>&#34;zigbee2mqtt/bridge/request/permit_join&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>payload_on</span>: <span style=color:#e6db74>&#34;true&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>payload_off</span>: <span style=color:#e6db74>&#34;false&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>automation</span>:
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Automation for sending MQTT message on input select change</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee2MQTT Log Level</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial_state</span>: <span style=color:#e6db74>&#34;on&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>trigger</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>state</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>input_select.zigbee2mqtt_log_level</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>action</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>mqtt.publish</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>payload_template</span>: <span style=color:#e6db74>&#34;{{ states(&#39;input_select.zigbee2mqtt_log_level&#39;) }}&#34;</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>topic</span>: <span style=color:#ae81ff>zigbee2mqtt/bridge/request/config/log_level</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Automation to start timer when enable join is turned on</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>id</span>: <span style=color:#ae81ff>zigbee_join_enabled</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee Join Enabled</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>trigger</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>state</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>switch.zigbee2mqtt_main_join</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>to</span>: <span style=color:#e6db74>&#34;on&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>action</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>service</span>: <span style=color:#ae81ff>timer.start</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>timer.zigbee_permit_join</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>data_template</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>duration</span>: <span style=color:#e6db74>&#34;{{ &#39;00:0%i:00&#39; % (states(&#39;input_number.zigbee2mqtt_join_minutes&#39;) | int ) }}&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Automation to stop timer when switch turned off and turn off switch when timer finished</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>id</span>: <span style=color:#ae81ff>zigbee_join_disabled</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee Join Disabled</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>trigger</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>event</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>event_type</span>: <span style=color:#ae81ff>timer.finished</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>event_data</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>timer.zigbee_permit_join</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>state</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>switch.zigbee2mqtt_main_join</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>to</span>: <span style=color:#e6db74>&#34;off&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>action</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>timer.cancel</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>timer.zigbee_permit_join</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>switch.turn_off</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>switch.zigbee2mqtt_main_join</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>id</span>: <span style=color:#e6db74>&#34;zigbee2mqtt_create_notification_on_successful_interview&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Zigbee Device Joined Notification</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>trigger</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>mqtt</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>topic</span>: <span style=color:#e6db74>&#39;zigbee2mqtt/bridge/event&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>condition</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>condition</span>: <span style=color:#ae81ff>template</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>value_template</span>: <span style=color:#e6db74>&#39;{{trigger.payload_json.type == &#34;device_interview&#34; and trigger.payload_json.data.status == &#34;successful&#34; and trigger.payload_json.data.supported}}&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>action</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>persistent_notification.create</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>data_template</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>title</span>: <span style=color:#ae81ff>Device joined the Zigbee2MQTT network</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>message</span>: <span style=color:#e6db74>&#34;Name: {{trigger.payload_json.data.friendly_name}},
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    Vendor: {{trigger.payload_json.data.definition.vendor}},
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    Model: {{trigger.payload_json.data.definition.model}},
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    Description: {{trigger.payload_json.data.definition.description}}&#34;</span>
+</span></span></code></pre></div><p>Check your YAML config in the developer tools and restart Home Assistant.</p><p>Once that&rsquo;s done, you can add a custom card to your Dashboard containing the following entries:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>title</span>: <span style=color:#ae81ff>Zigbee2MQTT</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>type</span>: <span style=color:#ae81ff>entities</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>show_header_toggle</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>entities</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>sensor.zigbee2mqtt_bridge_state</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>sensor.zigbee2mqtt_version</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>sensor.zigbee2mqtt_coordinator_version</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_select.zigbee2mqtt_log_level</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>divider</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>switch.zigbee2mqtt_main_join</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_number.zigbee2mqtt_join_minutes</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>timer.zigbee_permit_join</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>divider</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_text.zigbee2mqtt_old_name</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_text.zigbee2mqtt_new_name</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>script.zigbee2mqtt_rename</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>divider</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_text.zigbee2mqtt_remove</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_boolean.zigbee2mqtt_force_remove</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>script.zigbee2mqtt_remove</span>
+</span></span></code></pre></div><figure class=center><img src=hacard.png alt="Manage Zigbee2MQTT from Home Assistant"><figcaption class=center>Manage Z2M from Home Assistant</figcaption></figure><h3 id=network-map>Network map <a href=#network-map>¶</a></h3><p>Another nice thing to add to Home Assistant is a map of your connect Zigbee devices.</p><p>Since we don&rsquo;t have any devices connected yet, this map will be fairly empty.
+However, you&rsquo;ll enjoy seeing your network grow each time you add a new device :)</p><p>This will require you to add a <a href=https://github.com/azuwis/zigbee2mqtt-networkmap/ title="Z2M network map custom card" target=_blank rel=noopener>custom card</a>, either manually or using <a href=https://hacs.xyz/ title="Home Assistant Community Store (HACS)" target=_blank rel=noopener>HACS</a>.
+I suggest you have a look at the documentation of both to decide which method you prefer.</p><figure class=center><img src=hamap.png alt="Zigbee2MQTT network map"><figcaption class=center>Zigbee2MQTT network map</figcaption></figure><p>Don&rsquo;t see the map or got an error about the custom card not existing?
+Clear your cache and refresh the page before trying again.</p></div></article><hr><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/home-automation/>Home Automation</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/home-assistant/>Home Assistant</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/container/>Container</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/docker/>Docker</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/zigbee/>zigbee</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/zigbee2mqtt/>Zigbee2MQTT</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/mqtt/>MQTT</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/z2m/>Z2M</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+<span class=tag><a class=p-category href=https://sequr.be/categories/home-automation/>Home Automation</a></span>
+<span class=tag><a class=p-category href=https://sequr.be/categories/ha-container/>HA Container</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+1646 Words</p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<time class=dt-published datetime=2022-10-04T02:00:00+02:00>2022-10-04
+</time>(Last updated: <time class=dt-updated datetime=2023-11-20T01:00:00+01:00>2023-11-20</time>)</p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+<span rel=author class="p-author h-card">DezeStijn</span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+<span rel=bookmark class=u-url><a href=https://sequr.be/3452511282>https://sequr.be/3452511282</a></span></p></div><hr><div class=sharing-buttons><a class=resp-sharing-button__link href=https://ko-fi.com/s4squatch target=_blank rel=noopener aria-label title="Buy me a coffee"><div class="resp-sharing-button resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604.0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407.0.0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2022%2f10%2fhome-assistant-container-part-10-zigbee2mqtt%2f" target=_blank rel=noopener aria-label title="Share on facebook"><div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2022%2f10%2fhome-assistant-container-part-10-zigbee2mqtt%2f" target=_blank rel=noopener aria-label title="Share on twitter"><div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2022%2f10%2fhome-assistant-container-part-10-zigbee2mqtt%2f&amp;resubmit=true&amp;title=Home%20Assistant%20Container%20Part%2010%3a%20Zigbee2MQTT" target=_blank rel=noopener aria-label title="Share on reddit"><div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg></div></div></a><a class=resp-sharing-button__link href="mailto:?subject=Home%20Assistant%20Container%20Part%2010%3a%20Zigbee2MQTT&amp;body=https%3a%2f%2fsequr.be%2fblog%2f2022%2f10%2fhome-assistant-container-part-10-zigbee2mqtt%2f" target=_self rel=noopener aria-label title="Share via email"><div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div></div></a></div><div class=pagination><div class=pagination__buttons><span class="button previous"><a href=https://sequr.be/blog/2022/11/home-assistant-container-part-11-bluetooth-support/><span class=button__icon>←</span>
+<span class=button__text>Home Assistant Container Part 11: Bluetooth support</span>
+</a></span><span class="button next"><a href=https://sequr.be/blog/2022/09/home-assistant-container-part-9-esphome/><span class=button__text>Home Assistant Container Part 9: ESPHome</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class="footer h-card"><div class=footer__inner><div class=footer__content><span>&copy; 2019</span>
+<span><a class="p-name u-url" rel=me href=https://sequr.be/>DezeStijn</a></span>
+<span><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+<span><a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div></footer></div><script type=text/javascript src=https://sequr.be/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc+cxaJzDdCYbAW0X1G+DgZYvtKFXe6MBex8jUJ2JT25mQx+YjACIng=="></script></body></html>

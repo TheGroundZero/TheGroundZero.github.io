@@ -1,0 +1,259 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="This config includes the Belgian peak tariff DSMR sensors added in ESPHome 2023.7"><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Home Automation,Home Assistant,ESPHome,DSMR,Slimmelezer,Marcel Zuidwijk"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/blog/2023/08/belgian-esphome-config-for-slimmelezer-by-marcel-zuidwijk/><title>Belgian ESPHome config for Slimmelezer(+) by Marcel Zuidwijk :: Sequr
+</title><link rel=stylesheet href=https://sequr.be/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css integrity="sha256-JEGDzeGjjgsI+CwReRGBKI+arBzJYYzW9OnncQxXaLo=" crossorigin=anonymous><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=stylesheet type=text/css href=https://sequr.be/css/background.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content><meta itemprop=name content="Belgian ESPHome config for Slimmelezer(+) by Marcel Zuidwijk"><meta itemprop=description content="This config includes the Belgian peak tariff DSMR sensors added in ESPHome 2023.7"><meta itemprop=datePublished content="2023-08-18T00:00:00+00:00"><meta itemprop=dateModified content="2023-08-18T00:00:00+00:00"><meta itemprop=wordCount content="761"><meta itemprop=image content="https://sequr.be/blog/2023/08/belgian-esphome-config-for-slimmelezer-by-marcel-zuidwijk/cover.png"><meta itemprop=keywords content="Home Automation,Home Assistant,ESPHome,DSMR,Slimmelezer,Marcel Zuidwijk"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/blog/2023/08/belgian-esphome-config-for-slimmelezer-by-marcel-zuidwijk/cover.png"><meta name=twitter:title content="Belgian ESPHome config for Slimmelezer(+) by Marcel Zuidwijk"><meta name=twitter:description content="This config includes the Belgian peak tariff DSMR sensors added in ESPHome 2023.7"><meta property="article:section" content="Home Automation"><meta property="article:published_time" content="2023-08-18 00:00:00 +0000 UTC"><link rel=webmention href=https://webmention.io/sequr.be/webmention></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/ style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
+<span class=logo__text>lynx sequr.be</span>
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li></ul></nav><span class=menu-trigger><svg viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class="post h-entry"><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+4 minutes</p></div><article><h1 class="post-title p-name"><a href=https://sequr.be/blog/2023/08/belgian-esphome-config-for-slimmelezer-by-marcel-zuidwijk/ class=u-url>Belgian ESPHome config for Slimmelezer(+) by Marcel Zuidwijk</a></h1><div class="post-content e-content"><p>The <a href=https://esphome.io/changelog/2023.7.0.html title="ESPHome 2023.7 changelog" target=_blank rel=noopener>2023.7</a> update of ESPHome added readouts for the Belgian capacity tariff to the DSMR component.
+As my <a href=https://www.zuidwijk.com/product/slimmelezer-plus/ title="Slimmelezer+ by Marcel Zuidwijk" target=_blank rel=noopener>Slimmelezer+</a>&rsquo;s config didn&rsquo;t include these sensors, I&rsquo;ve setup my own config bases on <a href=https://www.zuidwijk.com/slimmelezer-configuration/ title="Slimmelezer configuration" target=_blank rel=noopener>Marcel</a>&rsquo;s to add them.</p><p>Note that the config below will also include sensors that are not available on Belgian meters.
+Some have a Belgian counterpart (like <code>gas_delivered</code> vs <code>gas_delivered_be</code>), some just don&rsquo;t seem to be used in Belgium (like <code>electricity_failures</code>).
+The DSMR encryption key also isn&rsquo;t needed on Belgian meters.
+You can remove those sections or comment them out in config below or disable the entities within Home Assistant.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>substitutions</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>device_name</span>: <span style=color:#ae81ff>slimmelezer</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>device_description</span>: <span style=color:#e6db74>&#34;DIY P1 module to read your smart meter&#34;</span>
+</span></span><span style=display:flex><span>     
+</span></span><span style=display:flex><span><span style=color:#f92672>esphome</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>${device_name}</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>friendly_name</span>: <span style=color:#ae81ff>${device_name}</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>comment</span>: <span style=color:#e6db74>&#34;${device_description}&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>ESP8266</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>esp8266_restore_from_flash</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>board</span>: <span style=color:#ae81ff>d1_mini</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>name_add_mac_suffix</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>project</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>zuidwijk.slimmelezer</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>version</span>: <span style=color:#e6db74>&#34;1.0&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># on_boot:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#   then:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#     - if:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#         condition:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#           lambda: return id(has_key);</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#         then:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#           - lambda: |-</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#               std::string key(id(stored_decryption_key), 32);</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#               id(dsmr_instance).set_decryption_key(key);</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#         else:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#           - logger.log:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#               level: info</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#               format: &#34;Not using decryption key. If you need to set a key use Home Assistant service &#39;ESPHome:  ${device_name}_set_dsmr_key&#39;&#34;</span>
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#f92672>wifi</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>ssid</span>: !<span style=color:#ae81ff>secret wifi_ssid</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>password</span>: !<span style=color:#ae81ff>secret wifi_password</span>
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Enable fallback hotspot (captive portal) in case wifi connection fails</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>ap</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ssid</span>: <span style=color:#ae81ff>${device_name}</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ap_timeout</span>: <span style=color:#ae81ff>15s</span>
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#f92672>captive_portal</span>:
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#75715e># Enable logging</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>logger</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>baud_rate</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#75715e># Enable Home Assistant API</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>api</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>encryption</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>key</span>: !<span style=color:#ae81ff>secret api_encryption_key</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># services:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#   service: set_dsmr_key</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#   variables:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#     private_key: string</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#   then:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#     - logger.log:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#         format: Setting private key %s. Set to empty string to disable</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#         args: [private_key.c_str()]</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#     - globals.set:</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#         id: has_key</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#         value: !lambda &#34;return private_key.length() == 32;&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#     - lambda: |-</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#         if (private_key.length() == 32)</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#           private_key.copy(id(stored_decryption_key), 32);</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#         id(dsmr_instance).set_decryption_key(private_key);</span>
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#f92672>ota</span>:
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#f92672>web_server</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>port</span>: <span style=color:#ae81ff>80</span>
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#f92672>uart</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>baud_rate</span>: <span style=color:#ae81ff>115200</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>rx_pin</span>: <span style=color:#ae81ff>D7</span>
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#75715e># globals:</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#   - id: has_key</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#     type: bool</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#     restore_value: yes</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#     initial_value: &#34;false&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#   - id: stored_decryption_key</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#     type: char[32]</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#     restore_value: yes</span>
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#f92672>dsmr</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>id</span>: <span style=color:#ae81ff>dsmr_instance</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># For Luxembourg users set here your decryption key. </span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Enable this when using decryption for Luxembourg;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># key looks like &#39;00112233445566778899AABBCCDDEEFF&#39;</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>#decryption_key: !secret decryption_key </span>
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#f92672>sensor</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>dsmr</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># --- Electricity ---</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># energy_delivered_lux:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Energy Consumed Luxembourg&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   state_class: total_increasing</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>energy_delivered_tariff1</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Energy Consumed Tariff 1&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_class</span>: <span style=color:#ae81ff>total_increasing</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>energy_delivered_tariff2</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Energy Consumed Tariff 2&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_class</span>: <span style=color:#ae81ff>total_increasing</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># energy_returned_lux:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Energy Produced Luxembourg&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   state_class: total_increasing</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>energy_returned_tariff1</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Energy Produced Tariff 1&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_class</span>: <span style=color:#ae81ff>total_increasing</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>energy_returned_tariff2</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Energy Produced Tariff 2&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_class</span>: <span style=color:#ae81ff>total_increasing</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>power_delivered</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Power Consumed&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>accuracy_decimals</span>: <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>power_returned</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Power Produced&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>accuracy_decimals</span>: <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># electricity_failures:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Electricity Failures&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   icon: mdi:alert</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># electricity_long_failures:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Long Electricity Failures&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   icon: mdi:alert</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># electricity_sags_l1:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Voltage Sags Phase 1&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   icon: mdi:alert</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># electricity_sags_l2:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Voltage Sags Phase 2&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   icon: mdi:alert</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># electricity_sags_l3:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Voltage Sags Phase 3&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   icon: mdi:alert</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># electricity_swells_l1:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Voltage Swells Phase 1&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   icon: mdi:alert</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># electricity_swells_l2:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Voltage Swells Phase 2&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   icon: mdi:alert</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># electricity_swells_l3:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Voltage Swells Phase 3&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   icon: mdi:alert</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>voltage_l1</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Voltage Phase 1&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>voltage_l2</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Voltage Phase 2&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>voltage_l3</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Voltage Phase 3&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>current_l1</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Current Phase 1&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>current_l2</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Current Phase 2&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>current_l3</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Current Phase 3&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>power_delivered_l1</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Power Consumed Phase 1&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>accuracy_decimals</span>: <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>power_delivered_l2</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Power Consumed Phase 2&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>accuracy_decimals</span>: <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>power_delivered_l3</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Power Consumed Phase 3&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>accuracy_decimals</span>: <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>power_returned_l1</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Power Produced Phase 1&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>accuracy_decimals</span>: <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>power_returned_l2</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Power Produced Phase 2&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>accuracy_decimals</span>: <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>power_returned_l3</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Power Produced Phase 3&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>accuracy_decimals</span>: <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># --- Peak Tariff ---</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>active_energy_import_current_average_demand</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Peak Current Average Quarterly Demand&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:chart-sankey</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>active_energy_import_maximum_demand_running_month</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Peak Month Maximum Quarterly Demand&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:chart-sankey</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>active_energy_import_maximum_demand_last_13_months</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Peak 13 Month Maximum Quarterly Demand&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:chart-sankey</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># --- Gas ---</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># gas_delivered:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;Gas Consumed&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   state_class: total_increasing</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>gas_delivered_be</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;Gas Consumed Belgium&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>state_class</span>: <span style=color:#ae81ff>total_increasing</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>uptime</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${device_name} Uptime&#34;</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>wifi_signal</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${device_name} Wi-Fi Signal&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>update_interval</span>: <span style=color:#ae81ff>60s</span>
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span><span style=color:#f92672>text_sensor</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>dsmr</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>identification</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;DSMR Identification&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># p1_version:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;DSMR Version&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>p1_version_be</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;DSMR Version Belgium&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># timestamp:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;DSMR Timestamp&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>electricity_tariff</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;DSMR Tariff&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># electricity_failure_log:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;DSMR Electricity Failure Log&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   icon: mdi:message-alert-outline</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># message_short:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;DSMR Message Short&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   icon: mdi:message-text-outline</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>message_long</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;DSMR Message Long&#34;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:message-text-outline</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># gas_equipment_id:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;DSMR Gas Equipment ID&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># water_equipment_id:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;DSMR Water Equipment ID&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># sub_equipment_id:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;DSMR Sub Equipment ID&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># gas_delivered_text:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>#   name: &#34;DSMR Gas Delivered Text&#34;</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>wifi_info</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ip_address</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${device_name} IP Address&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ssid</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${device_name} Wi-Fi SSID&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>bssid</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;${device_name} Wi-Fi BSSID&#34;</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>platform</span>: <span style=color:#ae81ff>version</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;ESPHome Version&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>hide_timestamp</span>: <span style=color:#66d9ef>true</span>
+</span></span></code></pre></div></div></article><hr><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/home-automation/>Home Automation</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/home-assistant/>Home Assistant</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/esphome/>ESPHome</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/dsmr/>DSMR</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/slimmelezer/>Slimmelezer</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/marcel-zuidwijk/>Marcel Zuidwijk</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+<span class=tag><a class=p-category href=https://sequr.be/categories/home-automation/>Home Automation</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+761 Words</p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<time class=dt-published datetime=2023-08-18T02:00:00+02:00>2023-08-18</time></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+<span rel=author class="p-author h-card">DezeStijn</span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+<span rel=bookmark class=u-url><a href=https://sequr.be/1994176938>https://sequr.be/1994176938</a></span></p></div><hr><div class=sharing-buttons><a class=resp-sharing-button__link href=https://ko-fi.com/s4squatch target=_blank rel=noopener aria-label title="Buy me a coffee"><div class="resp-sharing-button resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604.0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407.0.0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2023%2f08%2fbelgian-esphome-config-for-slimmelezer-by-marcel-zuidwijk%2f" target=_blank rel=noopener aria-label title="Share on facebook"><div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2023%2f08%2fbelgian-esphome-config-for-slimmelezer-by-marcel-zuidwijk%2f" target=_blank rel=noopener aria-label title="Share on twitter"><div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2023%2f08%2fbelgian-esphome-config-for-slimmelezer-by-marcel-zuidwijk%2f&amp;resubmit=true&amp;title=Belgian%20ESPHome%20config%20for%20Slimmelezer%28%2b%29%20by%20Marcel%20Zuidwijk" target=_blank rel=noopener aria-label title="Share on reddit"><div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg></div></div></a><a class=resp-sharing-button__link href="mailto:?subject=Belgian%20ESPHome%20config%20for%20Slimmelezer%28%2b%29%20by%20Marcel%20Zuidwijk&amp;body=https%3a%2f%2fsequr.be%2fblog%2f2023%2f08%2fbelgian-esphome-config-for-slimmelezer-by-marcel-zuidwijk%2f" target=_self rel=noopener aria-label title="Share via email"><div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div></div></a></div><div class=pagination><div class=pagination__buttons><span class="button previous"><a href=https://sequr.be/blog/2023/10/2-months-in/><span class=button__icon>←</span>
+<span class=button__text>2 months in</span>
+</a></span><span class="button next"><a href=https://sequr.be/blog/2023/07/ive-been-chipped-and-am-getting-training/><span class=button__text>I've been chipped and am getting training</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class="footer h-card"><div class=footer__inner><div class=footer__content><span>&copy; 2019</span>
+<span><a class="p-name u-url" rel=me href=https://sequr.be/>DezeStijn</a></span>
+<span><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+<span><a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div></footer></div><script type=text/javascript src=https://sequr.be/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc+cxaJzDdCYbAW0X1G+DgZYvtKFXe6MBex8jUJ2JT25mQx+YjACIng=="></script></body></html>

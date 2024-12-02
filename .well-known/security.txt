@@ -1,0 +1,4 @@
+Contact: mailto:security@sequr.be
+Expires: 2024-12-31T23:59:00.000Z
+Preferred-Languages: en, nl
+Canonical: https://sequr.be/.well-known/security.txt

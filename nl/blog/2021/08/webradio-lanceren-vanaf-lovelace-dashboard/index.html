@@ -1,0 +1,295 @@
+<!doctype html><html lang=nl><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="DezeStijn"><meta name=description content="Luisteren naar webradio (en andere online bronnen) op slimme speakers via Lovelace dashboard."><meta name=keywords content="Sequr,blog,writeup,CTF,challenge,machine,infosec,IT security,hacking,pentesting,cybersecurity,Home Automation,Lovelace,Webradio,Smart speaker"><meta name=robots content="noodp"><meta name=theme-color content="#252627"><link rel=canonical href=https://sequr.be/nl/blog/2021/08/webradio-lanceren-vanaf-lovelace-dashboard/><title>Webradio lanceren vanaf Lovelace dashboard :: Sequr
+</title><link rel=stylesheet href=https://sequr.be/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css integrity="sha256-JEGDzeGjjgsI+CwReRGBKI+arBzJYYzW9OnncQxXaLo=" crossorigin=anonymous><link rel=stylesheet type=text/css href=https://sequr.be/css/table.css><link rel=stylesheet type=text/css href=https://sequr.be/css/menu.css><link rel=stylesheet type=text/css href=https://sequr.be/css/background.css><link rel=apple-touch-icon sizes=180x180 href=https://sequr.be/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://sequr.be/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://sequr.be/favicon-16x16.png><link rel=manifest href=https://sequr.be/site.webmanifest><link rel=mask-icon href=https://sequr.be/safari-pinned-tab.svg color><link rel="shortcut icon" href=https://sequr.be/favicon.ico><meta name=msapplication-TileColor content><meta itemprop=name content="Webradio lanceren vanaf Lovelace dashboard"><meta itemprop=description content="Luisteren naar webradio (en andere online bronnen) op slimme speakers via Lovelace dashboard."><meta itemprop=datePublished content="2021-08-14T00:00:00+01:00"><meta itemprop=dateModified content="2021-08-14T00:00:00+01:00"><meta itemprop=wordCount content="1319"><meta itemprop=image content="https://sequr.be/blog/2021/08/playing-webradio-and-other-audio-from-lovelace-dashboard/cover.png"><meta itemprop=keywords content="Home Automation,Lovelace,Webradio,Smart Speaker"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://sequr.be/blog/2021/08/playing-webradio-and-other-audio-from-lovelace-dashboard/cover.png"><meta name=twitter:title content="Webradio lanceren vanaf Lovelace dashboard"><meta name=twitter:description content="Luisteren naar webradio (en andere online bronnen) op slimme speakers via Lovelace dashboard."><meta property="article:section" content="Home Automation"><meta property="article:published_time" content="2021-08-14 00:00:00 +0100 +0100"><link rel=webmention href=https://webmention.io/sequr.be/webmention></head><body><div class=container><header class=header><span class=header__inner><a href=https://sequr.be/nl style=text-decoration:none><div class=logo><span class=logo__mark>$</span>
+<span class=logo__text>lynx sequr.be</span>
+<span class=logo__cursor style=background-color:#e68101></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://sequr.be/nl/about/>Over ons</a></li><li><a href=https://sequr.be/nl/blog/>Blog</a></li><li><a href=https://sequr.be/nl/privacy/>Privacy</a></li><li><a href=https://sequr.be/nl/shoppinglist/>Shopping</a></li></ul></nav><span class=menu-trigger><svg viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class="post h-entry"><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+7 minutes
+| Also available in
+<a href=https://sequr.be/blog/2021/08/playing-webradio-and-other-audio-from-lovelace-dashboard/ rel=alternate><span class="flag fi fi-gb"></span></a></p></div><article><h1 class="post-title p-name"><a href=https://sequr.be/nl/blog/2021/08/webradio-lanceren-vanaf-lovelace-dashboard/ class=u-url>Webradio lanceren vanaf Lovelace dashboard</a></h1><hr><aside id=toc><div class=toc-title>Table of Contents</div><nav id=TableOfContents><ul><li><a href=#intro>Intro</a></li><li><a href=#opzet>Opzet</a><ul><li><a href=#helpers>Helpers</a><ul><li><a href=#radiostation-keuzelijst>Radiostation keuzelijst</a></li><li><a href=#eigen-url-tekstvak>Eigen URL tekstvak</a></li></ul></li><li><a href=#scripts>Scripts</a><ul><li><a href=#spelen-via-keuzelijst>Spelen via keuzelijst</a></li><li><a href=#spelen-via-eigen-url>Spelen via eigen URL</a></li></ul></li><li><a href=#lovelace-dashboard>Lovelace Dashboard</a></li></ul></li><li><a href=#volledige-code>Volledige code</a></li></ul></nav></aside><hr><div class="post-content e-content"><h2 id=intro>Intro <a href=#intro>¶</a></h2><p>Het leuke aan de zogenaamde <em>slimme speakers</em> is dat je er ook mee naar muziek kan luisteren vanuit verschillende bronnen.
+Door hier Home Assistant aan toe te voegen, kan je voor jezelf een leuk <em>audio dashboard</em> maken :)</p><p>In deze blogpost ga ik wat uitleg geven over hoe ik dit voor mezelf heb opgezet.
+Via de stukjes code die ik post, moet het eenvoudig zijn om een versie te maken die voldoet aan al jouw noden.</p><figure class=center><img src=ha-webradio.png alt="Screenshot of webradio dashboard"><figcaption class=center>Webradio control center</figcaption></figure><p>Helpers (dropdown en tekstvak) maak ik in YAML aan, maar je kan dit ook via de UI.
+Waarom ik dit echter zo doe, wordt duidelijk verderop in deze blogpost.</p><h2 id=opzet>Opzet <a href=#opzet>¶</a></h2><p>Dit dashboard vereist een paar onderdelen.
+Bv. <em>Helpers</em> die een keuzemenu en een tekstvak zullen voorzien, een paar scripts, en een paar Lovelace-elementen.</p><p>We gaan stap voor stap hier door lopen, met losse stukjes code.
+Aan het einde van deze blogpost vind je de complete code terug.</p><h3 id=helpers>Helpers <a href=#helpers>¶</a></h3><p>Zoals eerder gezegd, gebruiken we zgn. <em>Helpers</em> om een keuzelijst en een tekstvak te voorzien.
+De keuzelijst vullen we aan met namen van (web)radiostations die we willen beluisteren.
+In het tekstvak kunnen we zelf een linkje meegeven naar bv. een YouTube filmpje.</p><p>Pas deze lijst zeker aan naar jouw eigen wensen.
+Het moeilijkste onderdeel hierin is het vinden van de juiste streaming URL.
+Soms vind je deze rechtstreeks op de site van het radiostation, andere keren moet je in de adresbalk of het netwerkverkeer van jouw browser zoeken.
+Er bestaan ook een aantal sites die streaming-URLs voorzien voor een hele resem aan radiostations.</p><h4 id=radiostation-keuzelijst>Radiostation keuzelijst <a href=#radiostation-keuzelijst>¶</a></h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>input_select</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>radio_station</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#39;Kies radiostation&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:radio</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>initial</span>: <span style=color:#ae81ff>VRT Studio Brussel</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>options</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>VRT Radio 1</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>VRT Studio Brussel</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>VRT MNM</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>VRT NWS</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>Topradio</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>Qmusic</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>VBRO</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>Willy Radio</span>
+</span></span></code></pre></div><h4 id=eigen-url-tekstvak>Eigen URL tekstvak <a href=#eigen-url-tekstvak>¶</a></h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>input_text</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>url</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>URL</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>min</span>: <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>max</span>: <span style=color:#ae81ff>255</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:web</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>text</span>
+</span></span></code></pre></div><h3 id=scripts>Scripts <a href=#scripts>¶</a></h3><h4 id=spelen-via-keuzelijst>Spelen via keuzelijst <a href=#spelen-via-keuzelijst>¶</a></h4><p>De code hieronder zullen we in Lovelace oproepen via een <em>Button</em> en zal het geselecteerde radiostation afspelen.</p><p>Je kan optioneel ook een afbeelding instellen voor het gekozen radiostation.
+Dit zorgt ervoor dat het Lovelace dashboard deze afbeelding weergeeft wanneer het geselecteerde station afspeelt.
+Dit kan bv. het logo van het radiostation zijn.</p><p>Hiervoor moet je de gewenste afbeeldingen downloaden en opslaan in (een subfolder van) <code>/config/www/</code>.
+In de code verwijzen we dan naar deze (sub)folder via <code>/local/</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>script</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>play_radio</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Webradio afspelen</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:play</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>description</span>: <span style=color:#ae81ff>Gekozen webradio afspelen op slimme speaker</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>restart</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sequence</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>media_player.volume_set</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>volume_level</span>: <span style=color:#ae81ff>0.10</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>media_player.play_media</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>media_content_type</span>: <span style=color:#ae81ff>music</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>media_content_id</span>: &gt;<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {%- set station = states(&#39;input_select.radio_station&#39;) -%}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {% if station == &#34;VRT Radio 1&#34; %} http://icecast.vrtcdn.be/radio1-high.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {% elif station == &#34;VRT Studio Brussel&#34; %} http://icecast.vrtcdn.be/stubru-high.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {% elif station == &#34;VRT Studio Brussel - #ikluisterbelgisch&#34; %} http://icecast.vrtcdn.be/stubru_tgs-high.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {% elif station == &#34;VRT MNM&#34; %} http://icecast.vrtcdn.be/mnm-high.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {% elif station == &#34;VRT NWS&#34; %} http://progressive-audio.lwc.vrtcdn.be/content/fixed/11_11niws-snip_hi.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {% elif station == &#34;Topradio&#34; %} https://str.topradio.be/topradio.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {% elif station == &#34;Qmusic&#34; %} https://21293.live.streamtheworld.com/QMUSIC.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {% elif station == &#34;VBRO&#34; %} https://radiohuis.com/VBRO
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {% elif station == &#34;Willy Radio&#34; %} http://20723.live.streamtheworld.com/WILLY.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            {% endif %}</span>            
+</span></span><span style=display:flex><span>          <span style=color:#f92672>extra</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>thumb</span>: &gt;<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {%- set station = states(&#39;input_select.radio_station&#39;) -%}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% if &#39;Studio Brussel&#39; in station %}  https://&lt;jouw_HA_URL&gt;/local/img/logo/logo_stubru.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif &#39;MNM&#39; in station %} https://&lt;jouw_HA_URL&gt;/local/img/logo/logo_mnm.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif &#39;NWS&#39; in station %} https://&lt;jouw_HA_URL&gt;/local/img/logo/logo_vrtnws.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station[:3] == &#34;VRT&#34; %} https://&lt;jouw_HA_URL&gt;/local/img/logo/logo_vrt.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;Topradio&#34; %} https://&lt;jouw_HA_URL&gt;/local/img/logo/logo_topradio.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;Qmusic&#34; %} https://&lt;jouw_HA_URL&gt;/local/img/logo/logo_qmusic.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;VBRO&#34; %} https://&lt;jouw_HA_URL&gt;/local/img/logo/logo_vbro.png
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;Willy Radio&#34; %} https://&lt;jouw_HA_URL&gt;/local/img/logo/logo_willy.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% endif %}</span>              
+</span></span><span style=display:flex><span>            <span style=color:#f92672>stream_type</span>: <span style=color:#ae81ff>LIVE</span>
+</span></span></code></pre></div><h4 id=spelen-via-eigen-url>Spelen via eigen URL <a href=#spelen-via-eigen-url>¶</a></h4><p>Om zelfgekozen media af te spelen, hebben we de <code>media_extractor</code> <a href=https://www.home-assistant.io/integrations/media_extractor/ title="Media Extractor integration" target=_blank rel=noopener>integratie</a> nodig.
+Dit gebruikt <code>youtube_dl</code> in de achtergrond om de juiste audiostream uit de aangeleverde bron te halen.
+Zo haalt deze bv. de audiotrack uit een YouTube-filmpje.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>media_extractor</span>:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>script</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>play_media_url</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Eigen URL afspelen</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>single</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:music-box-multiple-outline</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sequence</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>media_player.media_stop</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>target</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>media_player.volume_set</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>volume_level</span>: <span style=color:#ae81ff>0.10</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>media_extractor.play_media</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>media_content_type</span>: <span style=color:#ae81ff>MUSIC</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>media_content_id</span>: <span style=color:#e6db74>&#34;{{ states(&#39;input_text.url&#39;) }}&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>target</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span></code></pre></div><h3 id=lovelace-dashboard>Lovelace Dashboard <a href=#lovelace-dashboard>¶</a></h3><p>Dit dashboard kan je indelen zoals je zelf wilt.</p><p>Ik maak gebruik van de <a href=https://github.com/kalkih/mini-media-player title="Mini Media Player on Github" target=_blank rel=noopener>Mini Media Player</a> custom card om weer te geven wat m&rsquo;n slimme speaker afspeelt.
+Deze kan je eenvoudig via <a href=https://hacs.xyz/ title="Home Assistant Community Store" target=_blank rel=noopener>HACS</a> installeren.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>type</span>: <span style=color:#ae81ff>vertical-stack</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>cards</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>custom:mini-media-player</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>group</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>artwork</span>: <span style=color:#ae81ff>cover</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>source</span>: <span style=color:#ae81ff>full</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sound_mode</span>: <span style=color:#ae81ff>full</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>info</span>: <span style=color:#ae81ff>short</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Living Room</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>idle_view</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>when_idle</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>entities</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>entities</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_select.radio_station</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>station</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>script.play_radio</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>tap_action</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>action</span>: <span style=color:#ae81ff>call-service</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>service</span>: <span style=color:#ae81ff>script.turn_on</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>service_data</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>script.play_radio</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>entities</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>entities</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_text.url</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>URL</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>script.play_media_url</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>tap_action</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>action</span>: <span style=color:#ae81ff>call-service</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>service</span>: <span style=color:#ae81ff>script.turn_on</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>service_data</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>script.play_media_url</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:play</span>
+</span></span></code></pre></div><h2 id=volledige-code>Volledige code <a href=#volledige-code>¶</a></h2><p>Alle code die je nodig hebt om mijn dashboard na te bootsen vind je hieronder terug.</p><p>Je zal zien dat de reden dat ik alles in YAML heb gedaan is omdat ik mijn config hebt opgesplitst en gebruik maak van zgn. <a href=https://www.home-assistant.io/docs/configuration/packages/ title=Packages target=_blank rel=noopener>packages</a>.
+Zo kan ik alle relevante en bij elkaar horende code groeperen in een config bestandje, wat het makkelijk terug te vinden maakt.</p><p>Wil je geen gebruik maken van packages, moet je gewoon de code in de juiste config bestanden zetten (bv. <code>scripts.yaml</code>).
+Helpers en scripts kan je ook via de UI aanmaken.</p><p><strong>configuration.yaml</strong></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>homeassistant</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>packages</span>: !<span style=color:#ae81ff>include_dir_merge_named packages/</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Deze zet ik in config.yaml omdat het iets algemeen is</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>media_extractor</span>:
+</span></span></code></pre></div><p><strong>packages/mediaplayers/media_url.yaml</strong></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#75715e># Play custom audio stream on smart speaker(s)</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://www.home-assistant.io/integrations/media_extractor/</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://www.home-assistant.io/integrations/input_text/</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>media_url</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>script</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>play_media_url</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Play media from URL</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>single</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:music-box-multiple-outline</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>sequence</span>:
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>media_player.media_stop</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>target</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>media_player.volume_set</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>volume_level</span>: <span style=color:#ae81ff>0.10</span>
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>media_extractor.play_media</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>media_content_type</span>: <span style=color:#ae81ff>MUSIC</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>media_content_id</span>: <span style=color:#e6db74>&#34;{{ states(&#39;input_text.url&#39;) }}&#34;</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>target</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#f92672>input_text</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>url</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>URL</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>min</span>: <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>max</span>: <span style=color:#ae81ff>255</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:web</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>text</span>
+</span></span></code></pre></div><p><strong>packages/mediaplayers/webradio.yaml</strong></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#75715e># Play webradio on smart speaker(s)</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Based on https://community.home-assistant.io/t/chromecast-radio-with-station-and-player-selection/12732</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://www.home-assistant.io/integrations/media_player</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://www.home-assistant.io/integrations/input_select/</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>webradio</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>script</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>play_radio</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>alias</span>: <span style=color:#ae81ff>Play radio</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:play</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>description</span>: <span style=color:#ae81ff>Play web radio on Chromecast</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>restart</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>sequence</span>:
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>media_player.volume_set</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>volume_level</span>: <span style=color:#ae81ff>0.10</span>
+</span></span><span style=display:flex><span>        - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>media_player.play_media</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>data</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>media_content_type</span>: <span style=color:#ae81ff>music</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>media_content_id</span>: &gt;<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {%- set station = states(&#39;input_select.radio_station&#39;) -%}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% if station == &#34;VRT Radio 1&#34; %} http://icecast.vrtcdn.be/radio1-high.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;VRT Studio Brussel&#34; %} http://icecast.vrtcdn.be/stubru-high.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;VRT Studio Brussel - #ikluisterbelgisch&#34; %} http://icecast.vrtcdn.be/stubru_tgs-high.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;VRT MNM&#34; %} http://icecast.vrtcdn.be/mnm-high.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;VRT NWS&#34; %} http://progressive-audio.lwc.vrtcdn.be/content/fixed/11_11niws-snip_hi.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;Topradio&#34; %} https://str.topradio.be/topradio.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;Qmusic&#34; %} https://21293.live.streamtheworld.com/QMUSIC.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;VBRO&#34; %} https://radiohuis.com/VBRO
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% elif station == &#34;Willy Radio&#34; %} http://20723.live.streamtheworld.com/WILLY.mp3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              {% endif %}</span>              
+</span></span><span style=display:flex><span>            <span style=color:#f92672>extra</span>:
+</span></span><span style=display:flex><span>              <span style=color:#f92672>thumb</span>: &gt;<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                {%- set station = states(&#39;input_select.radio_station&#39;) -%}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                {% if &#39;Studio Brussel&#39; in station %}  https://&lt;my_homeassistant&gt;/local/img/logo/logo_stubru.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                {% elif &#39;MNM&#39; in station %} https://&lt;my_homeassistant&gt;/local/img/logo/logo_mnm.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                {% elif &#39;NWS&#39; in station %} https://&lt;my_homeassistant&gt;/local/img/logo/logo_vrtnws.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                {% elif station[:3] == &#34;VRT&#34; %} https://&lt;my_homeassistant&gt;/local/img/logo/logo_vrt.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                {% elif station == &#34;Topradio&#34; %} https://&lt;my_homeassistant&gt;/local/img/logo/logo_topradio.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                {% elif station == &#34;Qmusic&#34; %} https://&lt;my_homeassistant&gt;/local/img/logo/logo_qmusic.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                {% elif station == &#34;VBRO&#34; %} https://&lt;my_homeassistant&gt;/local/img/logo/logo_vbro.png
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                {% elif station == &#34;Willy Radio&#34; %} https://&lt;my_homeassistant&gt;/local/img/logo/logo_willy.svg
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                {% endif %}</span>                
+</span></span><span style=display:flex><span>              <span style=color:#f92672>stream_type</span>: <span style=color:#ae81ff>LIVE</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#f92672>input_select</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>radio_station</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#39;Kies radiostation&#39;</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:radio</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>initial</span>: <span style=color:#ae81ff>VRT Studio Brussel</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>options</span>:
+</span></span><span style=display:flex><span>        - <span style=color:#ae81ff>VRT Radio 1</span>
+</span></span><span style=display:flex><span>        - <span style=color:#ae81ff>VRT Studio Brussel</span>
+</span></span><span style=display:flex><span>        - <span style=color:#e6db74>&#34;VRT Studio Brussel - #ikluisterbelgisch&#34;</span>
+</span></span><span style=display:flex><span>        - <span style=color:#ae81ff>VRT MNM</span>
+</span></span><span style=display:flex><span>        - <span style=color:#ae81ff>VRT NWS</span>
+</span></span><span style=display:flex><span>        - <span style=color:#ae81ff>Topradio</span>
+</span></span><span style=display:flex><span>        - <span style=color:#ae81ff>Qmusic</span>
+</span></span><span style=display:flex><span>        - <span style=color:#ae81ff>Topradio</span>
+</span></span><span style=display:flex><span>        - <span style=color:#ae81ff>VBRO</span>
+</span></span><span style=display:flex><span>        - <span style=color:#ae81ff>Willy Radio</span>
+</span></span></code></pre></div><p><strong>Lovelace dashboard</strong></p><p>Nieuwe <em>Manual</em> card toevoegen en deze code plakken:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>type</span>: <span style=color:#ae81ff>vertical-stack</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>cards</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>custom:mini-media-player</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>group</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>artwork</span>: <span style=color:#ae81ff>cover</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>source</span>: <span style=color:#ae81ff>full</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sound_mode</span>: <span style=color:#ae81ff>full</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>info</span>: <span style=color:#ae81ff>short</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Living Room</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>idle_view</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>when_idle</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>media_player.woonkamer</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>entities</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>entities</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_select.radio_station</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>station</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>script.play_radio</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>tap_action</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>action</span>: <span style=color:#ae81ff>call-service</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>service</span>: <span style=color:#ae81ff>script.turn_on</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>service_data</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>script.play_radio</span>
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>type</span>: <span style=color:#ae81ff>entities</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>entities</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>input_text.url</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>URL</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>entity</span>: <span style=color:#ae81ff>script.play_media_url</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>tap_action</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>action</span>: <span style=color:#ae81ff>call-service</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>service</span>: <span style=color:#ae81ff>script.turn_on</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>service_data</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>entity_id</span>: <span style=color:#ae81ff>script.play_media_url</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>icon</span>: <span style=color:#ae81ff>mdi:play</span>
+</span></span></code></pre></div><p>Veel plezier met het luisteren naar jouw favoriete radiozenders op jouw slimme speakers!</p><p>Vul deze code bv. aan met een dropdown waarin je kan kiezen welke speaker de stream moet afspelen.
+Of maak een Automation die jouw favoriete zender afspeelt terwijl je ontbijt.</p></div></article><hr><div class=post-info><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/nl/tags/home-automation/>Home Automation</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/nl/tags/lovelace/>Lovelace</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/nl/tags/webradio/>Webradio</a></span>
+<span rel=tag class="tag p-category"><a href=https://sequr.be/nl/tags/smart-speaker/>Smart speaker</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+<span class=tag><a class=p-category href=https://sequr.be/nl/categories/home-automation/>Home Automation</a></span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+1319 Words</p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<time class=dt-published datetime=2021-08-14T01:00:00+02:00>2021-08-14</time></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+<span rel=author class="p-author h-card">DezeStijn</span></p><p><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+<span rel=bookmark class=u-url><a href=https://sequr.be/nl/1576931468>https://sequr.be/nl/1576931468</a></span></p></div><hr><div class=sharing-buttons><a class=resp-sharing-button__link href=https://ko-fi.com/s4squatch target=_blank rel=noopener aria-label title="Buy me a coffee"><div class="resp-sharing-button resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604.0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407.0.0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fsequr.be%2fnl%2fblog%2f2021%2f08%2fwebradio-lanceren-vanaf-lovelace-dashboard%2f" target=_blank rel=noopener aria-label title="Share on facebook"><div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fsequr.be%2fnl%2fblog%2f2021%2f08%2fwebradio-lanceren-vanaf-lovelace-dashboard%2f" target=_blank rel=noopener aria-label title="Share on twitter"><div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></div></div></a><a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fsequr.be%2fnl%2fblog%2f2021%2f08%2fwebradio-lanceren-vanaf-lovelace-dashboard%2f&amp;resubmit=true&amp;title=Webradio%20lanceren%20vanaf%20Lovelace%20dashboard" target=_blank rel=noopener aria-label title="Share on reddit"><div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg></div></div></a><a class=resp-sharing-button__link href="mailto:?subject=Webradio%20lanceren%20vanaf%20Lovelace%20dashboard&amp;body=https%3a%2f%2fsequr.be%2fnl%2fblog%2f2021%2f08%2fwebradio-lanceren-vanaf-lovelace-dashboard%2f" target=_self rel=noopener aria-label title="Share via email"><div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div></div></a></div><div class=pagination><div class=pagination__buttons><span class="button previous"><a href=https://sequr.be/nl/blog/2021/08/afvalbeheer-installeren-en-configureren-in-home-assistant/><span class=button__icon>←</span>
+<span class=button__text>Afvalbeheer installeren en configureren in Home Assistant</span>
+</a></span><span class="button next"><a href=https://sequr.be/nl/blog/2021/08/van-hdd-naar-ssd-migreren/><span class=button__text>Van HDD naar SSD migreren</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class="footer h-card"><div class=footer__inner><div class=footer__content><span>&copy; 2019</span>
+<span><a class="p-name u-url" rel=me href=https://sequr.be/>DezeStijn</a></span>
+<span><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+<span><a href=https://sequr.be/nl/blog/index.xml target=_blank title=rss><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div></footer></div><script type=text/javascript src=https://sequr.be/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc+cxaJzDdCYbAW0X1G+DgZYvtKFXe6MBex8jUJ2JT25mQx+YjACIng=="></script></body></html>
